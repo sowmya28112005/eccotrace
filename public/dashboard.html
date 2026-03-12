@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard – EcoTrace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #fafaf8;
+      --bg2:         #f4f4f0;
+      --bg3:         #eeeee8;
+      --white:       #ffffff;
+      --ink:         #1a1a18;
+      --ink2:        #3a3a36;
+      --muted:       #8a8a82;
+      --muted2:      #b8b8b0;
+      --green:       #2d6a4f;
+      --green-light: #52b788;
+      --green-pale:  #d8f3dc;
+      --green-bg:    #f0faf3;
+      --accent:      #e76f51;
+      --accent-pale: #fde8e2;
+      --border:      #e4e4de;
+      --border2:     #d0d0c8;
+      --shadow:      0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      --shadow-md:   0 4px 12px rgba(0,0,0,0.08), 0 16px 40px rgba(0,0,0,0.06);
+      --blue:        #0369a1;
+      --blue-pale:   #e0f2fe;
+      --purple:      #7c3aed;
+      --purple-pale: #f3f0ff;
+      --gold:        #b45309;
+      --gold-pale:   #fef3c7;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem; height: 60px;
+      background: rgba(250,250,248,0.92);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 200;
+      backdrop-filter: blur(16px);
+    }
+    .logo {
+      font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.25rem;
+      color: var(--green); letter-spacing: -0.02em;
+      text-decoration: none; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .logo-mark {
+      width: 28px; height: 28px; background: var(--green);
+      border-radius: 8px; display: flex; align-items: center;
+      justify-content: center; color: white; font-size: 0.8rem;
+    }
+    .nav-links { display: flex; gap: 0; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 0.875rem; font-weight: 500;
+      padding: 0.35rem 0.9rem; border-radius: 8px; transition: all 0.2s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--green); background: var(--green-bg); }
+    .nav-cta {
+      background: var(--green); color: white;
+      padding: 0.45rem 1.1rem; border-radius: 100px;
+      font-weight: 600; font-size: 0.85rem; text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #235c43; }
+
+    /* ── PAGE ── */
+    .page { max-width: 1200px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+    /* ── USER HERO ── */
+    .user-hero {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 24px; padding: 2rem 2.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+      position: relative; overflow: hidden;
+    }
+    .user-hero::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--green), var(--green-light));
+    }
+    .user-info { display: flex; align-items: center; gap: 1.5rem; }
+    .avatar {
+      width: 60px; height: 60px; border-radius: 50%;
+      background: var(--green-pale); border: 2px solid rgba(45,106,79,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; font-weight: 700; color: var(--green);
+      font-family: 'Fraunces', serif; flex-shrink: 0;
+    }
+    .user-name {
+      font-family: 'Fraunces', serif; font-size: 1.35rem;
+      font-weight: 700; letter-spacing: -0.02em;
+    }
+    .user-level { color: var(--green); font-size: 0.83rem; font-weight: 600; margin-top: 0.25rem; }
+    .user-joined { color: var(--muted); font-size: 0.78rem; margin-top: 0.1rem; font-weight: 300; }
+
+    .points-badge { text-align: right; }
+    .points-num {
+      font-family: 'Fraunces', serif; font-size: 2.5rem; font-weight: 700;
+      color: var(--green); line-height: 1; letter-spacing: -0.04em;
+    }
+    .points-label { color: var(--muted); font-size: 0.83rem; margin-top: 0.3rem; font-weight: 300; }
+    .progress-bar-wrap { margin-top: 0.8rem; }
+    .progress-label {
+      display: flex; justify-content: space-between;
+      font-size: 0.72rem; color: var(--muted); margin-bottom: 0.4rem;
+    }
+    .progress-bar {
+      height: 5px; background: var(--border); border-radius: 3px;
+      overflow: hidden; width: 200px;
+    }
+    .progress-fill {
+      height: 100%; background: var(--green);
+      border-radius: 3px; transition: width 1s ease;
+    }
+
+    /* ── STATS GRID ── */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 18px; padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: all 0.22s; position: relative; overflow: hidden;
+    }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .stat-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px; background: var(--green); opacity: 0; transition: opacity 0.22s;
+    }
+    .stat-card:hover::after { opacity: 1; }
+    .stat-icon { font-size: 1.4rem; margin-bottom: 0.8rem; }
+    .stat-val {
+      font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 700;
+      line-height: 1; margin-bottom: 0.3rem; letter-spacing: -0.03em;
+    }
+    .stat-lbl { color: var(--muted); font-size: 0.8rem; font-weight: 300; }
+    .stat-change { font-size: 0.73rem; margin-top: 0.4rem; color: var(--green); font-weight: 500; }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 20px; padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+    .card-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 1.4rem;
+    }
+    .card-title { font-weight: 600; font-size: 0.95rem; }
+    .card-sub { color: var(--muted); font-size: 0.78rem; margin-top: 0.2rem; font-weight: 300; }
+
+    /* ── CHART TABS ── */
+    .chart-tabs { display: flex; gap: 0.35rem; }
+    .chart-tab {
+      padding: 0.28rem 0.75rem; border-radius: 100px;
+      font-size: 0.74rem; font-weight: 600; cursor: pointer;
+      border: 1px solid var(--border); color: var(--muted);
+      background: none; transition: all 0.2s;
+    }
+    .chart-tab.active { background: var(--green-pale); border-color: rgba(45,106,79,0.3); color: var(--green); }
+    .chart-tab:hover:not(.active) { border-color: var(--border2); color: var(--ink2); }
+
+    /* ── BAR CHART ── */
+    .bar-chart { height: 180px; display: flex; align-items: flex-end; gap: 0.6rem; }
+    .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+    .bar {
+      width: 100%; border-radius: 6px 6px 0 0;
+      background: var(--green-pale);
+      border: 1px solid rgba(45,106,79,0.15);
+      transition: height 0.8s cubic-bezier(0.34,1.56,0.64,1);
+      cursor: pointer; position: relative;
+      background: linear-gradient(180deg, var(--green-light), var(--green));
+    }
+    .bar:hover { opacity: 0.8; }
+    .bar-label { font-size: 0.68rem; color: var(--muted); font-weight: 400; }
+    .bar-val { font-size: 0.68rem; font-weight: 600; color: var(--green); min-height: 14px; }
+
+    /* ── MAIN GRID ── */
+    .main-grid {
+      display: grid; grid-template-columns: 1fr 320px;
+      gap: 1.2rem; margin-bottom: 1.2rem;
+    }
+
+    /* ── IMPACT RING ── */
+    .ring-wrap { text-align: center; margin: 0.8rem 0; }
+    .ring-svg { width: 130px; height: 130px; }
+    .ring-bg   { fill: none; stroke: var(--border); stroke-width: 10; }
+    .ring-fill {
+      fill: none; stroke: var(--green); stroke-width: 10;
+      stroke-linecap: round; stroke-dasharray: 339;
+      stroke-dashoffset: 100;
+      transition: stroke-dashoffset 1s ease;
+    }
+    .ring-label { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 700; fill: var(--ink); }
+    .ring-sub-label { font-size: 0.6rem; fill: var(--muted); }
+
+    .impact-list { display: flex; flex-direction: column; gap: 0; }
+    .impact-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.6rem 0; border-bottom: 1px solid var(--border);
+    }
+    .impact-row:last-child { border: none; padding-bottom: 0; }
+    .impact-row-label { font-size: 0.83rem; color: var(--muted); display: flex; gap: 0.5rem; font-weight: 300; }
+    .impact-row-val { font-weight: 600; font-size: 0.88rem; }
+
+    /* ── REWARDS ── */
+    .rewards-row { display: flex; gap: 0.9rem; flex-wrap: wrap; }
+    .reward-card {
+      flex: 1; min-width: 130px;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1rem; text-align: center;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .reward-card:hover { border-color: var(--green); background: var(--green-bg); transform: translateY(-1px); }
+    .reward-card.locked { opacity: 0.45; pointer-events: none; }
+    .reward-emoji { font-size: 1.7rem; }
+    .reward-name { font-weight: 600; font-size: 0.8rem; margin-top: 0.4rem; color: var(--ink2); }
+    .reward-cost { color: var(--green); font-size: 0.73rem; font-weight: 600; margin-top: 0.2rem; }
+
+    /* ── BOTTOM GRID ── */
+    .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+
+    /* ── HISTORY ── */
+    .history-list { display: flex; flex-direction: column; gap: 0.55rem; max-height: 360px; overflow-y: auto; }
+    .history-list::-webkit-scrollbar { width: 3px; }
+    .history-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+    .history-item {
+      display: flex; gap: 0.9rem; align-items: center;
+      padding: 0.85rem 1rem; background: var(--bg2);
+      border-radius: 12px; border: 1px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .history-item:hover { border-color: var(--border2); }
+    .history-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: var(--green-pale);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .history-device { font-weight: 600; font-size: 0.88rem; }
+    .history-date { color: var(--muted); font-size: 0.75rem; margin-top: 0.1rem; font-weight: 300; }
+    .history-points {
+      margin-left: auto;
+      font-weight: 700; color: var(--green); font-size: 0.85rem;
+    }
+
+    /* ── LEADERBOARD ── */
+    .lb-list { display: flex; flex-direction: column; gap: 0.55rem; }
+    .lb-item {
+      display: flex; align-items: center; gap: 0.9rem;
+      padding: 0.8rem 1rem; border-radius: 12px;
+      background: var(--bg2); border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .lb-item.me { border-color: rgba(45,106,79,0.35); background: var(--green-bg); }
+    .lb-rank {
+      width: 26px; height: 26px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.75rem;
+      background: var(--bg3); color: var(--muted); flex-shrink: 0;
+    }
+    .lb-rank.gold   { background: var(--gold-pale);   color: var(--gold); }
+    .lb-rank.silver { background: #f1f5f9; color: #64748b; }
+    .lb-rank.bronze { background: #fef3e2; color: #c2410c; }
+    .lb-name { flex: 1; font-weight: 600; font-size: 0.88rem; }
+    .lb-points { font-weight: 700; color: var(--green); font-size: 0.85rem; }
+    .lb-devices { color: var(--muted); font-size: 0.73rem; font-weight: 300; }
+
+    /* ── PICKUP TRACKING ── */
+    .pickup-empty {
+      text-align: center; padding: 2rem;
+      color: var(--muted); font-size: 0.88rem; font-weight: 300;
+    }
+    .pickup-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.2rem 1.3rem;
+      margin-bottom: 0.8rem; transition: border-color 0.2s;
+    }
+    .pickup-card:hover { border-color: var(--border2); }
+    .pickup-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; }
+    .pickup-left { display: flex; gap: 0.85rem; align-items: flex-start; }
+    .pickup-icon { font-size: 1.7rem; flex-shrink: 0; }
+    .pickup-name { font-weight: 600; font-size: 0.92rem; }
+    .pickup-ref  { font-size: 0.72rem; color: var(--green); font-weight: 700; letter-spacing: 0.08em; margin-top: 0.15rem; }
+    .pickup-meta { font-size: 0.76rem; color: var(--muted); margin-top: 0.2rem; font-weight: 300; }
+    .pickup-type-badge {
+      font-size: 0.68rem; font-weight: 700; padding: 0.22rem 0.65rem;
+      border-radius: 100px; white-space: nowrap;
+      background: var(--blue-pale); color: var(--blue);
+      border: 1px solid rgba(3,105,161,0.18);
+    }
+    .pickup-type-badge.self {
+      background: var(--green-pale); color: var(--green);
+      border-color: rgba(45,106,79,0.22);
+    }
+
+    /* Progress steps */
+    .pickup-progress { margin-bottom: 0.9rem; }
+    .prog-steps { display: flex; align-items: center; margin-bottom: 0.5rem; }
+    .prog-step {
+      display: flex; flex-direction: column; align-items: center;
+      flex: 1; position: relative;
+    }
+    .prog-step:not(:last-child)::after {
+      content: ''; position: absolute; top: 10px; left: 50%;
+      width: 100%; height: 2px; background: var(--border); z-index: 0;
+    }
+    .prog-step.done:not(:last-child)::after { background: var(--green); }
+    .prog-dot {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid var(--border); background: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.58rem; font-weight: 800; z-index: 1; flex-shrink: 0;
+      transition: all 0.3s;
+    }
+    .prog-step.done .prog-dot   { background: var(--green); border-color: var(--green); color: white; }
+    .prog-step.active .prog-dot {
+      background: var(--white); border-color: var(--green); color: var(--green);
+      animation: pulseDot 1.4s infinite;
+    }
+    @keyframes pulseDot {
+      0%,100% { box-shadow: 0 0 0 0 rgba(45,106,79,0.35); }
+      50%      { box-shadow: 0 0 0 6px rgba(45,106,79,0); }
+    }
+    .prog-step-lbl { font-size: 0.58rem; color: var(--muted); margin-top: 0.3rem; text-align: center; line-height: 1.2; }
+    .prog-step.done .prog-step-lbl,
+    .prog-step.active .prog-step-lbl { color: var(--green); font-weight: 600; }
+
+    .pickup-status-text {
+      font-size: 0.76rem; color: var(--ink2); font-weight: 500;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .status-live {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green); animation: blink 1.4s infinite;
+      display: inline-block;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .pickup-devices { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.7rem; }
+    .pickup-dev-tag {
+      font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 100px;
+      border: 1px solid var(--border); color: var(--muted); background: var(--white);
+    }
+    .pickup-footer { display: flex; align-items: center; justify-content: space-between; }
+    .pickup-pts { font-weight: 700; color: var(--green); font-size: 0.83rem; }
+    .cancel-btn {
+      font-size: 0.73rem; color: var(--muted); background: var(--white);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 0.28rem 0.65rem; cursor: pointer; transition: all 0.2s;
+    }
+    .cancel-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── UTILITY BUTTONS ── */
+    .reset-btn {
+      display: flex; align-items: center; gap: 0.4rem;
+      background: var(--white); border: 1px solid var(--border);
+      color: var(--muted); border-radius: 100px;
+      padding: 0.35rem 0.9rem; font-size: 0.75rem; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .link-sm {
+      font-size: 0.8rem; color: var(--green); text-decoration: none;
+      font-weight: 600; transition: opacity 0.2s;
+    }
+    .link-sm:hover { opacity: 0.75; }
+
+    /* ── SPACING ── */
+    .mb-sm  { margin-bottom: 1rem; }
+    .mb-md  { margin-bottom: 1.2rem; }
+    .mb-lg  { margin-bottom: 1.5rem; }
+
+    /* ── EMPTY STATES ── */
+    .empty-state {
+      text-align: center; padding: 2.5rem 1rem;
+      color: var(--muted); font-size: 0.88rem; font-weight: 300;
+    }
+    .empty-state a { color: var(--green); font-weight: 600; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(2,1fr); }
+      .main-grid  { grid-template-columns: 1fr; }
+      .bottom-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 0 1.2rem; }
+      .nav-links { display: none; }
+      .user-hero { flex-direction: column; gap: 1.5rem; align-items: flex-start; }
+      .points-badge { text-align: left; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .page { padding: 1.5rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-mark">♻</div>
+    EcoTrace
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="scan.html">Scan</a></li>
+    <li><a href="centers.html">Centers</a></li>
+    <li><a href="dashboard.html" class="active">Dashboard</a></li>
+  </ul>
+  <a href="scan.html" class="nav-cta">+ Scan Device</a>
+</nav>
+
+<div class="page">
+
+  <!-- USER HERO -->
+  <div class="user-hero mb-lg">
+    <div class="user-info">
+      <div class="avatar" id="avatarInitial">U</div>
+      <div>
+        <div class="user-name" id="userName">Eco Warrior</div>
+        <div class="user-level">🌿 Level 4 – Green Guardian</div>
+        <div class="user-joined">Member since March 2025</div>
+      </div>
+    </div>
+    <div class="points-badge">
+      <div class="points-num" id="totalPoints">1,240</div>
+      <div class="points-label">Eco Points Earned</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-label">
+          <span>Level 4</span><span>Level 5 (1,500 pts)</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width:83%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid mb-md">
+    <div class="stat-card">
+      <div class="stat-icon">♻️</div>
+      <div class="stat-val" id="statDevices">0</div>
+      <div class="stat-lbl">Devices Recycled</div>
+      <div class="stat-change" id="statDevicesChange">↑ +2 this week</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🌍</div>
+      <div class="stat-val" id="statCO2">0 kg</div>
+      <div class="stat-lbl">CO₂ Saved</div>
+      <div class="stat-change">↑ Equivalent to 12 tree-days</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⚡</div>
+      <div class="stat-val" id="statEnergy">0 kWh</div>
+      <div class="stat-lbl">Energy Recovered</div>
+      <div class="stat-change">↑ Powers a home for 3 days</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💎</div>
+      <div class="stat-val" id="statGold">0g</div>
+      <div class="stat-lbl">Gold Recovered</div>
+      <div class="stat-change">Worth ~$X in raw materials</div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid mb-md">
+
+    <!-- BAR CHART -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Recycling Activity</div>
+          <div class="card-sub">Devices scanned and recycled over time</div>
+        </div>
+        <div class="chart-tabs">
+          <button class="chart-tab active">Week</button>
+          <button class="chart-tab">Month</button>
+          <button class="chart-tab">Year</button>
+        </div>
+      </div>
+      <div class="bar-chart" id="barChart"></div>
+    </div>
+
+    <!-- IMPACT RING -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Impact Score</div>
+          <div class="card-sub">Your environmental contribution</div>
+        </div>
+      </div>
+      <div class="ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 120 120">
+          <circle class="ring-bg" cx="60" cy="60" r="54"/>
+          <circle class="ring-fill" id="ringCircle" cx="60" cy="60" r="54" transform="rotate(-90 60 60)"/>
+          <text class="ring-label" x="60" y="58" text-anchor="middle" dominant-baseline="middle">83%</text>
+          <text class="ring-sub-label" x="60" y="72" text-anchor="middle">Impact Score</text>
+        </svg>
+      </div>
+      <div class="impact-list">
+        <div class="impact-row">
+          <span class="impact-row-label">🌿 CO₂ Prevented</span>
+          <span class="impact-row-val" id="impCO2">0 kg</span>
+        </div>
+        <div class="impact-row">
+          <span class="impact-row-label">💧 Water Saved</span>
+          <span class="impact-row-val" id="impWater">0 L</span>
+        </div>
+        <div class="impact-row">
+          <span class="impact-row-label">☢️ Toxins Diverted</span>
+          <span class="impact-row-val" id="impToxins">0 items</span>
+        </div>
+        <div class="impact-row">
+          <span class="impact-row-label">🏆 Rank</span>
+          <span class="impact-row-val" style="color:var(--green)">Top 15%</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- REWARDS -->
+  <div class="card mb-md">
+    <div class="card-header">
+      <div>
+        <div class="card-title">🎁 Rewards</div>
+        <div class="card-sub">Redeem your Eco Points</div>
+      </div>
+      <span style="font-size:0.8rem;color:var(--green);font-weight:600;" id="rewardPoints">1,240 pts available</span>
+    </div>
+    <div class="rewards-row">
+      <div class="reward-card" onclick="redeemReward('10% discount at partner stores', 200)">
+        <div class="reward-emoji">🏷️</div>
+        <div class="reward-name">Store Discount</div>
+        <div class="reward-cost">200 pts</div>
+      </div>
+      <div class="reward-card" onclick="redeemReward('Free device pickup', 500)">
+        <div class="reward-emoji">🚚</div>
+        <div class="reward-name">Free Pickup</div>
+        <div class="reward-cost">500 pts</div>
+      </div>
+      <div class="reward-card" onclick="redeemReward('Plant a tree in your name', 300)">
+        <div class="reward-emoji">🌳</div>
+        <div class="reward-name">Plant a Tree</div>
+        <div class="reward-cost">300 pts</div>
+      </div>
+      <div class="reward-card locked">
+        <div class="reward-emoji">🎖️</div>
+        <div class="reward-name">Eco Champion Badge</div>
+        <div class="reward-cost">1,500 pts</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PICKUP TRACKING -->
+  <div class="card mb-md">
+    <div class="card-header">
+      <div>
+        <div class="card-title">🚚 Pickup &amp; Drop-off Tracking</div>
+        <div class="card-sub">Live status of your scheduled bookings</div>
+      </div>
+      <div style="display:flex;gap:0.6rem;align-items:center;">
+        <button class="reset-btn" onclick="resetAllData()" title="Reset all scan + booking data">🔄 Reset Score</button>
+        <a href="centers.html" class="link-sm">+ Schedule New</a>
+      </div>
+    </div>
+    <div id="pickupList">
+      <div class="pickup-empty">
+        No bookings yet. <a href="centers.html" style="color:var(--green)">Schedule a drop-off →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM GRID -->
+  <div class="bottom-grid">
+
+    <!-- HISTORY -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">📋 Recycling History</div>
+          <div class="card-sub">Your recent scans</div>
+        </div>
+        <div style="display:flex;gap:0.7rem;align-items:center;">
+          <button class="reset-btn" onclick="resetScansOnly()" style="font-size:0.7rem;padding:0.28rem 0.65rem;">🗑 Clear</button>
+          <a href="scan.html" class="link-sm">+ New Scan</a>
+        </div>
+      </div>
+      <div class="history-list" id="historyList">
+        <div class="empty-state">
+          No scans yet. <a href="scan.html">Scan your first device →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">🏆 Community Leaderboard</div>
+          <div class="card-sub">Top recyclers this month</div>
+        </div>
+      </div>
+      <div class="lb-list" id="leaderboard"></div>
+    </div>
+
+  </div>
+
+</div><!-- /page -->
+
+<script>
+const API_BASE = 'http://localhost:5000/api';
+
+const DEVICE_ICONS = {
+  'Smartphone':'📱','Laptop':'💻','Tablet':'📟','Charger':'🔌',
+  'Battery':'🔋','Headphones':'🎧','Printer':'🖨️','Monitor':'🖥️',
+  'Keyboard':'⌨️','TV':'📺','Router':'📡','Other':'🔧'
+};
+const POINTS_MAP = {
+  Smartphone:50,Laptop:100,Tablet:70,Charger:20,Battery:30,
+  Headphones:25,Printer:120,Monitor:150,Keyboard:30,TV:130,Router:40,Other:40
+};
+const DEVICE_IMPACT = {
+  Smartphone:{co2:70,energy:180,water:12,gold:0.03},
+  Laptop:    {co2:156,energy:320,water:85,gold:0.5},
+  Tablet:    {co2:90,energy:220,water:35,gold:0.08},
+  Charger:   {co2:2,energy:5,water:2,gold:0.001},
+  Battery:   {co2:5,energy:12,water:5,gold:0.002},
+  Headphones:{co2:8,energy:18,water:4,gold:0.005},
+  Printer:   {co2:200,energy:400,water:100,gold:0.1},
+  Monitor:   {co2:450,energy:600,water:250,gold:0.2},
+  Keyboard:  {co2:15,energy:30,water:8,gold:0.01},
+  TV:        {co2:350,energy:500,water:180,gold:0.15},
+  Router:    {co2:10,energy:22,water:6,gold:0.008},
+  Other:     {co2:50,energy:100,water:30,gold:0.05}
+};
+
+const PICKUP_STAGES = [
+  { key:'booked',     label:'Booked',    icon:'📋' },
+  { key:'confirmed',  label:'Confirmed', icon:'✅' },
+  { key:'in_transit', label:'En Route',  icon:'🚚' },
+  { key:'completed',  label:'Done',      icon:'🎉' }
+];
+
+function loadScans()    { return JSON.parse(localStorage.getItem('ecotrace_scans')    || '[]'); }
+function loadBookings() { return JSON.parse(localStorage.getItem('ecotrace_bookings') || '[]'); }
+
+function calcStats(scans) {
+  let co2=0,energy=0,water=0,gold=0,points=0;
+  scans.forEach(s => {
+    const imp = DEVICE_IMPACT[s.device_type] || DEVICE_IMPACT.Other;
+    co2+=imp.co2; energy+=imp.energy; water+=imp.water; gold+=imp.gold;
+    points += POINTS_MAP[s.device_type] || 40;
+  });
+  return {co2,energy,water,gold,points,count:scans.length};
+}
+
+function animateNum(el, target, suffix='', decimals=0) {
+  if(!el) return;
+  let start=0;
+  const step = target/40;
+  const iv = setInterval(()=>{
+    start = Math.min(start+step, target);
+    el.textContent = start.toFixed(decimals)+suffix;
+    if(start>=target) clearInterval(iv);
+  }, 30);
+}
+
+function getStageIndex(booking) {
+  const created = new Date(booking.created || booking.date);
+  const now = new Date();
+  const diffHrs = (now - created) / 36e5;
+  if(booking.status === 'completed')  return 3;
+  if(booking.status === 'in_transit') return 2;
+  if(booking.status === 'confirmed')  return 1;
+  if(diffHrs > 24) return 3;
+  if(diffHrs > 12) return 2;
+  if(diffHrs > 2)  return 1;
+  return 0;
+}
+
+function renderPickups() {
+  const bookings = loadBookings();
+  const el = document.getElementById('pickupList');
+  if(bookings.length === 0) {
+    el.innerHTML = `<div class="pickup-empty">No bookings yet. <a href="centers.html" style="color:var(--green)">Schedule a drop-off →</a></div>`;
+    return;
+  }
+  el.innerHTML = bookings.slice(0,5).map((b, idx) => {
+    const stageIdx   = getStageIndex(b);
+    const isPickup   = b.type === 'pickup';
+    const dateStr    = new Date(b.date).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+    const devices    = (b.devices||[]).length > 0 ? b.devices : ['Device'];
+    const pts        = (b.devices||[]).reduce((s,d) => s+(POINTS_MAP[d]||40), 0) || 40;
+    const isComplete = stageIdx >= 3;
+
+    const stepsHTML = PICKUP_STAGES.map((s,i) => {
+      const cls = i < stageIdx ? 'done' : i === stageIdx ? 'active' : '';
+      return `<div class="prog-step ${cls}">
+        <div class="prog-dot">${i < stageIdx ? '✓' : s.icon}</div>
+        <div class="prog-step-lbl">${s.label}</div>
+      </div>`;
+    }).join('');
+
+    const currentStage = PICKUP_STAGES[Math.min(stageIdx,3)];
+    const statusText = isComplete
+      ? '🎉 Completed — Eco Points credited!'
+      : `<span class="status-live"></span> ${currentStage.label}: ${isPickup ? 'Awaiting agent' : 'Awaiting your visit'}`;
+
+    return `
+    <div class="pickup-card">
+      <div class="pickup-top">
+        <div class="pickup-left">
+          <div class="pickup-icon">${isPickup ? '🚚' : '🏪'}</div>
+          <div>
+            <div class="pickup-name">${b.center_name || 'Recycling Center'}</div>
+            <div class="pickup-ref">${b.booking_id || 'ECO-000000'}</div>
+            <div class="pickup-meta">📅 ${dateStr} · 🕐 ${b.time || '—'} · 👤 ${b.name || '—'}</div>
+          </div>
+        </div>
+        <span class="pickup-type-badge ${isPickup?'':'self'}">${isPickup ? '🚚 Pickup' : '🚶 Drop-off'}</span>
+      </div>
+      <div class="pickup-progress">
+        <div class="prog-steps">${stepsHTML}</div>
+        <div class="pickup-status-text">${statusText}</div>
+      </div>
+      <div class="pickup-devices">
+        ${devices.map(d=>`<span class="pickup-dev-tag">${DEVICE_ICONS[d]||'🔧'} ${d}</span>`).join('')}
+      </div>
+      <div class="pickup-footer">
+        <div class="pickup-pts">⭐ ${pts} Eco Points${isComplete ? ' ✓ Credited' : ' pending'}</div>
+        ${!isComplete ? `<button class="cancel-btn" onclick="cancelBooking(${idx})">Cancel</button>` : `<span style="font-size:0.73rem;color:var(--green);">♻️ Recycled!</span>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function cancelBooking(idx) {
+  if(!confirm('Cancel this booking?')) return;
+  const arr = loadBookings(); arr.splice(idx,1);
+  localStorage.setItem('ecotrace_bookings', JSON.stringify(arr));
+  renderPickups();
+}
+
+function renderHistory(scans) {
+  const el = document.getElementById('historyList');
+  if(scans.length === 0) {
+    el.innerHTML = `<div class="empty-state">No scans yet. <a href="scan.html">Scan your first device →</a></div>`;
+    return;
+  }
+  el.innerHTML = scans.slice(0,10).map(s => {
+    const date = new Date(s.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+    const icon = s.icon || DEVICE_ICONS[s.device_type] || '🔧';
+    const pts  = POINTS_MAP[s.device_type] || 40;
+    return `
+      <div class="history-item">
+        <div class="history-icon">${icon}</div>
+        <div>
+          <div class="history-device">${s.device_type}</div>
+          <div class="history-date">${date}</div>
+        </div>
+        <div class="history-points">+${pts} pts</div>
+      </div>`;
+  }).join('');
+}
+
+function renderBarChart(scans) {
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const counts = days.map(()=>0);
+  scans.forEach(s=>{ const d=new Date(s.date).getDay(); counts[d===0?6:d-1]++; });
+  if(scans.length===0) days.forEach((_,i)=>{ counts[i]=Math.floor(Math.random()*3); });
+  const maxVal = Math.max(...counts,1);
+  document.getElementById('barChart').innerHTML = days.map((d,i)=>`
+    <div class="bar-group">
+      <div class="bar-val">${counts[i]||''}</div>
+      <div class="bar" style="height:${(counts[i]/maxVal)*155}px;" title="${counts[i]} devices on ${d}"></div>
+      <div class="bar-label">${d}</div>
+    </div>`).join('');
+}
+
+function renderLeaderboard() {
+  const leaders = [
+    {name:'Priya S.',  points:3240,devices:28,rank:1,me:false},
+    {name:'Rahul M.',  points:2810,devices:24,rank:2,me:false},
+    {name:'Ananya K.', points:2450,devices:20,rank:3,me:false},
+    {name:'You',       points:1240,devices:12,rank:8,me:true},
+    {name:'Vikram P.', points:1100,devices:10,rank:9,me:false},
+  ];
+  const rc = r => r===1?'gold':r===2?'silver':r===3?'bronze':'';
+  document.getElementById('leaderboard').innerHTML = leaders.map(l=>`
+    <div class="lb-item ${l.me?'me':''}">
+      <div class="lb-rank ${rc(l.rank)}">${l.rank}</div>
+      <div>
+        <div class="lb-name">${l.name} ${l.me?'👤':''}</div>
+        <div class="lb-devices">${l.devices} devices recycled</div>
+      </div>
+      <div class="lb-points">${l.points.toLocaleString()} pts</div>
+    </div>`).join('');
+}
+
+function resetAllData() {
+  if(!confirm('⚠️ Reset ALL data?\n\nThis will clear all scans, bookings and your score.\nThis cannot be undone.')) return;
+  localStorage.removeItem('ecotrace_scans');
+  localStorage.removeItem('ecotrace_bookings');
+  initDashboard();
+  showToast('🔄 Score and history reset!');
+}
+
+function resetScansOnly() {
+  if(!confirm('Clear all scan history?')) return;
+  localStorage.removeItem('ecotrace_scans');
+  initDashboard();
+  showToast('🗑 Scan history cleared!');
+}
+
+function showToast(msg) {
+  let t = document.getElementById('dashToast');
+  if(!t){
+    t = document.createElement('div'); t.id='dashToast';
+    t.style.cssText='position:fixed;bottom:2rem;right:2rem;z-index:999;background:var(--ink);color:white;border-radius:12px;padding:0.85rem 1.3rem;font-size:0.875rem;box-shadow:0 8px 24px rgba(0,0,0,0.15);transition:all 0.3s;opacity:0;transform:translateY(10px);';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity='1'; t.style.transform='translateY(0)';
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(10px)'; }, 3000);
+}
+
+async function initDashboard() {
+  const scans    = loadScans();
+  const bookings = loadBookings();
+  const stats    = calcStats(scans);
+
+  try {
+    const res = await fetch(`${API_BASE}/user/stats`);
+    if(res.ok){ const d=await res.json(); console.log('Backend stats:',d); }
+  } catch(e){}
+
+  animateNum(document.getElementById('statDevices'), stats.count);
+  animateNum(document.getElementById('statCO2'),     stats.co2,    ' kg');
+  animateNum(document.getElementById('statEnergy'),  stats.energy, ' kWh');
+  animateNum(document.getElementById('statGold'),    stats.gold,   'g', 2);
+
+  animateNum(document.getElementById('impCO2'),   stats.co2,   ' kg');
+  animateNum(document.getElementById('impWater'), stats.water, ' L');
+  document.getElementById('impToxins').textContent = `${stats.count * 3} items`;
+
+  const bookingPts = bookings.filter(b=>getStageIndex(b)>=3).reduce((s,b)=>{
+    return s + (b.devices||[]).reduce((t,d)=>t+(POINTS_MAP[d]||40),0);
+  }, 0);
+  const totalPts = 1240 + stats.points + bookingPts;
+  document.getElementById('totalPoints').textContent  = totalPts.toLocaleString();
+  document.getElementById('rewardPoints').textContent = `${totalPts.toLocaleString()} pts available`;
+
+  renderHistory(scans);
+  renderBarChart(scans);
+  renderLeaderboard();
+  renderPickups();
+}
+
+function redeemReward(name, cost) {
+  const pts = parseInt(document.getElementById('totalPoints').textContent.replace(/,/g,''));
+  if(pts < cost){ showToast(`⚠️ Need ${cost} pts. You have ${pts}.`); return; }
+  if(confirm(`Redeem "${name}" for ${cost} Eco Points?`)) showToast(`✅ Redeemed: ${name}!`);
+}
+
+document.querySelectorAll('.chart-tab').forEach(tab => {
+  tab.addEventListener('click', function(){
+    document.querySelectorAll('.chart-tab').forEach(t=>t.classList.remove('active'));
+    this.classList.add('active');
+    renderBarChart(loadScans());
+  });
+});
+
+initDashboard();
+</script>
+</body>
+</html>

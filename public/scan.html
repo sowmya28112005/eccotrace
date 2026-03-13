@@ -826,6 +826,7 @@ analyzeBtn.addEventListener('click', async () => {
     if(!result){ result=buildResult('Other'); source='db'; }
     await runProgress(['🔍 Scanning materials…','⚠️ Checking hazardous components…','🌍 Calculating environmental impact…','💰 Estimating value…'],60);
     result._source=source; renderResult(result); renderPrice(result.device_type,'good'); setPhase('result'); lastResult=result;
+    saveToMongoDB(result);
     const msgs={gemini:`✅ Identified: ${result.rawDeviceName||result.device_type}`,manual:`👆 Manual: ${result.device_type}`,filename:`✅ Identified: ${result.device_type}`,db:`✅ Identified: ${result.device_type}`};
     toast(msgs[source]||'✅ Done!');
   } catch(err){ console.error(err); toast('❌ Analysis failed: '+err.message); setPhase('placeholder'); }
@@ -838,7 +839,7 @@ async function callGeminiVision(file){
   const base64=await fileToBase64(file),mimeType=file.type||'image/jpeg';
   const prompt=`You are an e-waste expert. Look at this image and identify the electronic device.\n\nRespond with ONLY valid JSON, no extra text, no markdown, no code fences. Use this exact structure:\n{\n  "device_name": "exact device name and brand/model if visible",\n  "category": "one of: Smartphone, Laptop, Tablet, Charger, Battery, Headphones, Printer, Monitor, Keyboard, TV, Router, Other",\n  "confidence": "percentage like 92%",\n  "hazards": ["material1", "material2"],\n  "disposal_steps": ["step1", "step2", "step3", "step4"],\n  "co2": "X kg CO₂",\n  "gold": "X g gold",\n  "water": "X L water",\n  "energy": "X kWh"\n}`;
   const body={contents:[{parts:[{text:prompt},{inline_data:{mime_type:mimeType,data:base64}}]}],generationConfig:{temperature:0.1,maxOutputTokens:512}};
-  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   if(!res.ok){ const err=await res.json(); throw new Error(err.error?.message||`HTTP ${res.status}`); }
   const data=await res.json(),text=data.candidates?.[0]?.content?.parts?.[0]?.text||'';
   const clean=text.replace(/```json|```/g,'').trim(),parsed=JSON.parse(clean);
@@ -966,6 +967,26 @@ function handleNotForSale(){
   document.getElementById('saleConfirmNo').style.display='flex';
   toast('♻️ Skipped — not saved to history.');
 }
+// ═══════════════════════════════════════════
+// SAVE TO MONGODB VIA BACKEND
+// ═══════════════════════════════════════════
+async function saveToMongoDB(data){
+  try {
+    await fetch('/api/scan/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId:        'guest',
+        deviceType:    data.device_type,
+        confidence:    data.confidence,
+        hazards:       data.hazards,
+        disposalSteps: data.disposal_steps,
+        source:        data._source
+      })
+    });
+  } catch(e){ console.warn('MongoDB save skipped:', e.message); }
+}
+
 function saveToHistory(data,forSale){
   try { const arr=JSON.parse(localStorage.getItem('ecotrace_scans')||'[]'); arr.unshift({...data,forSale,date:new Date().toISOString()}); localStorage.setItem('ecotrace_scans',JSON.stringify(arr.slice(0,50))); }
   catch(e){ console.error('History save failed:',e); }

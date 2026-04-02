@@ -1,386 +1,208 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EcoTrace – Smart E-Waste Management</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #fafaf8;
-      --bg2: #f4f4f0;
-      --bg3: #eeeee8;
-      --white: #ffffff;
-      --ink: #1a1a18;
-      --ink2: #3a3a36;
-      --muted: #8a8a82;
-      --muted2: #b8b8b0;
-      --green: #2d6a4f;
-      --green-light: #52b788;
-      --green-pale: #d8f3dc;
-      --green-bg: #f0faf3;
-      --accent: #e76f51;
-      --border: #e4e4de;
-      --border2: #d0d0c8;
-      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-      --shadow-hover: 0 4px 12px rgba(0,0,0,0.08), 0 16px 40px rgba(0,0,0,0.06);
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
+    :root{--bg:#f5faf7;--bg2:#eaf4ee;--bg3:#deeee5;--white:#fff;--ink:#0f1f17;--ink2:#2a3d32;--muted:#6b7f73;--muted2:#a8bdb3;--green:#1a6b42;--green-mid:#228a56;--green-light:#45b872;--green-pale:#c4ead5;--green-bg:#edfaf3;--accent:#e07b4a;--accent-pale:#fce8db;--border:#d8e8df;--border2:#bdd4c6;--shadow:0 2px 8px rgba(0,0,0,.05),0 8px 32px rgba(0,0,0,.04);--shadow-hover:0 4px 20px rgba(0,0,0,.09),0 20px 52px rgba(0,0,0,.06);}
+    [data-theme="dark"]{--bg:#0c1810;--bg2:#111f16;--bg3:#192a1f;--white:#192a1f;--ink:#e6f5ec;--ink2:#b8d4c4;--muted:#6e9880;--muted2:#3d5a48;--green:#45b872;--green-mid:#38a062;--green-light:#65cc8e;--green-pale:#162e20;--green-bg:#0e2218;--accent:#f09464;--accent-pale:#3d1f10;--border:#1e3526;--border2:#274535;--shadow:0 2px 8px rgba(0,0,0,.3),0 8px 32px rgba(0,0,0,.25);--shadow-hover:0 4px 20px rgba(0,0,0,.4),0 20px 52px rgba(0,0,0,.3);}
+    *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s;}
 
     /* NAV */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      height: 60px;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 3rem;
-      background: rgba(250,250,248,0.92);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-    }
-    .logo {
-      font-family: 'Fraunces', serif;
-      font-size: 1.25rem; font-weight: 700;
-      color: var(--green); letter-spacing: -0.02em;
-      display: flex; align-items: center; gap: 0.5rem;
-    }
-    .logo-mark {
-      width: 28px; height: 28px; background: var(--green);
-      border-radius: 8px; display: flex; align-items: center;
-      justify-content: center; color: white; font-size: 0.8rem;
-    }
-    .nav-links { display: flex; gap: 0; list-style: none; }
-    .nav-links a {
-      color: var(--muted); text-decoration: none;
-      font-size: 0.875rem; font-weight: 500;
-      padding: 0.35rem 0.9rem; border-radius: 8px;
-      transition: all 0.2s;
-    }
-    .nav-links a:hover { color: var(--ink); background: var(--bg2); }
-    .nav-cta {
-      background: var(--green); color: white;
-      padding: 0.5rem 1.25rem; border-radius: 10px;
-      font-weight: 600; font-size: 0.85rem;
-      text-decoration: none; transition: all 0.2s;
-    }
-    .nav-cta:hover { background: #235c43; box-shadow: 0 4px 16px rgba(45,106,79,0.3); transform: translateY(-1px); }
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s;}
+    [data-theme="dark"] nav{background:rgba(12,24,16,.93);}
+    .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:var(--green);letter-spacing:-.03em;text-decoration:none;display:flex;align-items:center;gap:.55rem;}
+    .logo-mark{width:32px;height:32px;background:var(--green);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:.9rem;font-weight:800;flex-shrink:0;}
+    .nav-links{display:flex;gap:0;list-style:none;}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:.875rem;font-weight:500;padding:.38rem .95rem;border-radius:8px;transition:all .2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--green);background:var(--green-bg);}
+    .nav-right{display:flex;align-items:center;gap:.6rem;}
+
+    /* Dark/Light toggle */
+    .theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--border2);border:1px solid var(--border);cursor:pointer;position:relative;transition:background .3s,border-color .3s;flex-shrink:0;}
+    [data-theme="dark"] .theme-toggle{background:var(--green);border-color:var(--green-mid);}
+    .theme-knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:transform .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;justify-content:center;font-size:.65rem;line-height:1;}
+    [data-theme="dark"] .theme-knob{transform:translateX(24px);}
+    .theme-label{font-size:.72rem;color:var(--muted);font-weight:500;white-space:nowrap;}
+
+    .nav-divider{width:1px;height:22px;background:var(--border2);margin:0 .2rem;}
+
+    /* Auth buttons */
+    .nav-login{color:var(--ink2);text-decoration:none;font-size:.85rem;font-weight:500;padding:.42rem 1rem;border-radius:9px;border:1.5px solid var(--border2);transition:all .2s;white-space:nowrap;}
+    .nav-login:hover{border-color:var(--green);color:var(--green);background:var(--green-bg);}
+    .nav-register{color:white;text-decoration:none;font-size:.85rem;font-weight:600;padding:.42rem 1.15rem;border-radius:9px;background:var(--green);white-space:nowrap;transition:all .2s;}
+    .nav-register:hover{background:var(--green-mid);box-shadow:0 4px 18px rgba(26,107,66,.3);transform:translateY(-1px);}
+
+    /* Logged-in user pill */
+    .user-pill{display:none;align-items:center;gap:.5rem;background:var(--green-bg);border:1px solid var(--green-pale);border-radius:100px;padding:.28rem .85rem .28rem .4rem;cursor:default;}
+    .user-avatar{width:28px;height:28px;border-radius:50%;background:var(--green);color:white;font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;flex-shrink:0;}
+    .user-name-nav{font-size:.82rem;font-weight:600;color:var(--green);}
+    .logout-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.75rem;padding:.15rem .35rem;border-radius:5px;transition:all .2s;line-height:1;}
+    .logout-btn:hover{color:var(--accent);background:var(--accent-pale);}
 
     /* HERO */
-    .hero {
-      min-height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center;
-      padding: 8rem 2rem 5rem;
-      position: relative; overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute; inset: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(82,183,136,0.1) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 40% at 80% 90%, rgba(231,111,81,0.05) 0%, transparent 60%);
-    }
-    .hero-tag {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      background: var(--green-bg); color: var(--green);
-      border: 1px solid rgba(45,106,79,0.2);
-      padding: 0.35rem 0.9rem; border-radius: 100px;
-      font-size: 0.78rem; font-weight: 600;
-      margin-bottom: 2rem;
-      animation: fadeUp 0.6s ease both;
-    }
-    .tag-dot { width: 6px; height: 6px; background: var(--green-light); border-radius: 50%; animation: blink 1.8s infinite; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-    h1 {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(3rem, 7vw, 6.5rem);
-      font-weight: 700; line-height: 1.0;
-      letter-spacing: -0.03em; color: var(--ink);
-      max-width: 800px; margin-bottom: 1.5rem;
-      animation: fadeUp 0.6s 0.1s ease both;
-    }
-    h1 em { font-style: italic; color: var(--green); }
-
-    .hero-sub {
-      font-size: 1.1rem; color: var(--muted);
-      line-height: 1.75; max-width: 520px; font-weight: 300;
-      margin-bottom: 2.5rem;
-      animation: fadeUp 0.6s 0.2s ease both;
-    }
-    .hero-btns {
-      display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;
-      animation: fadeUp 0.6s 0.3s ease both;
-    }
-    .btn-primary {
-      background: var(--green); color: white;
-      padding: 0.875rem 2rem; border-radius: 12px;
-      font-weight: 600; font-size: 0.95rem; text-decoration: none;
-      display: flex; align-items: center; gap: 0.45rem;
-      transition: all 0.22s;
-    }
-    .btn-primary:hover { background: #235c43; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(45,106,79,0.25); }
-    .btn-ghost {
-      background: transparent; color: var(--ink2);
-      border: 1.5px solid var(--border2);
-      padding: 0.875rem 2rem; border-radius: 12px;
-      font-weight: 500; font-size: 0.95rem; text-decoration: none;
-      display: flex; align-items: center; gap: 0.45rem;
-      transition: all 0.22s;
-    }
-    .btn-ghost:hover { border-color: var(--green); color: var(--green); }
-
-    .hero-stats {
-      display: flex; gap: 0;
-      margin-top: 5rem; width: 100%; max-width: 620px;
-      border: 1px solid var(--border); border-radius: 16px;
-      background: var(--white); box-shadow: var(--shadow);
-      animation: fadeUp 0.6s 0.4s ease both;
-    }
-    .hstat {
-      flex: 1; padding: 1.5rem 1.5rem;
-      border-right: 1px solid var(--border); text-align: center;
-    }
-    .hstat:last-child { border-right: none; }
-    .hstat-n {
-      font-family: 'Fraunces', serif;
-      font-size: 1.9rem; font-weight: 700;
-      color: var(--green); letter-spacing: -0.04em; line-height: 1;
-    }
-    .hstat-l { font-size: 0.74rem; color: var(--muted); margin-top: 0.3rem; line-height: 1.4; }
-
-    .divider { height: 1px; background: var(--border); }
+    .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:9rem 2rem 6rem;position:relative;overflow:hidden;}
+    .hero-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 65% 45% at 50% 0%,rgba(69,184,114,.12) 0%,transparent 70%),radial-gradient(ellipse 40% 35% at 80% 90%,rgba(224,123,74,.06) 0%,transparent 60%);}
+    .hero-tag{display:inline-flex;align-items:center;gap:.5rem;background:var(--green-bg);color:var(--green);border:1px solid rgba(26,107,66,.2);border-radius:100px;padding:.38rem 1rem;font-size:.78rem;font-weight:600;margin-bottom:2rem;animation:fadeUp .6s ease both;}
+    .tag-dot{width:7px;height:7px;background:var(--green-light);border-radius:50%;animation:blink 2s infinite;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    h1{font-family:'Syne',sans-serif;font-size:clamp(2.8rem,7vw,6rem);font-weight:800;line-height:1.02;letter-spacing:-.04em;color:var(--ink);max-width:820px;margin-bottom:1.5rem;animation:fadeUp .6s .08s ease both;}
+    h1 em{font-style:italic;color:var(--green);}
+    .hero-sub{font-size:1.05rem;color:var(--muted);line-height:1.75;max-width:500px;margin-bottom:2.5rem;animation:fadeUp .6s .16s ease both;}
+    .hero-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;animation:fadeUp .6s .24s ease both;}
+    .btn-primary{background:var(--green);color:white;padding:.9rem 2rem;border-radius:14px;font-weight:600;font-size:.95rem;text-decoration:none;display:flex;align-items:center;gap:.45rem;transition:all .22s;}
+    .btn-primary:hover{background:var(--green-mid);transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,107,66,.28);}
+    .btn-ghost{background:transparent;color:var(--ink2);border:1.5px solid var(--border2);padding:.9rem 2rem;border-radius:14px;font-weight:500;font-size:.95rem;text-decoration:none;display:flex;align-items:center;gap:.45rem;transition:all .22s;}
+    .btn-ghost:hover{border-color:var(--green);color:var(--green);}
+    .hero-stats{display:flex;margin-top:4.5rem;width:100%;max-width:580px;border:1px solid var(--border);border-radius:18px;background:var(--white);box-shadow:var(--shadow);animation:fadeUp .6s .32s ease both;}
+    .hstat{flex:1;padding:1.4rem;border-right:1px solid var(--border);text-align:center;}
+    .hstat:last-child{border-right:none;}
+    .hstat-n{font-family:'Syne',sans-serif;font-size:1.85rem;font-weight:800;color:var(--green);letter-spacing:-.04em;line-height:1;}
+    .hstat-l{font-size:.73rem;color:var(--muted);margin-top:.3rem;line-height:1.45;}
 
     /* SECTIONS */
-    .section { padding: 6rem 5rem; }
-    .s-inner { max-width: 1160px; margin: 0 auto; }
-    .eyebrow {
-      font-size: 0.71rem; font-weight: 600;
-      letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--green); margin-bottom: 0.9rem;
-    }
-    .s-title {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2rem, 3.5vw, 3rem);
-      font-weight: 700; line-height: 1.1;
-      letter-spacing: -0.03em; color: var(--ink);
-    }
-    .s-sub { color: var(--muted); font-size: 1rem; line-height: 1.75; max-width: 480px; margin-top: 0.85rem; font-weight: 300; }
+    .divider{height:1px;background:var(--border);}
+    .section{padding:6rem 3rem;}
+    .s-inner{max-width:1160px;margin:0 auto;}
+    .eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:.9rem;}
+    .s-title{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;line-height:1.08;letter-spacing:-.04em;color:var(--ink);}
+    .s-sub{color:var(--muted);font-size:1rem;line-height:1.75;max-width:460px;margin-top:.8rem;}
 
-    /* PROBLEM */
-    .prob-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 5rem; margin-top: 4.5rem; align-items: start;
-    }
-    .prob-cards { display: flex; flex-direction: column; margin-top: 3rem; }
-    .prob-card {
-      padding: 1.5rem 0; border-bottom: 1px solid var(--border);
-      display: flex; gap: 1.25rem; align-items: flex-start;
-      transition: padding-left 0.2s;
-    }
-    .prob-card:first-child { border-top: 1px solid var(--border); }
-    .prob-card:hover { padding-left: 0.6rem; }
-    .prob-ico {
-      width: 40px; height: 40px; flex-shrink: 0;
-      background: var(--bg2); border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
-    }
-    .prob-card h3 { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.3rem; }
-    .prob-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.65; font-weight: 300; }
+    .prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;margin-top:4rem;align-items:start;}
+    .prob-cards{display:flex;flex-direction:column;margin-top:2.5rem;}
+    .prob-card{padding:1.3rem 0;border-bottom:1px solid var(--border);display:flex;gap:1.1rem;align-items:flex-start;transition:padding-left .2s;}
+    .prob-card:first-child{border-top:1px solid var(--border);}
+    .prob-card:hover{padding-left:.5rem;}
+    .prob-ico{width:38px;height:38px;flex-shrink:0;background:var(--bg2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+    .prob-card h3{font-weight:600;font-size:.9rem;margin-bottom:.25rem;color:var(--ink);}
+    .prob-card p{font-size:.85rem;color:var(--muted);line-height:1.65;}
+    .data-panel{background:var(--white);border:1px solid var(--border);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);}
+    .dp-row{padding:2rem 2.5rem;border-bottom:1px solid var(--border);transition:background .2s;}
+    .dp-row:last-child{border-bottom:none;}
+    .dp-row:hover{background:var(--green-bg);}
+    .dp-label{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;}
+    .dp-num{font-family:'Syne',sans-serif;font-size:2.8rem;font-weight:800;color:var(--ink);letter-spacing:-.05em;line-height:1;}
+    .dp-num span{color:var(--green);}
+    .dp-sub{font-size:.78rem;color:var(--muted);margin-top:.35rem;}
 
-    .data-panel {
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: 20px; overflow: hidden; box-shadow: var(--shadow);
-    }
-    .dp-row {
-      padding: 2rem 2.5rem; border-bottom: 1px solid var(--border);
-      transition: background 0.2s;
-    }
-    .dp-row:last-child { border-bottom: none; }
-    .dp-row:hover { background: var(--green-bg); }
-    .dp-label { font-size: 0.71rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.45rem; }
-    .dp-num {
-      font-family: 'Fraunces', serif;
-      font-size: 3rem; font-weight: 700;
-      color: var(--ink); letter-spacing: -0.05em; line-height: 1;
-    }
-    .dp-num span { color: var(--green); }
-    .dp-sub { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; font-weight: 300; }
+    .how-bg{background:var(--white);}
+    .steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:3.5rem;border:1px solid var(--border);border-radius:20px;overflow:hidden;}
+    .step{padding:2.5rem 1.8rem;border-right:1px solid var(--border);transition:background .2s;}
+    .step:last-child{border-right:none;}
+    .step:hover{background:var(--green-bg);}
+    .step-n{font-size:.7rem;color:var(--muted2);font-family:'Syne',sans-serif;margin-bottom:1.3rem;}
+    .step-ico{font-size:1.7rem;margin-bottom:.9rem;}
+    .step h3{font-weight:600;font-size:.9rem;margin-bottom:.4rem;color:var(--ink);}
+    .step p{font-size:.83rem;color:var(--muted);line-height:1.65;}
 
-    /* HOW IT WORKS */
-    .how-bg { background: var(--white); }
-    .steps-grid {
-      display: grid; grid-template-columns: repeat(4,1fr);
-      gap: 0; margin-top: 4rem;
-      border: 1px solid var(--border); border-radius: 18px; overflow: hidden;
-    }
-    .step {
-      padding: 2.5rem 2rem; border-right: 1px solid var(--border);
-      transition: background 0.2s;
-    }
-    .step:last-child { border-right: none; }
-    .step:hover { background: var(--green-bg); }
-    .step-n {
-      font-size: 0.72rem; color: var(--muted2);
-      font-family: 'Fraunces', serif; font-style: italic;
-      margin-bottom: 1.5rem;
-    }
-    .step-ico { font-size: 1.8rem; margin-bottom: 1rem; }
-    .step h3 { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.45rem; }
-    .step p { font-size: 0.85rem; color: var(--muted); line-height: 1.65; font-weight: 300; }
+    .feat-bg{background:var(--bg2);}
+    .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-top:3.5rem;}
+    .fc{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:1.8rem;transition:all .25s;}
+    .fc:hover{box-shadow:var(--shadow-hover);transform:translateY(-3px);border-color:var(--border2);}
+    .fc-ico{font-size:1.8rem;margin-bottom:1rem;}
+    .fc h3{font-weight:600;font-size:.95rem;margin-bottom:.4rem;color:var(--ink);}
+    .fc p{font-size:.85rem;color:var(--muted);line-height:1.65;}
+    .fc-chip{display:inline-block;margin-top:1rem;font-size:.66rem;font-weight:700;letter-spacing:.1em;padding:.2rem .65rem;border-radius:100px;background:var(--green-pale);color:var(--green);text-transform:uppercase;}
+    .fc-chip.orange{background:var(--accent-pale);color:var(--accent);}
+    .impact-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-top:4.5rem;background:var(--white);box-shadow:var(--shadow);}
+    .ir{padding:2.2rem 1.8rem;border-right:1px solid var(--border);transition:background .2s;}
+    .ir:last-child{border-right:none;}
+    .ir:hover{background:var(--green-bg);}
+    .ir-n{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:var(--green);letter-spacing:-.04em;line-height:1;margin-bottom:.35rem;}
+    .ir-l{font-size:.8rem;color:var(--muted);line-height:1.5;}
 
-    /* FEATURES */
-    .feat-bg { background: var(--bg2); }
-    .feat-grid {
-      display: grid; grid-template-columns: repeat(3,1fr);
-      gap: 1.25rem; margin-top: 4rem;
-    }
-    .fc {
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: 18px; padding: 2rem;
-      transition: all 0.25s;
-    }
-    .fc:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); border-color: var(--border2); }
-    .fc-ico { font-size: 2rem; margin-bottom: 1.2rem; }
-    .fc h3 { font-weight: 600; font-size: 1rem; margin-bottom: 0.45rem; }
-    .fc p { font-size: 0.875rem; color: var(--muted); line-height: 1.65; font-weight: 300; }
-    .fc-chip {
-      display: inline-block; margin-top: 1.1rem;
-      font-size: 0.67rem; font-weight: 600; letter-spacing: 0.1em;
-      padding: 0.22rem 0.7rem; border-radius: 100px;
-      background: var(--green-pale); color: var(--green);
-      text-transform: uppercase;
-    }
-    .fc-chip.orange { background: #fde8e2; color: var(--accent); }
+    .cta-section{background:var(--green);}
+    .cta-inner{max-width:1160px;margin:0 auto;padding:5rem 3rem;display:flex;align-items:center;justify-content:space-between;gap:3rem;}
+    .cta-left h2{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.04em;color:white;line-height:1.1;}
+    .cta-left p{color:rgba(255,255,255,.65);margin-top:.8rem;font-size:1rem;line-height:1.65;max-width:400px;}
+    .cta-right{display:flex;flex-direction:column;gap:.8rem;flex-shrink:0;}
+    .btn-white{background:white;color:var(--green);padding:.9rem 2rem;border-radius:14px;font-weight:700;font-size:.92rem;text-decoration:none;display:flex;align-items:center;gap:.5rem;transition:all .2s;white-space:nowrap;}
+    .btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.15);}
+    .btn-outline-w{border:1.5px solid rgba(255,255,255,.35);color:rgba(255,255,255,.82);padding:.9rem 2rem;border-radius:14px;font-weight:500;font-size:.92rem;text-decoration:none;display:flex;align-items:center;gap:.5rem;transition:all .2s;white-space:nowrap;}
+    .btn-outline-w:hover{border-color:rgba(255,255,255,.7);color:white;}
 
-    /* IMPACT BAR */
-    .impact-row {
-      display: grid; grid-template-columns: repeat(4,1fr); gap: 0;
-      border: 1px solid var(--border); border-radius: 18px; overflow: hidden;
-      margin-top: 5rem; background: var(--white); box-shadow: var(--shadow);
-    }
-    .ir {
-      padding: 2.5rem 2rem; border-right: 1px solid var(--border);
-      transition: background 0.2s;
-    }
-    .ir:last-child { border-right: none; }
-    .ir:hover { background: var(--green-bg); }
-    .ir-n {
-      font-family: 'Fraunces', serif;
-      font-size: 2.4rem; font-weight: 700;
-      color: var(--green); letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.4rem;
-    }
-    .ir-l { font-size: 0.82rem; color: var(--muted); line-height: 1.5; font-weight: 300; }
+    footer{background:var(--white);border-top:1px solid var(--border);padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;}
+    .footer-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--green);}
+    .footer-links{display:flex;gap:1.8rem;}
+    .footer-links a{color:var(--muted);text-decoration:none;font-size:.85rem;transition:color .2s;}
+    .footer-links a:hover{color:var(--ink);}
+    .footer-copy{font-size:.78rem;color:var(--muted2);}
 
-    /* CTA */
-    .cta-section { background: var(--green); }
-    .cta-inner {
-      max-width: 1160px; margin: 0 auto;
-      padding: 5.5rem 5rem;
-      display: flex; align-items: center; justify-content: space-between; gap: 3rem;
-    }
-    .cta-left h2 {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2rem, 3.5vw, 3rem);
-      font-weight: 700; letter-spacing: -0.03em;
-      color: white; line-height: 1.1;
-    }
-    .cta-left p { color: rgba(255,255,255,0.65); margin-top: 0.8rem; font-size: 1rem; font-weight: 300; line-height: 1.65; max-width: 420px; }
-    .cta-right { display: flex; flex-direction: column; gap: 0.9rem; flex-shrink: 0; }
-    .btn-white {
-      background: white; color: var(--green);
-      padding: 0.9rem 2rem; border-radius: 12px;
-      font-weight: 700; font-size: 0.95rem; text-decoration: none;
-      display: flex; align-items: center; gap: 0.5rem;
-      transition: all 0.2s; white-space: nowrap;
-    }
-    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.15); }
-    .btn-outline-w {
-      border: 1.5px solid rgba(255,255,255,0.35); color: rgba(255,255,255,0.8);
-      padding: 0.9rem 2rem; border-radius: 12px;
-      font-weight: 500; font-size: 0.95rem; text-decoration: none;
-      display: flex; align-items: center; gap: 0.5rem;
-      transition: all 0.2s; white-space: nowrap;
-    }
-    .btn-outline-w:hover { border-color: rgba(255,255,255,0.7); color: white; }
+    @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease;}
+    .reveal.in{opacity:1;transform:none;}
+    .d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}
 
-    /* FOOTER */
-    footer {
-      background: var(--white); border-top: 1px solid var(--border);
-      padding: 2rem 3rem;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .footer-logo { font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.1rem; color: var(--green); }
-    .footer-links { display: flex; gap: 2rem; }
-    .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--ink); }
-    .footer-copy { font-size: 0.78rem; color: var(--muted2); }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.65s ease, transform 0.65s ease; }
-    .reveal.in { opacity: 1; transform: none; }
-    .d1 { transition-delay: 0.08s; }
-    .d2 { transition-delay: 0.16s; }
-    .d3 { transition-delay: 0.24s; }
-
-    @media (max-width: 900px) {
-      nav { padding: 0 1.5rem; }
-      .nav-links { display: none; }
-      .section { padding: 4.5rem 1.5rem; }
-      .prob-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-      .steps-grid { grid-template-columns: 1fr 1fr; }
-      .step:nth-child(even) { border-right: none; }
-      .step:nth-child(3), .step:nth-child(4) { border-top: 1px solid var(--border); }
-      .feat-grid { grid-template-columns: 1fr; }
-      .impact-row { grid-template-columns: 1fr 1fr; }
-      .ir:nth-child(2) { border-right: none; }
-      .ir:nth-child(3), .ir:nth-child(4) { border-top: 1px solid var(--border); }
-      .ir:nth-child(4) { border-right: none; }
-      .cta-inner { flex-direction: column; padding: 3.5rem 1.5rem; }
-      footer { padding: 2rem 1.5rem; flex-direction: column; gap: 1.5rem; text-align: center; }
-      .hero-stats { flex-direction: column; }
-      .hstat { border-right: none; border-bottom: 1px solid var(--border); }
-      .hstat:last-child { border-bottom: none; }
+    @media(max-width:960px){
+      nav{padding:0 1.5rem;}
+      .nav-links{display:none;}
+      .nav-divider{display:none;}
+      .theme-label{display:none;}
+      .section{padding:4rem 1.5rem;}
+      .prob-grid{grid-template-columns:1fr;gap:2.5rem;}
+      .steps-grid{grid-template-columns:1fr 1fr;}
+      .step:nth-child(even){border-right:none;}
+      .step:nth-child(3),.step:nth-child(4){border-top:1px solid var(--border);}
+      .feat-grid{grid-template-columns:1fr;}
+      .impact-row{grid-template-columns:1fr 1fr;}
+      .ir:nth-child(2){border-right:none;}
+      .ir:nth-child(3),.ir:nth-child(4){border-top:1px solid var(--border);}
+      .ir:nth-child(4){border-right:none;}
+      .cta-inner{flex-direction:column;padding:3.5rem 1.5rem;}
+      footer{padding:2rem 1.5rem;flex-direction:column;gap:1.5rem;text-align:center;}
+      .hero-stats{flex-direction:column;}
+      .hstat{border-right:none;border-bottom:1px solid var(--border);}
+      .hstat:last-child{border-bottom:none;}
+      .nav-login{display:none;}
     }
   </style>
 </head>
 <body>
 
 <nav>
-  <div class="logo">
+  <a href="index.html" class="logo">
     <div class="logo-mark">♻</div>
     EcoTrace
-  </div>
+  </a>
+
   <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html" class="active">Home</a></li>
     <li><a href="scan.html">Scan</a></li>
     <li><a href="centers.html">Centers</a></li>
     <li><a href="dashboard.html">Dashboard</a></li>
   </ul>
-  <a href="scan.html" class="nav-cta">Start Scanning →</a>
+
+  <div class="nav-right">
+    <!-- 🌙 Dark / Light Toggle -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode" title="Toggle dark mode">
+      <div class="theme-knob" id="themeKnob">☀</div>
+    </button>
+
+    <div class="nav-divider"></div>
+
+    <!-- Guest buttons (hidden when logged in) -->
+    <div id="guestButtons" style="display:flex;align-items:center;gap:.6rem;">
+      <a href="login.html" class="nav-login">Log in</a>
+      <a href="register.html" class="nav-register">Register →</a>
+    </div>
+
+    <!-- Logged-in pill (hidden when guest) -->
+    <div class="user-pill" id="userPill">
+      <div class="user-avatar" id="userAvatar">U</div>
+      <span class="user-name-nav" id="userNameNav">User</span>
+      <button class="logout-btn" id="logoutBtn" title="Log out">✕</button>
+    </div>
+  </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-tag">
-    <span class="tag-dot"></span>
-    AI-Powered E-Waste Detection
-  </div>
+  <div class="hero-glow"></div>
+  <div class="hero-tag"><span class="tag-dot"></span>AI-Powered E-Waste Detection</div>
   <h1>Recycle Smarter,<br><em>Save the Planet</em></h1>
   <p class="hero-sub">Upload a photo of your old electronics. Our AI identifies the device, suggests safe disposal methods, and connects you to the nearest recycling centers.</p>
   <div class="hero-btns">
@@ -388,18 +210,9 @@
     <a href="centers.html" class="btn-ghost">🗺 Find Centers</a>
   </div>
   <div class="hero-stats">
-    <div class="hstat">
-      <div class="hstat-n">53M+</div>
-      <div class="hstat-l">Tons of e-waste<br>generated yearly</div>
-    </div>
-    <div class="hstat">
-      <div class="hstat-n">80%</div>
-      <div class="hstat-l">Goes to<br>landfill</div>
-    </div>
-    <div class="hstat">
-      <div class="hstat-n">$62B</div>
-      <div class="hstat-l">Recoverable<br>materials wasted</div>
-    </div>
+    <div class="hstat"><div class="hstat-n">53M+</div><div class="hstat-l">Tons of e-waste<br>generated yearly</div></div>
+    <div class="hstat"><div class="hstat-n">80%</div><div class="hstat-l">Goes to<br>landfill</div></div>
+    <div class="hstat"><div class="hstat-n">$62B</div><div class="hstat-l">Recoverable<br>materials wasted</div></div>
   </div>
 </section>
 
@@ -414,45 +227,15 @@
         <h2 class="s-title reveal d1">E-Waste is the World's Fastest-Growing Waste Stream</h2>
         <p class="s-sub reveal d2">Most people don't know how to dispose of electronics safely — leading to toxic chemicals polluting soil and water globally.</p>
         <div class="prob-cards">
-          <div class="prob-card reveal">
-            <div class="prob-ico">☠️</div>
-            <div>
-              <h3>Toxic Chemical Leaching</h3>
-              <p>Lead, mercury, and cadmium seep into groundwater from improperly discarded electronics, affecting millions.</p>
-            </div>
-          </div>
-          <div class="prob-card reveal d1">
-            <div class="prob-ico">🏭</div>
-            <div>
-              <h3>Dangerous Informal Recycling</h3>
-              <p>Workers burn e-waste to extract metals with no safety protection, inhaling toxic fumes daily.</p>
-            </div>
-          </div>
-          <div class="prob-card reveal d2">
-            <div class="prob-ico">📱</div>
-            <div>
-              <h3>Short Device Lifespans</h3>
-              <p>Average phones are replaced every 2–3 years. The upgrade cycle accelerates, the waste mountain grows.</p>
-            </div>
-          </div>
+          <div class="prob-card reveal"><div class="prob-ico">☠️</div><div><h3>Toxic Chemical Leaching</h3><p>Lead, mercury, and cadmium seep into groundwater from improperly discarded electronics, affecting millions.</p></div></div>
+          <div class="prob-card reveal d1"><div class="prob-ico">🏭</div><div><h3>Dangerous Informal Recycling</h3><p>Workers burn e-waste to extract metals with no safety protection, inhaling toxic fumes daily.</p></div></div>
+          <div class="prob-card reveal d2"><div class="prob-ico">📱</div><div><h3>Short Device Lifespans</h3><p>Average phones are replaced every 2–3 years. The upgrade cycle accelerates, the waste mountain grows.</p></div></div>
         </div>
       </div>
       <div class="data-panel reveal">
-        <div class="dp-row">
-          <div class="dp-label">E-waste generated in 2023</div>
-          <div class="dp-num"><span>57.4M</span> tonnes</div>
-          <div class="dp-sub">Source: UN Global E-waste Monitor 2024</div>
-        </div>
-        <div class="dp-row">
-          <div class="dp-label">Formally recycled worldwide</div>
-          <div class="dp-num"><span>&lt;20</span>%</div>
-          <div class="dp-sub">Over 80% is unaccounted for</div>
-        </div>
-        <div class="dp-row">
-          <div class="dp-label">Growth vs other waste</div>
-          <div class="dp-num"><span>2×</span> faster</div>
-          <div class="dp-sub">Fastest-growing waste category on Earth</div>
-        </div>
+        <div class="dp-row"><div class="dp-label">E-waste generated in 2023</div><div class="dp-num"><span>57.4M</span> tonnes</div><div class="dp-sub">Source: UN Global E-waste Monitor 2024</div></div>
+        <div class="dp-row"><div class="dp-label">Formally recycled worldwide</div><div class="dp-num"><span>&lt;20</span>%</div><div class="dp-sub">Over 80% is unaccounted for</div></div>
+        <div class="dp-row"><div class="dp-label">Growth vs other waste</div><div class="dp-num"><span>2×</span> faster</div><div class="dp-sub">Fastest-growing waste category on Earth</div></div>
       </div>
     </div>
   </div>
@@ -466,30 +249,10 @@
     <p class="eyebrow reveal" style="text-align:center;">How It Works</p>
     <h2 class="s-title reveal d1" style="text-align:center;">Simple. Fast. Impactful.</h2>
     <div class="steps-grid">
-      <div class="step reveal">
-        <div class="step-n">Step 01</div>
-        <div class="step-ico">📸</div>
-        <h3>Upload Photo</h3>
-        <p>Take a photo or upload an image of your old electronic device.</p>
-      </div>
-      <div class="step reveal d1">
-        <div class="step-n">Step 02</div>
-        <div class="step-ico">🤖</div>
-        <h3>AI Identifies</h3>
-        <p>Our AI model detects the device type — phone, laptop, charger, battery, and more.</p>
-      </div>
-      <div class="step reveal d2">
-        <div class="step-n">Step 03</div>
-        <div class="step-ico">♻️</div>
-        <h3>Get Instructions</h3>
-        <p>Receive safe disposal steps and environmental impact data for your device.</p>
-      </div>
-      <div class="step reveal d3">
-        <div class="step-n">Step 04</div>
-        <div class="step-ico">📍</div>
-        <h3>Find Centers</h3>
-        <p>Discover certified recycling centers near you on an interactive map.</p>
-      </div>
+      <div class="step reveal"><div class="step-n">Step 01</div><div class="step-ico">📸</div><h3>Upload Photo</h3><p>Take a photo or upload an image of your old electronic device.</p></div>
+      <div class="step reveal d1"><div class="step-n">Step 02</div><div class="step-ico">🤖</div><h3>AI Identifies</h3><p>Our AI model detects the device type — phone, laptop, charger, battery, and more.</p></div>
+      <div class="step reveal d2"><div class="step-n">Step 03</div><div class="step-ico">♻️</div><h3>Get Instructions</h3><p>Receive safe disposal steps and environmental impact data for your device.</p></div>
+      <div class="step reveal d3"><div class="step-n">Step 04</div><div class="step-ico">📍</div><h3>Find Centers</h3><p>Discover certified recycling centers near you on an interactive map.</p></div>
     </div>
   </div>
 </section>
@@ -500,62 +263,20 @@
 <section class="section feat-bg">
   <div class="s-inner">
     <p class="eyebrow reveal">Features</p>
-    <h2 class="s-title reveal d1" style="max-width:440px;">Everything You Need to Recycle Right</h2>
+    <h2 class="s-title reveal d1" style="max-width:400px;">Everything You Need to Recycle Right</h2>
     <div class="feat-grid">
-      <div class="fc reveal">
-        <div class="fc-ico">🧠</div>
-        <h3>AI E-Waste Scanner</h3>
-        <p>Computer vision identifies 20+ types of electronic waste from a single photo with high accuracy.</p>
-        <span class="fc-chip">AI Powered</span>
-      </div>
-      <div class="fc reveal d1">
-        <div class="fc-ico">🗺</div>
-        <h3>Live Recycling Map</h3>
-        <p>Geolocation map of certified centers with hours, contact info, and accepted items.</p>
-        <span class="fc-chip">Real-time</span>
-      </div>
-      <div class="fc reveal d2">
-        <div class="fc-ico">🎯</div>
-        <h3>Disposal Guidance</h3>
-        <p>Step-by-step instructions tailored per device, including data wiping reminders.</p>
-        <span class="fc-chip">Personalized</span>
-      </div>
-      <div class="fc reveal">
-        <div class="fc-ico">🏆</div>
-        <h3>Eco Points & Rewards</h3>
-        <p>Earn points for recycling. Redeem for discounts and climb the community leaderboard.</p>
-        <span class="fc-chip orange">Gamified</span>
-      </div>
-      <div class="fc reveal d1">
-        <div class="fc-ico">🚚</div>
-        <h3>Doorstep Pickup</h3>
-        <p>Request a free e-waste pickup from home. Schedule, track, and confirm in one place.</p>
-        <span class="fc-chip orange">Convenient</span>
-      </div>
-      <div class="fc reveal d2">
-        <div class="fc-ico">📊</div>
-        <h3>Impact Dashboard</h3>
-        <p>Track CO₂ saved, toxic materials diverted, and total devices recycled over time.</p>
-        <span class="fc-chip">Analytics</span>
-      </div>
+      <div class="fc reveal"><div class="fc-ico">🧠</div><h3>AI E-Waste Scanner</h3><p>Computer vision identifies 20+ types of electronic waste from a single photo with high accuracy.</p><span class="fc-chip">AI Powered</span></div>
+      <div class="fc reveal d1"><div class="fc-ico">🗺</div><h3>Live Recycling Map</h3><p>Geolocation map of certified centers with hours, contact info, and accepted items.</p><span class="fc-chip">Real-time</span></div>
+      <div class="fc reveal d2"><div class="fc-ico">🎯</div><h3>Disposal Guidance</h3><p>Step-by-step instructions tailored per device, including data wiping reminders.</p><span class="fc-chip">Personalized</span></div>
+      <div class="fc reveal"><div class="fc-ico">🏆</div><h3>Eco Points & Rewards</h3><p>Earn points for recycling. Redeem for discounts and climb the community leaderboard.</p><span class="fc-chip orange">Gamified</span></div>
+      <div class="fc reveal d1"><div class="fc-ico">🚚</div><h3>Doorstep Pickup</h3><p>Request a free e-waste pickup from home. Schedule, track, and confirm in one place.</p><span class="fc-chip orange">Convenient</span></div>
+      <div class="fc reveal d2"><div class="fc-ico">📊</div><h3>Impact Dashboard</h3><p>Track CO₂ saved, toxic materials diverted, and total devices recycled over time.</p><span class="fc-chip">Analytics</span></div>
     </div>
     <div class="impact-row">
-      <div class="ir reveal">
-        <div class="ir-n">70 kg</div>
-        <div class="ir-l">CO₂ saved per smartphone recycled</div>
-      </div>
-      <div class="ir reveal d1">
-        <div class="ir-n">0.5 g</div>
-        <div class="ir-l">Gold recovered per laptop</div>
-      </div>
-      <div class="ir reveal d2">
-        <div class="ir-n">85 L</div>
-        <div class="ir-l">Water saved per laptop recycled</div>
-      </div>
-      <div class="ir reveal d3">
-        <div class="ir-n">320 kWh</div>
-        <div class="ir-l">Energy recovered per laptop</div>
-      </div>
+      <div class="ir reveal"><div class="ir-n">70 kg</div><div class="ir-l">CO₂ saved per smartphone recycled</div></div>
+      <div class="ir reveal d1"><div class="ir-n">0.5 g</div><div class="ir-l">Gold recovered per laptop</div></div>
+      <div class="ir reveal d2"><div class="ir-n">85 L</div><div class="ir-l">Water saved per laptop recycled</div></div>
+      <div class="ir reveal d3"><div class="ir-n">320 kWh</div><div class="ir-l">Energy recovered per laptop</div></div>
     </div>
   </div>
 </section>
@@ -569,7 +290,7 @@
     </div>
     <div class="cta-right reveal d1">
       <a href="scan.html" class="btn-white">📸 Scan My E-Waste</a>
-      <a href="centers.html" class="btn-outline-w">🗺 Find Centers Near Me</a>
+      <a href="register.html" class="btn-outline-w">🌱 Create Free Account</a>
     </div>
   </div>
 </section>
@@ -581,18 +302,59 @@
     <a href="scan.html">Scan</a>
     <a href="centers.html">Centers</a>
     <a href="dashboard.html">Dashboard</a>
+    <a href="login.html">Login</a>
+    <a href="register.html">Register</a>
   </div>
   <div class="footer-copy">© 2025 EcoTrace. Built for a greener world.</div>
 </footer>
 
 <script>
-  const els = document.querySelectorAll('.reveal');
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-    });
-  }, { threshold: 0.1 });
-  els.forEach(el => io.observe(el));
+/* ── THEME ── */
+(function(){
+  const t = localStorage.getItem('ecotrace_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', t);
+  const k = document.getElementById('themeKnob');
+  if(k) k.textContent = t === 'dark' ? '☾' : '☀';
+})();
+
+document.getElementById('themeToggle').addEventListener('click', function(){
+  const cur  = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('ecotrace_theme', next);
+  document.getElementById('themeKnob').textContent = next === 'dark' ? '☾' : '☀';
+});
+
+/* ── AUTH STATE ── */
+function syncNav() {
+  const raw  = localStorage.getItem('ecotrace_user');
+  const user = raw ? JSON.parse(raw) : null;
+  const guest = document.getElementById('guestButtons');
+  const pill  = document.getElementById('userPill');
+
+  if (user && user.email) {
+    guest.style.display = 'none';
+    pill.style.display  = 'flex';
+    const name = user.firstName || user.name || user.email.split('@')[0];
+    document.getElementById('userNameNav').textContent = name;
+    document.getElementById('userAvatar').textContent  = name.charAt(0).toUpperCase();
+  } else {
+    guest.style.display = 'flex';
+    pill.style.display  = 'none';
+  }
+}
+syncNav();
+
+document.getElementById('logoutBtn').addEventListener('click', function(){
+  localStorage.removeItem('ecotrace_user');
+  syncNav();
+});
+
+/* ── REVEAL ON SCROLL ── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 </body>
 </html>

@@ -12,7 +12,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ── Routes ───────────────────────────────────────────────────────
 app.use('/api/scan',    require('./routes/scan'));
 app.use('/api/centers', require('./routes/centers'));
-app.use('/api/user',    require('./routes/user'));
+app.use('/api/user',    require('./routes/user'));  // ✅ only once
 
 // ── Health check ─────────────────────────────────────────────────
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));

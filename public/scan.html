@@ -41,10 +41,8 @@
     .theme-knob{position:absolute;top:4px;left:4px;width:18px;height:18px;border-radius:50%;background:white;transition:transform .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;justify-content:center;font-size:.6rem;}
     [data-theme="dark"] .theme-knob{transform:translateX(20px);}
 
-    /* PAGE */
     .page-wrap{max-width:1150px;margin:0 auto;padding:2.5rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;}
 
-    /* LEFT */
     .upload-section h1{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;letter-spacing:-.04em;margin-bottom:.4rem;color:var(--ink);}
     .upload-section .sub{color:var(--muted);font-size:.95rem;line-height:1.7;margin-bottom:1.8rem;}
 
@@ -90,7 +88,6 @@
     .tip{display:flex;gap:.6rem;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--muted);line-height:1.5;}
     .tip:last-child{border:none;padding-bottom:0;}
 
-    /* RIGHT RESULT */
     .result-section{position:sticky;top:80px;max-height:calc(100vh - 100px);overflow-y:auto;border-radius:20px;}
     .result-section::-webkit-scrollbar{width:4px;}
     .result-section::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
@@ -163,20 +160,32 @@
     .best-title{font-weight:600;font-size:.88rem;color:var(--green);margin-bottom:.2rem;}
     .best-desc{font-size:.78rem;color:var(--muted);line-height:1.5;}
 
-    .sale-decision{margin:0 1.5rem 1.4rem;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:1.2rem 1.3rem;}
-    .sale-decision-label{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem;}
-    .sale-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
-    .sale-btn{padding:.9rem 1rem;border-radius:12px;font-family:'Inter',sans-serif;font-size:.88rem;font-weight:600;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;transition:all .22s;}
-    .sale-btn-yes{background:var(--green-pale);border:1.5px solid rgba(26,107,66,.3);color:var(--green);}
-    .sale-btn-yes:hover{border-color:var(--green);box-shadow:0 4px 16px rgba(26,107,66,.15);transform:translateY(-1px);}
-    .sale-btn-yes.chosen{background:#b7e4c7;border-color:var(--green);}
-    .sale-btn-no{background:var(--accent-pale);border:1.5px solid rgba(224,123,74,.25);color:var(--accent);}
-    .sale-btn-no:hover{border-color:var(--accent);transform:translateY(-1px);}
-    .sale-btn-no.chosen{background:#fbd0c4;border-color:var(--accent);}
-    .sale-confirm{margin-top:.8rem;padding:.7rem 1rem;border-radius:12px;font-size:.82rem;font-weight:500;display:none;align-items:center;gap:.5rem;animation:confirmIn .4s cubic-bezier(.34,1.56,.64,1);}
-    @keyframes confirmIn{from{opacity:0;transform:scale(.96) translateY(4px)}to{opacity:1;transform:scale(1) translateY(0)}}
-    .sale-confirm.yes-confirm{background:var(--green-bg);border:1px solid rgba(26,107,66,.2);color:var(--green);}
-    .sale-confirm.no-confirm{background:var(--accent-pale);border:1px solid rgba(224,123,74,.2);color:var(--accent);}
+    /* ── Device Decision Section ── */
+    .device-decision{margin:0 1.5rem 1.4rem;border-radius:16px;overflow:hidden;border:1px solid var(--border);}
+    .device-decision-header{padding:.9rem 1.2rem;background:var(--bg2);border-bottom:1px solid var(--border);}
+    .device-decision-label{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+    .device-decision-sub{font-size:.78rem;color:var(--muted);margin-top:.2rem;}
+    .decision-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+
+    .decision-btn{padding:1.1rem 1rem;font-family:'Inter',sans-serif;font-size:.9rem;font-weight:700;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;transition:all .22s;position:relative;}
+    .decision-btn .btn-icon{font-size:1.6rem;line-height:1;}
+    .decision-btn .btn-label{font-size:.82rem;font-weight:700;}
+    .decision-btn .btn-hint{font-size:.7rem;font-weight:400;opacity:.75;}
+
+    .btn-keep{background:var(--bg2);color:var(--ink2);border-right:1px solid var(--border);}
+    .btn-keep:hover{background:var(--bg3);color:var(--ink);}
+    .btn-keep.chosen{background:var(--green-pale);color:var(--green);}
+
+    .btn-sell{background:linear-gradient(135deg,#1a6b42 0%,#228a56 100%);color:white;}
+    .btn-sell:hover{background:linear-gradient(135deg,#228a56 0%,#2da866 100%);box-shadow:0 4px 20px rgba(26,107,66,.3);}
+    .btn-sell.chosen{background:linear-gradient(135deg,#228a56 0%,#2da866 100%);}
+
+    .sell-badge{position:absolute;top:.5rem;right:.5rem;background:rgba(255,255,255,.25);border-radius:100px;padding:.15rem .5rem;font-size:.62rem;font-weight:700;letter-spacing:.05em;}
+
+    .decision-confirm{padding:.8rem 1.2rem;font-size:.82rem;font-weight:500;display:none;align-items:center;gap:.5rem;border-top:1px solid var(--border);animation:confirmIn .4s cubic-bezier(.34,1.56,.64,1);}
+    @keyframes confirmIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+    .confirm-keep{background:var(--green-bg);color:var(--green);}
+    .confirm-sell{background:var(--green-pale);color:var(--green);}
 
     .result-actions{display:none;flex-direction:column;gap:.6rem;padding:0 1.5rem 1.5rem;}
     .act-btn{width:100%;padding:.8rem;border-radius:12px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:.4rem;text-decoration:none;transition:all .2s;}
@@ -350,14 +359,29 @@
           </div>
         </div>
 
-        <div class="sale-decision">
-          <div class="sale-decision-label">🏷️ What do you want to do with this device?</div>
-          <div class="sale-btn-row">
-            <button class="sale-btn sale-btn-yes" id="btnKeepSale" onclick="handleKeepForSale()">🛒 Keep for Sale</button>
-            <button class="sale-btn sale-btn-no" id="btnNotSale" onclick="handleNotForSale()">♻️ Not for Sale</button>
+        <!-- Device Decision: Keep or Sell -->
+        <div class="device-decision" id="deviceDecision">
+          <div class="device-decision-header">
+            <div class="device-decision-label">What would you like to do?</div>
+            <div class="device-decision-sub">Choose how to handle this device</div>
           </div>
-          <div class="sale-confirm yes-confirm" id="saleConfirmYes">✅ Saved to Dashboard as <strong>For Sale</strong></div>
-          <div class="sale-confirm no-confirm" id="saleConfirmNo">♻️ Not saved — proceed to recycle</div>
+          <div class="decision-btn-row">
+            <!-- KEEP: save locally, NOT added to dashboard -->
+            <button class="decision-btn btn-keep" id="btnKeep" onclick="handleKeep()">
+              <span class="btn-icon">🏠</span>
+              <span class="btn-label">Keep</span>
+              <span class="btn-hint">Save locally only</span>
+            </button>
+            <!-- SELL: save to dashboard -->
+            <button class="decision-btn btn-sell" id="btnSell" onclick="handleSell()">
+              <span class="sell-badge">FREE</span>
+              <span class="btn-icon">💰</span>
+              <span class="btn-label">Sell</span>
+              <span class="btn-hint">List on dashboard</span>
+            </button>
+          </div>
+          <div class="decision-confirm confirm-keep" id="confirmKeep"></div>
+          <div class="decision-confirm confirm-sell" id="confirmSell"></div>
         </div>
 
         <div class="result-actions" id="resultActions" style="display:flex;margin-top:.4rem;">
@@ -372,11 +396,10 @@
 <div id="toast">—</div>
 
 <script>
-// Theme init
+// ── Theme ────────────────────────────────────────────────────────
 (function(){const t=localStorage.getItem('ecotrace_theme')||'light';document.documentElement.setAttribute('data-theme',t);const k=document.getElementById('themeKnob');if(k)k.textContent=t==='dark'?'☾':'☀';})();
 document.getElementById('themeToggle').addEventListener('click',function(){const cur=document.documentElement.getAttribute('data-theme');const next=cur==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('ecotrace_theme',next);const k=document.getElementById('themeKnob');if(k)k.textContent=next==='dark'?'☾':'☀';});
 
-// ── The rest of the scan JS is identical to original ──
 const GEMINI_KEY = window.__GEMINI_KEY__ || 'AIzaSyCpYJUTNgRY1booChYAc7rozKtDcPzVXEo';
 const LS_KEY='ecotrace_gemini_key';
 let TM_URL=localStorage.getItem('ecotrace_tm_url')||'',tmModel=null;
@@ -399,7 +422,7 @@ function updateReady(){analyzeBtn.disabled=!(selectedFile||selectedDevice);}
 document.getElementById('camBtn').addEventListener('click',async()=>{if(camStream)return;try{camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});const vid=document.getElementById('camVideo');vid.srcObject=camStream;vid.style.display='block';document.getElementById('capBtn').style.display='flex';}catch(e){toast('⚠️ Camera access denied.');}});
 document.getElementById('capBtn').addEventListener('click',()=>{const vid=document.getElementById('camVideo'),can=document.getElementById('camCanvas');can.width=vid.videoWidth||640;can.height=vid.videoHeight||480;can.getContext('2d').drawImage(vid,0,0);can.toBlob(blob=>{loadFile(new File([blob],`cam_${Date.now()}.jpg`,{type:'image/jpeg'}));camStream.getTracks().forEach(t=>t.stop());camStream=null;vid.style.display='none';document.getElementById('capBtn').style.display='none';},'image/jpeg',.92);});
 
-analyzeBtn.addEventListener('click',async()=>{if(analyzeBtn.disabled)return;setPhase('loading');resetSaleDecision();try{let result=null,source='db';if(selectedFile&&GEMINI_KEY){updateLoadStep('🧠 Asking Gemini AI…',40);try{const gr=await callGeminiVision(selectedFile);if(gr){result=gr;source='gemini';}}catch(e){console.warn('Gemini:',e.message);}}if(!result&&selectedDevice){updateLoadStep('📋 Using manual selection…',55);result=buildResult(selectedDevice);source='manual';}if(!result&&selectedFile){updateLoadStep('📋 Guessing from filename…',55);result=buildResult(smartGuess(selectedFile.name));source='filename';}if(!result){result=buildResult('Other');source='db';}await runProgress(['🔍 Scanning materials…','⚠️ Checking hazardous components…','🌍 Calculating impact…','💰 Estimating value…'],60);result._source=source;renderResult(result);renderPrice(result.device_type,'good');setPhase('result');lastResult=result;saveToMongoDB(result);const msgs={gemini:`✅ ${result.rawDeviceName||result.device_type}`,manual:`👆 Manual: ${result.device_type}`,filename:`✅ ${result.device_type}`,db:`✅ ${result.device_type}`};toast(msgs[source]||'✅ Done!');}catch(err){console.error(err);toast('❌ '+err.message);setPhase('placeholder');}});
+analyzeBtn.addEventListener('click',async()=>{if(analyzeBtn.disabled)return;setPhase('loading');resetDecision();try{let result=null,source='db';if(selectedFile&&GEMINI_KEY){updateLoadStep('🧠 Asking Gemini AI…',40);try{const gr=await callGeminiVision(selectedFile);if(gr){result=gr;source='gemini';}}catch(e){console.warn('Gemini:',e.message);}}if(!result&&selectedDevice){updateLoadStep('📋 Using manual selection…',55);result=buildResult(selectedDevice);source='manual';}if(!result&&selectedFile){updateLoadStep('📋 Guessing from filename…',55);result=buildResult(smartGuess(selectedFile.name));source='filename';}if(!result){result=buildResult('Other');source='db';}await runProgress(['🔍 Scanning materials…','⚠️ Checking hazardous components…','🌍 Calculating impact…','💰 Estimating value…'],60);result._source=source;renderResult(result);renderPrice(result.device_type,'good');setPhase('result');lastResult=result;saveToMongoDB(result);const msgs={gemini:`✅ ${result.rawDeviceName||result.device_type}`,manual:`👆 Manual: ${result.device_type}`,filename:`✅ ${result.device_type}`,db:`✅ ${result.device_type}`};toast(msgs[source]||'✅ Done!');}catch(err){console.error(err);toast('❌ '+err.message);setPhase('placeholder');}});
 
 async function callGeminiVision(file){const base64=await fileToBase64(file),mimeType=file.type||'image/jpeg';const prompt=`You are an e-waste expert. Identify the electronic device in this image.\nRespond ONLY with valid JSON:\n{"device_name":"exact name","category":"Smartphone|Laptop|Tablet|Charger|Battery|Headphones|Printer|Monitor|Keyboard|TV|Router|Other","confidence":"92%","hazards":["m1","m2"],"disposal_steps":["s1","s2","s3"],"co2":"X kg CO₂","gold":"X g gold","water":"X L water","energy":"X kWh"}`;const body={contents:[{parts:[{text:prompt},{inline_data:{mime_type:mimeType,data:base64}}]}],generationConfig:{temperature:.1,maxOutputTokens:512}};const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){const err=await res.json();throw new Error(err.error?.message||`HTTP ${res.status}`);}const data=await res.json(),text=data.candidates?.[0]?.content?.parts?.[0]?.text||'';const clean=text.replace(/```json|```/g,'').trim(),parsed=JSON.parse(clean);const category=parsed.category||'Other',mapped=mapGeminiCategory(category),dbEntry=DB[mapped]||DB.Other;return{device_type:mapped,rawDeviceName:parsed.device_name||category,icon:dbEntry.icon,confidence:parsed.confidence||'—',hazards:parsed.hazards||dbEntry.hazards,disposal_steps:parsed.disposal_steps||dbEntry.steps,impact:{co2:parsed.co2||dbEntry.impact.co2,gold:parsed.gold||dbEntry.impact.gold,water:parsed.water||dbEntry.impact.water,energy:parsed.energy||dbEntry.impact.energy}};}
 function fileToBase64(file){return new Promise((res,rej)=>{const reader=new FileReader();reader.onload=e=>res(e.target.result.split(',')[1]);reader.onerror=()=>rej(new Error('File read failed'));reader.readAsDataURL(file);});}
@@ -416,11 +439,93 @@ function renderPrice(deviceType,cond){currentDevice=deviceType;currentCond=cond;
 function setCond(el,cond){document.querySelectorAll('.cond-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');renderPrice(currentDevice,cond);}
 function togglePriceBody(){const b=document.getElementById('priceCardBody'),a=document.getElementById('priceArrow');const o=b.style.display!=='none';b.style.display=o?'none':'block';a.classList.toggle('open',!o);}
 
-function resetSaleDecision(){['btnKeepSale','btnNotSale'].forEach(id=>{document.getElementById(id).classList.remove('chosen');document.getElementById(id).disabled=false;});document.getElementById('saleConfirmYes').style.display='none';document.getElementById('saleConfirmNo').style.display='none';}
-function handleKeepForSale(){if(!lastResult)return;saveToHistory(lastResult,true);document.getElementById('btnKeepSale').classList.add('chosen');document.getElementById('btnNotSale').classList.remove('chosen');document.getElementById('saleConfirmNo').style.display='none';document.getElementById('saleConfirmYes').style.display='flex';toast('🛒 Saved to Dashboard as For Sale!');}
-function handleNotForSale(){document.getElementById('btnNotSale').classList.add('chosen');document.getElementById('btnKeepSale').classList.remove('chosen');document.getElementById('saleConfirmYes').style.display='none';document.getElementById('saleConfirmNo').style.display='flex';toast('♻️ Skipped — not saved.');}
+// ── Keep / Sell handlers ──────────────────────────────────────────
+
+function resetDecision(){
+  ['btnKeep','btnSell'].forEach(id=>document.getElementById(id).classList.remove('chosen'));
+  const ck=document.getElementById('confirmKeep'),cs=document.getElementById('confirmSell');
+  ck.style.display='none'; ck.textContent='';
+  cs.style.display='none'; cs.textContent='';
+}
+
+function handleKeep(){
+  if(!lastResult) return;
+
+  // Keep = save locally WITHOUT forSale flag — does NOT appear in dashboard
+  saveToHistory(lastResult, false);
+
+  document.getElementById('btnKeep').classList.add('chosen');
+  document.getElementById('btnSell').classList.remove('chosen');
+  document.getElementById('confirmSell').style.display='none';
+
+  const ck = document.getElementById('confirmKeep');
+  ck.textContent = '🏠 Saved locally — this device will NOT be listed for sale.';
+  ck.style.display = 'flex';
+
+  toast('🏠 Saved to local history (not listed for sale).');
+}
+
+function handleSell(){
+  if(!lastResult) return;
+
+  document.getElementById('btnSell').classList.add('chosen');
+  document.getElementById('btnKeep').classList.remove('chosen');
+  document.getElementById('confirmKeep').style.display='none';
+
+  const cs = document.getElementById('confirmSell');
+
+  const token = localStorage.getItem('ecotrace_token');
+
+  if(token){
+    // Logged in — save with forSale=true so dashboard picks it up
+    saveToHistory(lastResult, true);
+
+    // Write pending_sale for dashboard to read immediately
+    const pending = {
+      deviceType:        lastResult.device_type,
+      deviceName:        lastResult.rawDeviceName || lastResult.device_type,
+      icon:              lastResult.icon || '📦',
+      forSale:           true,
+      addedToDashboard:  true,
+      price:             document.getElementById('priceTotal')?.textContent || '₹0',
+      condition:         currentCond,
+      date:              new Date().toISOString()
+    };
+    localStorage.setItem('ecotrace_pending_sale', JSON.stringify(pending));
+
+    cs.textContent = '🛒 Listed! Redirecting to your dashboard…';
+    cs.style.display = 'flex';
+    toast('🛒 Device listed for sale on dashboard!');
+    setTimeout(()=>{ window.location.href='dashboard.html'; }, 1400);
+    return;
+  }
+
+  // Not logged in — stash result and go to register
+  try{ sessionStorage.setItem('ecotrace_pending_sell', JSON.stringify(lastResult)); }catch(e){}
+
+  cs.textContent = '🛒 Redirecting to register to list your device…';
+  cs.style.display = 'flex';
+
+  const deviceName = encodeURIComponent(lastResult.rawDeviceName || lastResult.device_type);
+  const deviceType = encodeURIComponent(lastResult.device_type);
+
+  toast('🛒 Taking you to register…');
+  setTimeout(()=>{
+    window.location.href = `register.html?from=sell&device=${deviceName}&type=${deviceType}`;
+  }, 900);
+}
+
+// ── Utilities ─────────────────────────────────────────────────────
 async function saveToMongoDB(data){try{await fetch('/api/scan/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:'guest',deviceType:data.device_type,confidence:data.confidence,hazards:data.hazards,disposalSteps:data.disposal_steps,source:data._source})});}catch(e){console.warn('MongoDB save skipped:',e.message);}}
-function saveToHistory(data,forSale){try{const arr=JSON.parse(localStorage.getItem('ecotrace_scans')||'[]');arr.unshift({...data,forSale,date:new Date().toISOString()});localStorage.setItem('ecotrace_scans',JSON.stringify(arr.slice(0,50)));}catch(e){console.error('History save:',e);}}
+
+function saveToHistory(data, forSale){
+  try{
+    const arr=JSON.parse(localStorage.getItem('ecotrace_scans')||'[]');
+    arr.unshift({...data, forSale, date:new Date().toISOString()});
+    localStorage.setItem('ecotrace_scans', JSON.stringify(arr.slice(0,50)));
+  }catch(e){console.error('History save:',e);}
+}
+
 function setPhase(phase){['phasePlaceholder','phaseLoading','phaseResult'].forEach(id=>document.getElementById(id).style.display='none');spinner.style.display='none';analyzeBtn.disabled=false;if(phase==='loading'){document.getElementById('phaseLoading').style.display='block';document.getElementById('progFill').style.width='0%';document.getElementById('loadStep').textContent='Starting…';spinner.style.display='block';analyzeBtn.disabled=true;btnLabel.textContent='Analyzing…';statusDot.className='status-dot live';statusText.textContent='Analyzing…';}else if(phase==='result'){document.getElementById('phaseResult').style.display='block';btnLabel.textContent='🔄 Scan Another';}else{document.getElementById('phasePlaceholder').style.display='block';btnLabel.textContent='🔍 Analyze E-Waste';statusDot.className='status-dot';statusText.textContent='Waiting for image or device selection…';updateReady();}}
 function requestPickup(){toast(`🚚 Pickup requested for: ${document.getElementById('rName').textContent||'Device'}`);}
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3200);}

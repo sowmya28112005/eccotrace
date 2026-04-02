@@ -1,142 +1,130 @@
-// routes/user.js  — EcoTrace user auth routes
-// MongoDB via Mongoose. Add to server.js: app.use('/api/user', require('./routes/user'));
+const express = require('express');
+const router  = express.Router();
+const bcrypt  = require('bcryptjs');
+const jwt     = require('jsonwebtoken');
+const User    = require('../models/user');
 
-const express  = require('express');
-const router   = express.Router();
-const bcrypt   = require('bcryptjs');
-const User     = require('../models/user');
-
-// ────────────────────────────────────────────────
-// POST /api/user/check-email
-// Checks if an email already exists in MongoDB.
-// Called by register.html BEFORE the user sets a password.
-// Response: { exists: true/false }
-// ────────────────────────────────────────────────
-router.post('/check-email', async (req, res) => {
-  try {
-    const { email } = req.body;
-    if (!email) return res.status(400).json({ message: 'Email is required' });
-
-    const existing = await User.findOne({ email: email.toLowerCase().trim() });
-    return res.json({ exists: !!existing });
-  } catch (err) {
-    console.error('check-email error:', err);
-    return res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// ────────────────────────────────────────────────
-// POST /api/user/register
-// Creates a new user. Returns 409 if email taken.
-// Body: { firstName, lastName, email, city, password }
-// Response: { message, user: { firstName, lastName, email, city, eco_points } }
-// ────────────────────────────────────────────────
+// ── REGISTER ─────────────────────────────────────────────────────
 router.post('/register', async (req, res) => {
   try {
-    const { firstName, lastName, email, city, password } = req.body;
+    console.log('📥 Register received:', req.body);
 
-    // Validate
-    if (!firstName || !email || !password) {
-      return res.status(400).json({ message: 'firstName, email and password are required' });
+    const { name, email, password } = req.body;
+
+    // ── 1. Validation ──────────────────────────────────────────
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'All fields are required.' });
     }
-    if (password.length < 8) {
-      return res.status(400).json({ message: 'Password must be at least 8 characters' });
+    if (!email.includes('@')) {
+      return res.status(400).json({ message: 'Invalid email address.' });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters.' });
     }
 
-    const normalizedEmail = email.toLowerCase().trim();
+    // ── 2. Split name ──────────────────────────────────────────
+    const parts     = name.trim().split(' ');
+    const firstName = parts[0];
+    const lastName  = parts.slice(1).join(' ') || '';
 
-    // Check duplicate
-    const existing = await User.findOne({ email: normalizedEmail });
+    // ── 3. Duplicate email check ───────────────────────────────
+    const existing = await User.findOne({ email: email.toLowerCase() });
     if (existing) {
-      return res.status(409).json({
-        message: 'An account with this email already exists. Please log in instead.'
-      });
+      return res.status(400).json({ message: 'Email already registered. Please login.' });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 12);
+    // ── 4. Hash password ───────────────────────────────────────
+    const hashed = await bcrypt.hash(password, 10);
 
-    // Create user
-    const newUser = await User.create({
-      firstName: firstName.trim(),
-      lastName:  (lastName || '').trim(),
-      email:     normalizedEmail,
-      city:      (city || '').trim(),
-      password:  hashedPassword,
-      eco_points: 50,
-      createdAt: new Date()
+    // ── 5. Save user ───────────────────────────────────────────
+    const user = new User({
+      firstName,
+      lastName,
+      email: email.toLowerCase(),
+      password: hashed
     });
+    await user.save();
+    console.log('✅ User saved:', user._id);
 
-    // Return safe user object (no password)
+    // ── 6. Generate JWT ────────────────────────────────────────
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET || 'ecotrace_secret',
+      { expiresIn: '7d' }
+    );
+
     return res.status(201).json({
-      message: 'Account created successfully!',
-      user: {
-        id:         newUser._id,
-        firstName:  newUser.firstName,
-        lastName:   newUser.lastName,
-        email:      newUser.email,
-        city:       newUser.city,
-        eco_points: newUser.eco_points
-      }
+      token,
+      userId: user._id,
+      name: `${firstName} ${lastName}`.trim()
     });
+
   } catch (err) {
-    console.error('register error:', err);
-    return res.status(500).json({ message: 'Server error during registration' });
+    console.error('❌ Register error:', err);
+
+    // MongoDB duplicate key (race condition on email)
+    if (err.code === 11000) {
+      return res.status(400).json({ message: 'Email already registered. Please login.' });
+    }
+
+    // Mongoose validation error — show which field failed
+    if (err.name === 'ValidationError') {
+      const msg = Object.values(err.errors).map(e => e.message).join(', ');
+      return res.status(400).json({ message: `Validation error: ${msg}` });
+    }
+
+    // MongoDB not connected
+    if (err.name === 'MongoNotConnectedError' || err.message.includes('buffering timed out')) {
+      return res.status(500).json({ message: 'Database not connected. Check your MONGO_URI in .env' });
+    }
+
+    // Catch-all — return the REAL message so you can debug
+    return res.status(500).json({ message: err.message });
   }
 });
 
-// ────────────────────────────────────────────────
-// POST /api/user/login
-// Verifies email + password against MongoDB.
-// Body: { email, password }
-// Response: { message, user: { id, firstName, email, eco_points } }
-// ────────────────────────────────────────────────
+// ── LOGIN ─────────────────────────────────────────────────────────
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('📥 Login received:', email);
+
     if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
+      return res.status(400).json({ message: 'Email and password are required.' });
     }
 
-    const normalizedEmail = email.toLowerCase().trim();
-    const user = await User.findOne({ email: normalizedEmail });
-
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
-      return res.status(401).json({ message: 'No account found with this email. Please register first.' });
+      return res.status(400).json({ message: 'No account found. Please register.' });
     }
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      return res.status(401).json({ message: 'Incorrect password. Please try again.' });
+      return res.status(400).json({ message: 'Incorrect password.' });
     }
 
-    // Return safe user object
-    return res.json({
-      message: 'Login successful',
-      user: {
-        id:         user._id,
-        firstName:  user.firstName,
-        lastName:   user.lastName,
-        email:      user.email,
-        city:       user.city,
-        eco_points: user.eco_points || 0
-      }
-    });
-  } catch (err) {
-    console.error('login error:', err);
-    return res.status(500).json({ message: 'Server error during login' });
-  }
-});
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET || 'ecotrace_secret',
+      { expiresIn: '7d' }
+    );
 
-// ────────────────────────────────────────────────
-// GET /api/user/stats  (optional — for dashboard)
-// ────────────────────────────────────────────────
-router.get('/stats', async (req, res) => {
-  try {
-    const total = await User.countDocuments();
-    return res.json({ total_users: total });
+    console.log('✅ Login success:', user._id);
+
+    return res.status(200).json({
+      token,
+      userId: user._id,
+      name: `${user.firstName} ${user.lastName}`.trim()
+    });
+
   } catch (err) {
-    return res.status(500).json({ message: 'Server error' });
+    console.error('❌ Login error:', err);
+
+    if (err.name === 'MongoNotConnectedError' || err.message.includes('buffering timed out')) {
+      return res.status(500).json({ message: 'Database not connected. Check your MONGO_URI in .env' });
+    }
+
+    return res.status(500).json({ message: err.message });
   }
 });
 

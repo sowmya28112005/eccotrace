@@ -5,438 +5,293 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Register – EcoTrace</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#f5faf7;--bg2:#eaf4ee;--white:#fff;--ink:#0f1f17;--ink2:#2a3d32;--muted:#6b7f73;--muted2:#a8bdb3;--green:#1a6b42;--green-mid:#228a56;--green-light:#45b872;--green-pale:#c4ead5;--green-bg:#edfaf3;--accent:#e05a5a;--border:#d8e8df;--border2:#bdd4c6;--shadow:0 2px 10px rgba(0,0,0,.06),0 8px 32px rgba(0,0,0,.05);}
-    [data-theme="dark"]{--bg:#0c1810;--bg2:#111f16;--white:#192a1f;--ink:#e6f5ec;--ink2:#b8d4c4;--muted:#6e9880;--muted2:#3d5a48;--green:#45b872;--green-mid:#38a062;--green-light:#65cc8e;--green-pale:#162e20;--green-bg:#0e2218;--accent:#f07070;--border:#1e3526;--border2:#274535;--shadow:0 2px 10px rgba(0,0,0,.3),0 8px 32px rgba(0,0,0,.25);}
+    :root {
+      --bg:#f5faf7;--bg2:#eaf4ee;--bg3:#deeee5;--white:#fff;--ink:#0f1f17;--ink2:#2a3d32;
+      --muted:#6b7f73;--muted2:#a8bdb3;--green:#1a6b42;--green-mid:#228a56;--green-light:#45b872;
+      --green-pale:#c4ead5;--green-bg:#edfaf3;--accent:#e07b4a;--accent-pale:#fce8db;
+      --border:#d8e8df;--border2:#bdd4c6;
+      --shadow:0 2px 8px rgba(0,0,0,.05),0 8px 32px rgba(0,0,0,.04);
+    }
+    [data-theme="dark"] {
+      --bg:#0c1810;--bg2:#111f16;--bg3:#192a1f;--white:#192a1f;--ink:#e6f5ec;--ink2:#b8d4c4;
+      --muted:#6e9880;--muted2:#3d5a48;--green:#45b872;--green-mid:#38a062;--green-light:#65cc8e;
+      --green-pale:#162e20;--green-bg:#0e2218;--accent:#f09464;--accent-pale:#3d1f10;
+      --border:#1e3526;--border2:#274535;
+    }
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s;}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;transition:background .3s;}
-    [data-theme="dark"] nav{background:rgba(12,24,16,.93);}
+
+    nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:rgba(255,255,255,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;transition:background .3s,border-color .3s;}
+    [data-theme="dark"] nav{background:rgba(12,24,16,.9);}
     .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:var(--green);letter-spacing:-.03em;text-decoration:none;display:flex;align-items:center;gap:.55rem;}
-    .logo-mark{width:32px;height:32px;background:var(--green);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:.9rem;font-weight:800;}
-    .nav-right{display:flex;align-items:center;gap:.8rem;}
-    .nav-link{font-size:.875rem;color:var(--muted);text-decoration:none;font-weight:500;transition:color .2s;}
-    .nav-link:hover{color:var(--ink);}
-    .theme-toggle{width:52px;height:28px;border-radius:100px;background:var(--border2);border:1px solid var(--border);cursor:pointer;position:relative;transition:background .3s;}
-    [data-theme="dark"] .theme-toggle{background:var(--green);border-color:var(--green-mid);}
-    .theme-knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:transform .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;justify-content:center;font-size:.65rem;line-height:1;}
-    [data-theme="dark"] .theme-knob{transform:translateX(24px);}
+    .logo-mark{width:32px;height:32px;background:var(--green);border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:.88rem;font-weight:800;}
+    .theme-toggle{width:46px;height:26px;border-radius:100px;background:var(--border2);border:none;cursor:pointer;position:relative;transition:background .3s;}
+    [data-theme="dark"] .theme-toggle{background:var(--green);}
+    .theme-knob{position:absolute;top:4px;left:4px;width:18px;height:18px;border-radius:50%;background:white;transition:transform .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;justify-content:center;font-size:.6rem;}
+    [data-theme="dark"] .theme-knob{transform:translateX(20px);}
 
-    .main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:3rem 1.5rem;}
-    .auth-wrap{width:100%;max-width:480px;}
-    .auth-card{background:var(--white);border:1px solid var(--border);border-radius:24px;padding:2.5rem;box-shadow:var(--shadow);transition:background .3s,border-color .3s;}
-    .card-header{text-align:center;margin-bottom:2rem;}
-    .card-icon{width:58px;height:58px;background:var(--green-bg);border:1.5px solid var(--green-pale);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 1.1rem;}
-    .card-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:-.04em;color:var(--ink);margin-bottom:.35rem;}
-    .card-sub{color:var(--muted);font-size:.875rem;line-height:1.6;}
+    .page-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:2.5rem 1rem;}
 
-    /* STEP PROGRESS */
-    .step-progress{display:flex;gap:.4rem;margin-bottom:1.6rem;}
-    .step-seg{flex:1;height:4px;border-radius:100px;background:var(--border);transition:background .4s;}
-    .step-seg.active{background:var(--green);}
-    .step-seg.done{background:var(--green-light);}
-    .step-label{font-size:.72rem;color:var(--muted);margin-bottom:1.2rem;font-weight:500;}
-    .step-label span{color:var(--green);font-weight:700;}
+    .register-card{background:var(--white);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);width:100%;max-width:460px;overflow:hidden;}
 
-    .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
-    .form-group{margin-bottom:1rem;}
-    .form-label{display:block;font-size:.78rem;font-weight:600;color:var(--ink2);margin-bottom:.4rem;}
-    .input-wrap{position:relative;}
-    .input-icon{position:absolute;left:.92rem;top:50%;transform:translateY(-50%);font-size:.88rem;color:var(--muted2);pointer-events:none;line-height:1;}
-    .form-input{width:100%;padding:.8rem .9rem .8rem 2.55rem;background:var(--bg2);border:1.5px solid var(--border);border-radius:12px;color:var(--ink);font-family:'Inter',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s,background .2s,box-shadow .2s;}
-    .form-input::placeholder{color:var(--muted2);}
-    .form-input:focus{border-color:var(--green);background:var(--white);box-shadow:0 0 0 3px rgba(26,107,66,.1);}
-    [data-theme="dark"] .form-input:focus{box-shadow:0 0 0 3px rgba(69,184,114,.15);}
-    .form-input.error{border-color:var(--accent);}
-    .form-input.valid{border-color:var(--green-light);}
-    .pw-toggle{position:absolute;right:.9rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:.85rem;padding:.2rem;transition:color .2s;line-height:1;}
-    .pw-toggle:hover{color:var(--ink);}
+    /* Context banner — shown when coming from scan */
+    .context-banner{display:none;padding:1rem 1.5rem;background:var(--green-bg);border-bottom:1px solid rgba(26,107,66,.15);gap:.8rem;align-items:flex-start;}
+    .context-banner.visible{display:flex;}
+    .cb-icon{font-size:1.6rem;flex-shrink:0;margin-top:2px;}
+    .cb-body{}
+    .cb-title{font-weight:700;font-size:.88rem;color:var(--green);margin-bottom:.2rem;}
+    .cb-desc{font-size:.78rem;color:var(--muted);line-height:1.5;}
+    .cb-device{font-weight:600;color:var(--ink);}
 
-    /* DUPLICATE EMAIL WARNING */
-    .email-exists-banner{display:none;background:#fff8f0;border:1.5px solid #f0a060;border-radius:12px;padding:.9rem 1rem;margin-bottom:1rem;font-size:.83rem;color:#8a4a10;align-items:flex-start;gap:.7rem;line-height:1.55;}
-    [data-theme="dark"] .email-exists-banner{background:#2a1a08;border-color:#a06030;color:#f0b07a;}
-    .email-exists-banner.show{display:flex;}
-    .email-exists-banner .eb-icon{font-size:1.2rem;flex-shrink:0;margin-top:.1rem;}
-    .email-exists-banner a{color:var(--green);font-weight:700;text-decoration:none;}
+    .card-header{padding:2rem 2rem 1.5rem;}
+    .card-header h1{font-family:'Syne',sans-serif;font-weight:800;font-size:1.75rem;letter-spacing:-.04em;color:var(--ink);margin-bottom:.4rem;}
+    .card-header p{color:var(--muted);font-size:.9rem;line-height:1.6;}
 
-    /* PASSWORD STRENGTH */
-    .pw-strength{margin-top:.4rem;}
-    .pw-strength-bar{height:3px;background:var(--border);border-radius:100px;overflow:hidden;margin-bottom:.3rem;}
-    .pw-strength-fill{height:100%;border-radius:100px;width:0%;transition:width .3s,background .3s;}
-    .pw-strength-text{font-size:.72rem;color:var(--muted);}
+    .card-body{padding:0 2rem 2rem;}
 
-    .error-msg{font-size:.74rem;color:var(--accent);margin-top:.3rem;display:none;align-items:center;gap:.3rem;}
-    .error-msg.show{display:flex;}
+    .field{margin-bottom:1.1rem;}
+    .field label{display:block;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;}
+    .field input{width:100%;padding:.75rem 1rem;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:.92rem;outline:none;transition:border-color .2s,box-shadow .2s;}
+    .field input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(26,107,66,.1);}
+    .field input::placeholder{color:var(--muted2);}
 
-    .terms-wrap{display:flex;gap:.6rem;margin-bottom:1.3rem;margin-top:.4rem;}
-    .terms-wrap input[type="checkbox"]{width:15px;height:15px;accent-color:var(--green);flex-shrink:0;margin-top:2px;cursor:pointer;}
-    .terms-text{font-size:.8rem;color:var(--muted);line-height:1.55;}
-    .terms-text a{color:var(--green);font-weight:600;text-decoration:none;}
+    .password-wrap{position:relative;}
+    .password-wrap input{padding-right:2.8rem;}
+    .eye-btn{position:absolute;right:.8rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:1rem;padding:.2rem;}
 
-    .submit-btn{width:100%;padding:.92rem;border-radius:13px;background:var(--green);color:white;font-family:'Inter',sans-serif;font-size:.95rem;font-weight:700;border:none;cursor:pointer;transition:all .22s;display:flex;align-items:center;justify-content:center;gap:.5rem;}
-    .submit-btn:hover:not(:disabled){background:var(--green-mid);transform:translateY(-1px);box-shadow:0 6px 24px rgba(26,107,66,.28);}
-    .submit-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
-    .btn-spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+    .perks{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-bottom:1.4rem;}
+    .perk{display:flex;align-items:center;gap:.5rem;background:var(--bg2);border-radius:10px;padding:.6rem .8rem;font-size:.78rem;color:var(--ink2);}
+    .perk-icon{font-size:1rem;flex-shrink:0;}
+
+    .submit-btn{width:100%;padding:1rem;border-radius:14px;background:var(--green);color:white;font-family:'Inter',sans-serif;font-size:1rem;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;transition:all .2s;position:relative;}
+    .submit-btn:hover:not(:disabled){background:var(--green-mid);box-shadow:0 8px 28px rgba(26,107,66,.25);transform:translateY(-1px);}
+    .submit-btn:disabled{opacity:.4;cursor:not-allowed;}
+    .btn-spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .75s linear infinite;display:none;}
     @keyframes spin{to{transform:rotate(360deg);}}
 
-    .btn-row{display:flex;gap:.7rem;}
-    .back-btn{padding:.88rem 1.3rem;border-radius:12px;background:var(--bg2);color:var(--ink2);font-family:'Inter',sans-serif;font-size:.9rem;font-weight:500;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;}
-    .back-btn:hover{border-color:var(--border2);}
+    .divider{text-align:center;color:var(--muted2);font-size:.8rem;margin:1rem 0;position:relative;}
+    .divider::before,.divider::after{content:'';position:absolute;top:50%;width:44%;height:1px;background:var(--border);}
+    .divider::before{left:0;}.divider::after{right:0;}
 
-    .or-divider{display:flex;align-items:center;gap:.8rem;margin:1.3rem 0;color:var(--muted2);font-size:.8rem;}
-    .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border);}
-    .social-btns{display:flex;gap:.7rem;}
-    .social-btn{flex:1;padding:.72rem;border-radius:11px;border:1.5px solid var(--border);background:var(--bg2);color:var(--ink2);font-family:'Inter',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;transition:all .2s;}
-    .social-btn:hover{border-color:var(--border2);background:var(--white);}
-    .card-footer{text-align:center;margin-top:1.5rem;font-size:.85rem;color:var(--muted);}
-    .card-footer a{color:var(--green);font-weight:700;text-decoration:none;}
+    .login-link{text-align:center;font-size:.85rem;color:var(--muted);}
+    .login-link a{color:var(--green);font-weight:600;text-decoration:none;}
+    .login-link a:hover{text-decoration:underline;}
 
-    /* SUCCESS */
-    .success-view{display:none;text-align:center;padding:1.5rem 0;}
-    .success-check{width:76px;height:76px;background:var(--green-bg);border:2px solid var(--green-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1.2rem;animation:popIn .5s cubic-bezier(.34,1.56,.64,1);}
-    @keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
-    .success-title{font-family:'Syne',sans-serif;font-size:1.45rem;font-weight:800;letter-spacing:-.03em;color:var(--ink);margin-bottom:.5rem;}
-    .success-sub{color:var(--muted);font-size:.875rem;line-height:1.65;margin-bottom:1.8rem;}
-    .impact-chips{display:flex;justify-content:center;gap:.6rem;flex-wrap:wrap;margin-bottom:1.6rem;}
-    .impact-chip{display:flex;align-items:center;gap:.4rem;background:var(--green-bg);border:1px solid var(--green-pale);border-radius:100px;padding:.35rem .85rem;font-size:.78rem;color:var(--green);font-weight:500;}
-    .go-btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--green);color:white;padding:.9rem 2rem;border-radius:12px;text-decoration:none;font-weight:700;font-size:.92rem;transition:all .2s;border:none;cursor:pointer;}
-    .go-btn:hover{background:var(--green-mid);transform:translateY(-1px);box-shadow:0 6px 24px rgba(26,107,66,.28);}
+    .error-msg{background:#fff0ee;border:1px solid rgba(224,74,74,.25);border-radius:10px;padding:.75rem 1rem;font-size:.83rem;color:#c0392b;margin-bottom:1rem;display:none;}
+    .success-msg{background:var(--green-bg);border:1px solid rgba(26,107,66,.2);border-radius:10px;padding:.75rem 1rem;font-size:.83rem;color:var(--green);margin-bottom:1rem;display:none;align-items:center;gap:.5rem;}
 
-    #toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(16px);background:var(--ink);color:var(--bg);border-radius:12px;padding:.75rem 1.4rem;font-size:.875rem;box-shadow:var(--shadow);opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none;}
-    #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-    @media(max-width:480px){.auth-card{padding:1.8rem 1.4rem;}.form-row-2{grid-template-columns:1fr;}.social-btns{flex-direction:column;}}
+    /* Success overlay */
+    .success-overlay{display:none;position:fixed;inset:0;background:rgba(12,24,16,.6);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;}
+    .success-overlay.show{display:flex;}
+    .success-popup{background:var(--white);border-radius:24px;padding:2.5rem 2rem;text-align:center;max-width:340px;width:90%;animation:popIn .5s cubic-bezier(.34,1.56,.64,1);}
+    @keyframes popIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .sp-icon{font-size:3.5rem;margin-bottom:1rem;animation:bounce .6s ease .3s both;}
+    @keyframes bounce{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+    .sp-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;color:var(--green);margin-bottom:.5rem;letter-spacing:-.03em;}
+    .sp-desc{color:var(--muted);font-size:.9rem;line-height:1.6;margin-bottom:1.5rem;}
+    .sp-redirect{display:flex;align-items:center;justify-content:center;gap:.6rem;background:var(--green-bg);border-radius:12px;padding:.8rem 1rem;font-size:.83rem;color:var(--green);font-weight:600;}
+    .sp-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 1s infinite;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+    @media(max-width:500px){.card-header{padding:1.5rem 1.5rem 1rem;}.card-body{padding:0 1.5rem 1.5rem;}.perks{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
 
 <nav>
-  <a href="index.html" class="logo">
-    <div class="logo-mark">♻</div>
-    EcoTrace
-  </a>
-  <div class="nav-right">
-    <a href="index.html" class="nav-link">Home</a>
-    <a href="login.html" class="nav-link">Log in</a>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-      <div class="theme-knob" id="themeKnob">☀</div>
-    </button>
-  </div>
+  <a href="index.html" class="logo"><div class="logo-mark">♻</div>EcoTrace</a>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+    <div class="theme-knob" id="themeKnob">☀</div>
+  </button>
 </nav>
 
-<main class="main">
-  <div class="auth-wrap">
-    <div class="auth-card">
+<div class="page-wrap">
+  <div class="register-card">
 
-      <!-- FORM VIEW (steps 1 & 2) -->
-      <div id="formView">
-        <div class="card-header">
-          <div class="card-icon">♻</div>
-          <div class="card-title">Join EcoTrace</div>
-          <div class="card-sub">Start tracking your e-waste impact and earn eco rewards</div>
-        </div>
+    <!-- Context banner: shown when user came from "Sell" button on scan page -->
+    <div class="context-banner" id="contextBanner">
+      <div class="cb-icon">🛒</div>
+      <div class="cb-body">
+        <div class="cb-title">One step to list your device for sale!</div>
+        <div class="cb-desc">You selected <span class="cb-device" id="cbDeviceName">your device</span> for sale. Create a free account to list it, track earnings, and climb the leaderboard.</div>
+      </div>
+    </div>
 
-        <div class="step-progress">
-          <div class="step-seg active" id="seg1"></div>
-          <div class="step-seg" id="seg2"></div>
-        </div>
-        <div class="step-label">Step <span id="stepNum">1</span> of 2 — <span id="stepTitle">Your details</span></div>
+    <div class="card-header">
+      <h1>Create Account</h1>
+      <p>Join EcoTrace to sell devices, track your recycling impact, and compete on the leaderboard.</p>
+    </div>
 
-        <!-- STEP 1 -->
-        <div id="step1">
-          <!-- Duplicate email warning -->
-          <div class="email-exists-banner" id="existsBanner">
-            <span class="eb-icon">⚠️</span>
-            <div>This email is already registered. <a href="login.html">Log in instead →</a></div>
-          </div>
+    <div class="card-body">
 
-          <div class="form-row-2">
-            <div class="form-group">
-              <label class="form-label" for="firstName">First name</label>
-              <div class="input-wrap">
-                <span class="input-icon">👤</span>
-                <input type="text" id="firstName" class="form-input" placeholder="Priya">
-              </div>
-              <div class="error-msg" id="firstNameErr">⚠ Required</div>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="lastName">Last name</label>
-              <div class="input-wrap">
-                <span class="input-icon">👤</span>
-                <input type="text" id="lastName" class="form-input" placeholder="Sharma">
-              </div>
-            </div>
-          </div>
+      <div class="perks">
+        <div class="perk"><span class="perk-icon">🏆</span>Leaderboard</div>
+        <div class="perk"><span class="perk-icon">📊</span>Dashboard</div>
+        <div class="perk"><span class="perk-icon">🛒</span>Sell Devices</div>
+        <div class="perk"><span class="perk-icon">🌍</span>Impact Tracker</div>
+      </div>
 
-          <div class="form-group">
-            <label class="form-label" for="email">Email address</label>
-            <div class="input-wrap">
-              <span class="input-icon">✉</span>
-              <input type="email" id="email" class="form-input" placeholder="you@example.com" oninput="clearExists()">
-            </div>
-            <div class="error-msg" id="emailErr">⚠ Please enter a valid email</div>
-          </div>
+      <div class="error-msg" id="errorMsg"></div>
+      <div class="success-msg" id="successMsg">✅ Account created!</div>
 
-          <div class="form-group">
-            <label class="form-label" for="city">City</label>
-            <div class="input-wrap">
-              <span class="input-icon">📍</span>
-              <input type="text" id="city" class="form-input" placeholder="Hyderabad">
-            </div>
-          </div>
-
-          <button type="button" class="submit-btn" id="nextBtn" onclick="goStep2()">Continue →</button>
-        </div>
-
-        <!-- STEP 2 -->
-        <div id="step2" style="display:none;">
-          <div class="form-group">
-            <label class="form-label" for="password">Password</label>
-            <div class="input-wrap">
-              <span class="input-icon">🔒</span>
-              <input type="password" id="password" class="form-input" placeholder="Create a strong password" oninput="checkPwStrength()">
-              <button type="button" class="pw-toggle" id="pwToggle">👁</button>
-            </div>
-            <div class="pw-strength">
-              <div class="pw-strength-bar"><div class="pw-strength-fill" id="pwFill"></div></div>
-              <div class="pw-strength-text" id="pwText">Enter a password</div>
-            </div>
-            <div class="error-msg" id="passErr">⚠ Password must be at least 8 characters</div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="confirmPass">Confirm password</label>
-            <div class="input-wrap">
-              <span class="input-icon">🔒</span>
-              <input type="password" id="confirmPass" class="form-input" placeholder="Repeat your password">
-            </div>
-            <div class="error-msg" id="confirmErr">⚠ Passwords do not match</div>
-          </div>
-
-          <div class="terms-wrap">
-            <input type="checkbox" id="terms">
-            <div class="terms-text">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. I understand my e-waste data helps improve recycling insights.</div>
-          </div>
-          <div class="error-msg" id="termsErr" style="margin-bottom:.9rem;">⚠ You must accept the terms to continue</div>
-
-          <div class="btn-row">
-            <button class="back-btn" onclick="goStep1()">← Back</button>
-            <button class="submit-btn" id="submitBtn" onclick="submitForm()" style="flex:1;">
-              <div class="btn-spinner" id="btnSpinner"></div>
-              <span id="btnText">Create Account</span>
-            </button>
-          </div>
-
-          <div class="or-divider">or register with</div>
-          <div class="social-btns">
-            <button class="social-btn">
-              <svg width="15" height="15" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-              Google
-            </button>
-            <button class="social-btn">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.23 1.84 1.23 1.07 1.84 2.81 1.31 3.49 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.05.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.49 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.31 24 12c0-6.63-5.37-12-12-12z"/></svg>
-              GitHub
-            </button>
-          </div>
+      <div class="field">
+        <label>Full Name</label>
+        <input type="text" id="nameInput" placeholder="Alex Johnson" autocomplete="name"/>
+      </div>
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="emailInput" placeholder="alex@email.com" autocomplete="email"/>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="password-wrap">
+          <input type="password" id="passwordInput" placeholder="Min 6 characters" autocomplete="new-password"/>
+          <button class="eye-btn" id="eyeBtn" onclick="togglePw()" type="button">👁</button>
         </div>
       </div>
 
-      <!-- SUCCESS VIEW -->
-      <div class="success-view" id="successView">
-        <div class="success-check">🎉</div>
-        <div class="success-title">You're in, <span id="heroFirstName" style="color:var(--green)">Eco Warrior</span>!</div>
-        <div class="success-sub">Your EcoTrace account is ready. Start scanning e-waste, earn points, and track your environmental impact.</div>
-        <div class="impact-chips">
-          <div class="impact-chip">🌿 50 welcome Eco Points</div>
-          <div class="impact-chip">🏆 Eco Starter badge</div>
-          <div class="impact-chip">📊 Dashboard unlocked</div>
-        </div>
-        <a href="dashboard.html" class="go-btn">Go to Dashboard →</a>
-      </div>
+      <button class="submit-btn" id="submitBtn" onclick="handleRegister()">
+        <div class="btn-spinner" id="btnSpinner"></div>
+        <span id="btnLabel">🚀 Create Account & Scan</span>
+      </button>
 
-      <div class="card-footer" id="loginFooter">Already have an account? <a href="login.html">Log in →</a></div>
+      <div class="divider">already have an account?</div>
+      <div class="login-link"><a href="login.html">Sign in to your account →</a></div>
     </div>
   </div>
-</main>
+</div>
 
-<div id="toast"></div>
+<!-- Success overlay -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-popup">
+    <div class="sp-icon">🎉</div>
+    <div class="sp-title">You're in!</div>
+    <div class="sp-desc" id="spDesc">Account created successfully. Taking you to the scanner to continue listing your device.</div>
+    <div class="sp-redirect"><div class="sp-dot"></div><span id="spRedirectLabel">Redirecting to scanner…</span></div>
+  </div>
+</div>
 
 <script>
-const API = 'http://localhost:5000/api';
-
-/* THEME */
+// Theme
 (function(){
   const t=localStorage.getItem('ecotrace_theme')||'light';
   document.documentElement.setAttribute('data-theme',t);
   const k=document.getElementById('themeKnob');
-  if(k) k.textContent=t==='dark'?'☾':'☀';
+  if(k)k.textContent=t==='dark'?'☾':'☀';
 })();
 document.getElementById('themeToggle').addEventListener('click',function(){
   const cur=document.documentElement.getAttribute('data-theme');
   const next=cur==='dark'?'light':'dark';
   document.documentElement.setAttribute('data-theme',next);
   localStorage.setItem('ecotrace_theme',next);
-  document.getElementById('themeKnob').textContent=next==='dark'?'☾':'☀';
+  const k=document.getElementById('themeKnob');
+  if(k)k.textContent=next==='dark'?'☾':'☀';
 });
 
-/* PW TOGGLE */
-document.getElementById('pwToggle').addEventListener('click',function(){
-  const inp=document.getElementById('password');
-  inp.type=inp.type==='password'?'text':'password';
-  this.textContent=inp.type==='password'?'👁':'🙈';
-});
+// Read URL params — device data passed from scan page
+const params = new URLSearchParams(window.location.search);
+const fromSell = params.get('from') === 'sell';
+const deviceName = params.get('device') || '';
+const deviceType = params.get('type') || '';
 
-/* PW STRENGTH */
-function checkPwStrength(){
-  const pw=document.getElementById('password').value;
-  const fill=document.getElementById('pwFill');
-  const txt=document.getElementById('pwText');
-  let score=0;
-  if(pw.length>=8) score++;
-  if(/[A-Z]/.test(pw)) score++;
-  if(/[0-9]/.test(pw)) score++;
-  if(/[^A-Za-z0-9]/.test(pw)) score++;
-  const pcts=[0,25,50,75,100];
-  const colors=['#e05a5a','#e05a5a','#e8a33a','#4ab872','#1a6b42'];
-  const labels=['','Weak','Fair','Good','Strong'];
-  fill.style.width=pcts[score]+'%';
-  fill.style.background=colors[score];
-  txt.textContent=pw.length===0?'Enter a password':labels[score];
-  txt.style.color=colors[score];
+// Show context banner if coming from Sell button
+if (fromSell) {
+  const banner = document.getElementById('contextBanner');
+  banner.classList.add('visible');
+  if (deviceName) {
+    document.getElementById('cbDeviceName').textContent = deviceName;
+  }
 }
 
-function clearErrors(){
-  document.querySelectorAll('.error-msg').forEach(m=>m.classList.remove('show'));
-  document.querySelectorAll('.form-input').forEach(i=>i.classList.remove('error','valid'));
-}
-function clearExists(){
-  document.getElementById('existsBanner').classList.remove('show');
-  document.getElementById('email').classList.remove('error');
+function togglePw() {
+  const inp = document.getElementById('passwordInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  document.getElementById('eyeBtn').textContent = inp.type === 'password' ? '👁' : '🙈';
 }
 
-/* STEP 1 → 2 — checks duplicate email with MongoDB */
-async function goStep2(){
-  clearErrors();
-  const firstName=document.getElementById('firstName').value.trim();
-  const email=document.getElementById('email').value.trim();
-  let ok=true;
-  if(!firstName){document.getElementById('firstNameErr').classList.add('show');document.getElementById('firstName').classList.add('error');ok=false;}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){document.getElementById('emailErr').classList.add('show');document.getElementById('email').classList.add('error');ok=false;}
-  if(!ok) return;
+async function handleRegister() {
+  const name     = document.getElementById('nameInput').value.trim();
+  const email    = document.getElementById('emailInput').value.trim();
+  const password = document.getElementById('passwordInput').value;
 
-  /* ── CHECK DUPLICATE EMAIL IN MONGODB ── */
-  const nextBtn=document.getElementById('nextBtn');
-  nextBtn.disabled=true;
-  nextBtn.textContent='Checking…';
+  const errEl = document.getElementById('errorMsg');
+  errEl.style.display = 'none';
+
+  if (!name)                              { showError('Please enter your full name.'); return; }
+  if (!email || !email.includes('@'))     { showError('Please enter a valid email.'); return; }
+  if (!password || password.length < 6)  { showError('Password must be at least 6 characters.'); return; }
+
+  setLoading(true);
+
   try {
-    const res=await fetch(`${API}/user/check-email`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email})
+    const res = await fetch('/api/user/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
     });
-    const data=await res.json().catch(()=>({}));
-    if(res.ok && data.exists){
-      // Email already registered — show warning banner
-      document.getElementById('existsBanner').classList.add('show');
-      document.getElementById('email').classList.add('error');
-      nextBtn.disabled=false; nextBtn.textContent='Continue →';
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showError(data.message || data.error || 'Registration failed. Try again.');
+      setLoading(false);
       return;
     }
-  } catch(e){
-    // Server offline — allow continuing, will catch on final submit
-    console.warn('Email check offline');
-  }
-  nextBtn.disabled=false; nextBtn.textContent='Continue →';
 
-  // Move to step 2
-  document.getElementById('step1').style.display='none';
-  document.getElementById('step2').style.display='block';
-  document.getElementById('stepNum').textContent='2';
-  document.getElementById('stepTitle').textContent='Set your password';
-  document.getElementById('seg1').classList.replace('active','done');
-  document.getElementById('seg2').classList.add('active');
-}
+    // Save auth info locally
+    if (data.token)  localStorage.setItem('ecotrace_token', data.token);
+    if (data.userId) localStorage.setItem('ecotrace_userId', data.userId);
+    if (name)        localStorage.setItem('ecotrace_name', name);
 
-function goStep1(){
-  document.getElementById('step2').style.display='none';
-  document.getElementById('step1').style.display='block';
-  document.getElementById('stepNum').textContent='1';
-  document.getElementById('stepTitle').textContent='Your details';
-  document.getElementById('seg2').classList.remove('active');
-  document.getElementById('seg1').classList.replace('done','active');
-}
-
-/* FINAL SUBMIT — saves to MongoDB */
-async function submitForm(){
-  clearErrors();
-  const pass=document.getElementById('password').value;
-  const confirm=document.getElementById('confirmPass').value;
-  const terms=document.getElementById('terms').checked;
-  let ok=true;
-  if(pass.length<8){document.getElementById('passErr').classList.add('show');document.getElementById('password').classList.add('error');ok=false;}
-  if(pass!==confirm){document.getElementById('confirmErr').classList.add('show');document.getElementById('confirmPass').classList.add('error');ok=false;}
-  if(!terms){document.getElementById('termsErr').classList.add('show');ok=false;}
-  if(!ok) return;
-
-  const btn=document.getElementById('submitBtn');
-  const spinner=document.getElementById('btnSpinner');
-  const btnText=document.getElementById('btnText');
-  btn.disabled=true; spinner.style.display='block'; btnText.textContent='Creating…';
-
-  const userData={
-    firstName: document.getElementById('firstName').value.trim(),
-    lastName:  document.getElementById('lastName').value.trim(),
-    email:     document.getElementById('email').value.trim(),
-    city:      document.getElementById('city').value.trim(),
-    password:  pass
-  };
-
-  try {
-    const res=await fetch(`${API}/user/register`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(userData)
-    });
-    const data=await res.json().catch(()=>({}));
-
-    if(res.ok){
-      /* ✅ Save to localStorage and show success */
-      const user=data.user||{...userData};
-      delete user.password;
-      user.eco_points=50;
-      localStorage.setItem('ecotrace_user',JSON.stringify(user));
-      showSuccess(userData.firstName);
-    } else if(res.status===409){
-      /* 409 = email already exists (duplicate — caught at final submit too) */
-      goStep1();
-      document.getElementById('existsBanner').classList.add('show');
-      document.getElementById('email').classList.add('error');
-      btn.disabled=false; spinner.style.display='none'; btnText.textContent='Create Account';
-    } else {
-      toast('❌ '+(data.message||'Registration failed. Please try again.'));
-      btn.disabled=false; spinner.style.display='none'; btnText.textContent='Create Account';
+    // If device data was passed, save it to pending sale
+    if (deviceType) {
+      const pending = { deviceType, deviceName, forSale: true, date: new Date().toISOString() };
+      localStorage.setItem('ecotrace_pending_sale', JSON.stringify(pending));
     }
-  } catch(e){
-    /* Server offline — save locally anyway */
-    const user={...userData,eco_points:50};
-    delete user.password;
-    localStorage.setItem('ecotrace_user',JSON.stringify(user));
-    showSuccess(userData.firstName);
+
+    // Show success overlay then redirect to scan page
+    showSuccessAndRedirect(name);
+
+  } catch (err) {
+    showError('Network error. Is the server running?');
+    setLoading(false);
   }
 }
 
-function showSuccess(name){
-  document.getElementById('heroFirstName').textContent=name||'Eco Warrior';
-  document.getElementById('formView').style.display='none';
-  document.getElementById('successView').style.display='block';
-  document.getElementById('loginFooter').style.display='none';
+function showSuccessAndRedirect(name) {
+  const overlay = document.getElementById('successOverlay');
+  const spDesc  = document.getElementById('spDesc');
+  spDesc.textContent = `Welcome, ${name || 'there'}! Taking you back to the scanner to continue.`;
+  overlay.classList.add('show');
+
+  // Redirect to scan.html after 2.2 seconds
+  setTimeout(() => {
+    window.location.href = 'scan.html';
+  }, 2200);
 }
 
-function toast(msg){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),3200);
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
+
+function setLoading(on) {
+  const btn     = document.getElementById('submitBtn');
+  const spinner = document.getElementById('btnSpinner');
+  const label   = document.getElementById('btnLabel');
+  btn.disabled        = on;
+  spinner.style.display = on ? 'block' : 'none';
+  label.textContent   = on ? 'Creating account…' : '🚀 Create Account & Scan';
+}
+
+// Allow Enter key to submit
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleRegister();
+});
 </script>
 </body>
 </html>

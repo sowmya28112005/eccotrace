@@ -12,7 +12,6 @@
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s;}
 
-    /* NAV */
     nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;transition:background .3s;}
     [data-theme="dark"] nav{background:rgba(12,24,16,.93);}
     .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:var(--green);letter-spacing:-.03em;text-decoration:none;display:flex;align-items:center;gap:.55rem;}
@@ -25,18 +24,15 @@
     .theme-knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:transform .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;justify-content:center;font-size:.65rem;line-height:1;}
     [data-theme="dark"] .theme-knob{transform:translateX(24px);}
 
-    /* MAIN */
     .main{flex:1;display:flex;align-items:center;justify-content:center;padding:3rem 1.5rem;}
     .auth-wrap{width:100%;max-width:460px;}
 
-    /* CARD */
     .auth-card{background:var(--white);border:1px solid var(--border);border-radius:24px;padding:2.5rem;box-shadow:var(--shadow);transition:background .3s,border-color .3s;}
     .card-header{text-align:center;margin-bottom:2rem;}
     .card-icon{width:58px;height:58px;background:var(--green-bg);border:1.5px solid var(--green-pale);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 1.1rem;}
     .card-title{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:-.04em;color:var(--ink);margin-bottom:.35rem;}
     .card-sub{color:var(--muted);font-size:.875rem;line-height:1.6;}
 
-    /* FORM */
     .form-group{margin-bottom:1.1rem;}
     .form-label{display:block;font-size:.78rem;font-weight:600;color:var(--ink2);margin-bottom:.42rem;}
     .input-wrap{position:relative;}
@@ -57,33 +53,42 @@
     .error-msg{font-size:.74rem;color:var(--accent);margin-top:.32rem;display:none;align-items:center;gap:.3rem;}
     .error-msg.show{display:flex;}
 
-    /* SUBMIT */
+    /* Global error banner */
+    .global-error{background:#fff0ee;border:1px solid rgba(224,74,74,.25);border-radius:10px;padding:.75rem 1rem;font-size:.83rem;color:#c0392b;margin-bottom:1rem;display:none;}
+    .global-error.show{display:block;}
+
     .submit-btn{width:100%;padding:.92rem;border-radius:13px;background:var(--green);color:white;font-family:'Inter',sans-serif;font-size:.95rem;font-weight:700;border:none;cursor:pointer;transition:all .22s;display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:.3rem;}
     .submit-btn:hover:not(:disabled){background:var(--green-mid);transform:translateY(-1px);box-shadow:0 6px 24px rgba(26,107,66,.28);}
     .submit-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
     .btn-spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;}
     @keyframes spin{to{transform:rotate(360deg);}}
 
-    /* DIVIDER & SOCIAL */
     .or-divider{display:flex;align-items:center;gap:.8rem;margin:1.3rem 0;color:var(--muted2);font-size:.8rem;}
     .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border);}
     .social-btns{display:flex;gap:.7rem;}
     .social-btn{flex:1;padding:.72rem;border-radius:11px;border:1.5px solid var(--border);background:var(--bg2);color:var(--ink2);font-family:'Inter',sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.45rem;transition:all .2s;}
     .social-btn:hover{border-color:var(--border2);background:var(--white);}
 
-    /* FOOTER LINK */
     .card-footer{text-align:center;margin-top:1.6rem;font-size:.85rem;color:var(--muted);}
     .card-footer a{color:var(--green);font-weight:700;text-decoration:none;}
     .card-footer a:hover{opacity:.8;}
 
-    /* PERKS */
     .perks-strip{display:flex;justify-content:center;gap:1.6rem;margin-top:1.8rem;flex-wrap:wrap;}
     .perk{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--muted);}
     .perk-icon{width:20px;height:20px;background:var(--green-bg);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.68rem;}
 
-    /* TOAST */
-    #toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(16px);background:var(--ink);color:var(--bg);border-radius:12px;padding:.75rem 1.4rem;font-size:.875rem;box-shadow:var(--shadow);opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none;}
-    #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+    /* Success overlay */
+    .success-overlay{display:none;position:fixed;inset:0;background:rgba(12,24,16,.6);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;}
+    .success-overlay.show{display:flex;}
+    .success-popup{background:var(--white);border-radius:24px;padding:2.5rem 2rem;text-align:center;max-width:340px;width:90%;animation:popIn .5s cubic-bezier(.34,1.56,.64,1);}
+    @keyframes popIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .sp-icon{font-size:3.5rem;margin-bottom:1rem;animation:bounce .6s ease .3s both;}
+    @keyframes bounce{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+    .sp-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;color:var(--green);margin-bottom:.5rem;letter-spacing:-.03em;}
+    .sp-desc{color:var(--muted);font-size:.9rem;line-height:1.6;margin-bottom:1.5rem;}
+    .sp-redirect{display:flex;align-items:center;justify-content:center;gap:.6rem;background:var(--green-bg);border-radius:12px;padding:.8rem 1rem;font-size:.83rem;color:var(--green);font-weight:600;}
+    .sp-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 1s infinite;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
     @media(max-width:480px){.auth-card{padding:1.8rem 1.4rem;}.social-btns{flex-direction:column;}}
   </style>
@@ -112,6 +117,9 @@
         <div class="card-title">Welcome back</div>
         <div class="card-sub">Log in to track your recycling impact and earn eco points</div>
       </div>
+
+      <!-- Global error banner -->
+      <div class="global-error" id="globalError"></div>
 
       <form id="loginForm" novalidate>
         <div class="form-group">
@@ -170,97 +178,127 @@
   </div>
 </main>
 
-<div id="toast"></div>
+<!-- Success overlay -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-popup">
+    <div class="sp-icon">🎉</div>
+    <div class="sp-title">Welcome back!</div>
+    <div class="sp-desc" id="spDesc">Logged in successfully. Taking you to the scanner.</div>
+    <div class="sp-redirect"><div class="sp-dot"></div><span>Redirecting to scanner…</span></div>
+  </div>
+</div>
 
 <script>
-const API = 'http://localhost:5000/api';
+  // ✅ FIXED: use relative URL so it works on port 3000
+  const API = '/api';
 
-/* THEME */
-(function(){
-  const t=localStorage.getItem('ecotrace_theme')||'light';
-  document.documentElement.setAttribute('data-theme',t);
-  const k=document.getElementById('themeKnob');
-  if(k) k.textContent=t==='dark'?'☾':'☀';
-})();
-document.getElementById('themeToggle').addEventListener('click',function(){
-  const cur=document.documentElement.getAttribute('data-theme');
-  const next=cur==='dark'?'light':'dark';
-  document.documentElement.setAttribute('data-theme',next);
-  localStorage.setItem('ecotrace_theme',next);
-  document.getElementById('themeKnob').textContent=next==='dark'?'☾':'☀';
-});
+  /* THEME */
+  (function(){
+    const t = localStorage.getItem('ecotrace_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    const k = document.getElementById('themeKnob');
+    if (k) k.textContent = t === 'dark' ? '☾' : '☀';
+  })();
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    const cur  = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('ecotrace_theme', next);
+    document.getElementById('themeKnob').textContent = next === 'dark' ? '☾' : '☀';
+  });
 
-/* PASSWORD TOGGLE */
-document.getElementById('pwToggle').addEventListener('click',function(){
-  const inp=document.getElementById('password');
-  inp.type=inp.type==='password'?'text':'password';
-  this.textContent=inp.type==='password'?'👁':'🙈';
-});
+  /* PASSWORD TOGGLE */
+  document.getElementById('pwToggle').addEventListener('click', function(){
+    const inp = document.getElementById('password');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    this.textContent = inp.type === 'password' ? '👁' : '🙈';
+  });
 
-/* FORM SUBMIT */
-document.getElementById('loginForm').addEventListener('submit',async function(e){
-  e.preventDefault();
-  const email=document.getElementById('email').value.trim();
-  const pass=document.getElementById('password').value;
-  let ok=true;
-  document.querySelectorAll('.error-msg').forEach(m=>m.classList.remove('show'));
-  document.querySelectorAll('.form-input').forEach(i=>i.classList.remove('error'));
-
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-    document.getElementById('emailErr').classList.add('show');
-    document.getElementById('email').classList.add('error');
-    ok=false;
+  /* SHOW ERROR BANNER */
+  function showError(msg) {
+    const el = document.getElementById('globalError');
+    el.textContent = msg;
+    el.classList.add('show');
   }
-  if(pass.length<6){
-    document.getElementById('passErr').classList.add('show');
-    document.getElementById('password').classList.add('error');
-    ok=false;
+
+  function hideError() {
+    document.getElementById('globalError').classList.remove('show');
   }
-  if(!ok) return;
 
-  const btn=document.getElementById('submitBtn');
-  const spinner=document.getElementById('btnSpinner');
-  const btnText=document.getElementById('btnText');
-  btn.disabled=true; spinner.style.display='block'; btnText.textContent='Logging in…';
+  /* FORM SUBMIT */
+  document.getElementById('loginForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    hideError();
 
-  try {
-    const res=await fetch(`${API}/user/login`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email,password:pass})
-    });
-    const data=await res.json().catch(()=>({}));
+    const email = document.getElementById('email').value.trim();
+    const pass  = document.getElementById('password').value;
+    let ok = true;
 
-    if(res.ok){
-      /* ✅ Save user to localStorage */
-      const user=data.user||{email};
-      localStorage.setItem('ecotrace_user',JSON.stringify(user));
-      toast('✅ Logged in! Redirecting…');
-      setTimeout(()=>window.location.href='dashboard.html',1200);
-    } else {
-      toast('❌ '+(data.message||'Incorrect email or password.'));
-      btn.disabled=false; spinner.style.display='none'; btnText.textContent='Log In →';
+    document.querySelectorAll('.error-msg').forEach(m => m.classList.remove('show'));
+    document.querySelectorAll('.form-input').forEach(i => i.classList.remove('error'));
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      document.getElementById('emailErr').classList.add('show');
+      document.getElementById('email').classList.add('error');
+      ok = false;
     }
-  } catch(err){
-    /* Offline fallback — check if any user with this email was registered locally */
-    const stored=JSON.parse(localStorage.getItem('ecotrace_user')||'null');
-    if(stored && stored.email===email){
-      toast('✅ Logged in! (offline mode)');
-      setTimeout(()=>window.location.href='dashboard.html',1200);
-    } else {
-      toast('❌ Server offline. Register first or check connection.');
-      btn.disabled=false; spinner.style.display='none'; btnText.textContent='Log In →';
+    if (pass.length < 6) {
+      document.getElementById('passErr').classList.add('show');
+      document.getElementById('password').classList.add('error');
+      ok = false;
     }
+    if (!ok) return;
+
+    const btn     = document.getElementById('submitBtn');
+    const spinner = document.getElementById('btnSpinner');
+    const btnText = document.getElementById('btnText');
+    btn.disabled = true;
+    spinner.style.display = 'block';
+    btnText.textContent = 'Logging in…';
+
+    try {
+      const res  = await fetch(`${API}/user/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass })
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        // ✅ Save auth info to localStorage
+        localStorage.setItem('ecotrace_token',  data.token);
+        localStorage.setItem('ecotrace_userId', data.userId);
+        localStorage.setItem('ecotrace_name',   data.name || email);
+
+        // ✅ Show success popup then redirect to scan.html
+        const spDesc = document.getElementById('spDesc');
+        spDesc.textContent = `Welcome back, ${data.name || 'there'}! Taking you to the scanner.`;
+        document.getElementById('successOverlay').classList.add('show');
+
+        setTimeout(() => {
+          window.location.href = 'scan.html';
+        }, 2000);
+
+      } else {
+        // ✅ Show exact error from server (e.g. "No account found. Please register.")
+        showError(data.message || 'Incorrect email or password.');
+        btn.disabled = false;
+        spinner.style.display = 'none';
+        btnText.textContent = 'Log In →';
+      }
+
+    } catch (err) {
+      showError('❌ Cannot connect to server. Is it running?');
+      btn.disabled = false;
+      spinner.style.display = 'none';
+      btnText.textContent = 'Log In →';
+    }
+  });
+
+  function socialLogin(p) {
+    showError(`${p} login is not set up yet.`);
   }
-});
-
-function socialLogin(p){ toast(`🔗 Connecting with ${p}…`); }
-
-function toast(msg){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),3200);
-}
 </script>
 </body>
 </html>

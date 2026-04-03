@@ -54,6 +54,7 @@
     .search-wrap input::placeholder{color:var(--muted2);}
     .loc-btn{background:var(--green);color:white;border:none;border-radius:8px;padding:.4rem .8rem;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s;}
     .loc-btn:hover{background:var(--green-mid);}
+    .loc-btn:disabled{opacity:.6;cursor:not-allowed;}
 
     .filter-bar{padding:.8rem 1.25rem;display:flex;gap:.4rem;flex-wrap:wrap;border-bottom:1px solid var(--border);}
     .filter-chip{padding:.3rem .8rem;border-radius:100px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;}
@@ -79,6 +80,10 @@
     .accepts-row{margin-top:.65rem;display:flex;gap:.35rem;flex-wrap:wrap;}
     .accept-tag{font-size:.68rem;padding:.15rem .5rem;border-radius:100px;border:1px solid var(--border);color:var(--muted);background:var(--bg2);}
 
+    /* Loading skeleton */
+    .skeleton{background:linear-gradient(90deg,var(--bg2) 25%,var(--bg3) 50%,var(--bg2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px;height:14px;margin-bottom:.5rem;}
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
     /* MAP */
     .map-area{flex:1;position:relative;background:var(--bg2);}
     .map-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg2);}
@@ -86,6 +91,7 @@
     .map-pins{position:absolute;inset:0;}
     .map-pin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;transition:transform .2s;}
     .map-pin:hover{transform:translate(-50%,-100%) scale(1.15);}
+    .map-pin.active-pin .pin-bubble{background:var(--accent);}
     .pin-bubble{background:var(--green);color:white;border-radius:10px 10px 10px 0;padding:.4rem .7rem;font-size:.72rem;font-weight:600;white-space:nowrap;box-shadow:0 4px 12px rgba(26,107,66,.35);}
     .pin-stem{width:2px;height:10px;background:var(--green);margin:0 auto;}
 
@@ -105,7 +111,7 @@
     .close-btn{position:absolute;top:.8rem;right:.8rem;background:var(--bg3);border:none;border-radius:50%;width:28px;height:28px;color:var(--muted);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
     .close-btn:hover{background:var(--border2);color:var(--ink);}
 
-    .stats-bar{position:absolute;top:1rem;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;}
+    .stats-bar{position:absolute;top:1rem;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;z-index:10;}
     .stat-pill{background:rgba(255,255,255,.95);border:1px solid var(--border);backdrop-filter:blur(8px);border-radius:100px;padding:.4rem 1rem;font-size:.78rem;display:flex;gap:.4rem;align-items:center;box-shadow:var(--shadow);}
     [data-theme="dark"] .stat-pill{background:rgba(25,42,31,.95);}
     .stat-pill span{color:var(--green);font-weight:700;}
@@ -114,6 +120,10 @@
     .map-cta-box .ico{font-size:2.5rem;margin-bottom:.75rem;}
     .map-cta-box h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;letter-spacing:-.02em;margin-bottom:.3rem;color:var(--ink);}
     .map-cta-box p{color:var(--muted);font-size:.85rem;margin-bottom:1.2rem;}
+
+    /* Toast */
+    .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:white;padding:.7rem 1.4rem;border-radius:100px;font-size:.85rem;font-weight:500;z-index:9999;transition:transform .3s ease;pointer-events:none;white-space:nowrap;}
+    .toast.show{transform:translateX(-50%) translateY(0);}
 
     /* MODAL */
     .overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);}
@@ -186,6 +196,9 @@
 </head>
 <body>
 
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
 <nav>
   <a href="index.html" class="logo"><div class="logo-mark">♻</div>EcoTrace</a>
   <ul class="nav-links">
@@ -211,7 +224,7 @@
       <div class="search-wrap">
         <span style="color:var(--muted2)">🔍</span>
         <input type="text" id="searchInput" placeholder="Search by name or area..." oninput="filterCenters()">
-        <button class="loc-btn" onclick="useMyLocation()">📍 Near Me</button>
+        <button class="loc-btn" id="locBtn" onclick="useMyLocation()">📍 Near Me</button>
       </div>
     </div>
     <div class="filter-bar">
@@ -227,10 +240,10 @@
     <div class="map-placeholder" id="mapPlaceholder">
       <div class="map-grid-bg"></div>
       <div class="map-pins" id="mapPins"></div>
-      <div class="map-cta-box">
+      <div class="map-cta-box" id="mapCtaBox">
         <div class="ico">🗺</div>
         <h3>Interactive Map</h3>
-        <p>Enable location to see nearby centers</p>
+        <p>Enable location to see nearby centers sorted by distance</p>
         <button onclick="useMyLocation()" style="background:var(--green);color:white;border:none;border-radius:100px;padding:.6rem 1.4rem;font-weight:600;font-size:.875rem;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='var(--green-mid)'" onmouseout="this.style.background='var(--green)'">📍 Use My Location</button>
       </div>
     </div>
@@ -250,6 +263,7 @@
         <div class="detail-row">🕐 <span id="detailHours"></span></div>
         <div class="detail-row">📞 <span id="detailPhone"></span></div>
         <div class="detail-row">⭐ <span id="detailRating"></span></div>
+        <div class="detail-row">📏 <span id="detailDistance" style="color:var(--green);font-weight:600;"></span></div>
         <div class="detail-row">♻️ Accepts: <span id="detailAccepts" style="color:var(--ink)"></span></div>
       </div>
       <div class="detail-actions">
@@ -356,12 +370,29 @@
 </div>
 
 <script>
-// Theme
-(function(){const t=localStorage.getItem('ecotrace_theme')||'light';document.documentElement.setAttribute('data-theme',t);const k=document.getElementById('themeKnob');if(k)k.textContent=t==='dark'?'☾':'☀';})();
-document.getElementById('themeToggle').addEventListener('click',function(){const cur=document.documentElement.getAttribute('data-theme');const next=cur==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('ecotrace_theme',next);const k=document.getElementById('themeKnob');if(k)k.textContent=next==='dark'?'☾':'☀';});
+// ── THEME ──
+(function(){
+  const t = localStorage.getItem('ecotrace_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', t);
+  const k = document.getElementById('themeKnob');
+  if(k) k.textContent = t === 'dark' ? '☾' : '☀';
+})();
+document.getElementById('themeToggle').addEventListener('click', function(){
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('ecotrace_theme', next);
+  const k = document.getElementById('themeKnob');
+  if(k) k.textContent = next === 'dark' ? '☾' : '☀';
+});
 
-const API_BASE='http://localhost:5000/api';
-const CENTERS_DATA=[
+// ── CONFIG ── ✅ FIXED: was 5000, now 3000
+const API_BASE = 'http://localhost:3000/api';
+
+const CO2_MAP    = {Smartphone:70,Laptop:156,Tablet:90,Charger:2,Battery:5,Headphones:8,Printer:200,Monitor:450,TV:350,Other:50};
+const POINTS_MAP = {Smartphone:50,Laptop:100,Tablet:70,Charger:20,Battery:30,Headphones:25,Printer:120,Monitor:150,TV:130,Other:40};
+
+let CENTERS_DATA = [
   {id:1,name:'GreenCycle Hub',address:'MG Road, Hyderabad',phone:'+91 98765 43210',rating:4.8,type:'Certified Facility',certified:true,free:true,hours:'Mon–Sat: 9AM–6PM',open:true,accepts:['Phones','Laptops','Batteries','Monitors'],lat:17.4374,lng:78.4487,distance:'1.2 km'},
   {id:2,name:'EcoRecycle Center',address:'Jubilee Hills, Hyderabad',phone:'+91 87654 32109',rating:4.5,type:'Government Facility',certified:true,free:true,hours:'Mon–Fri: 10AM–5PM',open:true,accepts:['All Electronics','Batteries','Cables'],lat:17.4311,lng:78.4054,distance:'3.4 km'},
   {id:3,name:'Tech Disposal Unit',address:'HITEC City, Hyderabad',phone:'+91 76543 21098',rating:4.2,type:'Corporate Facility',certified:true,free:false,hours:'Mon–Sat: 8AM–8PM',open:true,accepts:['Laptops','Servers','Printers','Phones'],lat:17.4474,lng:78.3762,distance:'5.1 km'},
@@ -369,29 +400,335 @@ const CENTERS_DATA=[
   {id:5,name:'Recykal Smart Bin',address:'Gachibowli, Hyderabad',phone:'+91 54321 09876',rating:4.6,type:'Smart Bin',certified:true,free:true,hours:'24/7 Drop-off',open:true,accepts:['Phones','Tablets','Chargers','Earphones'],lat:17.4416,lng:78.3486,distance:'6.3 km'},
   {id:6,name:'Attero Recycling',address:'Kompally, Hyderabad',phone:'+91 43210 98765',rating:4.7,type:'Certified Facility',certified:true,free:true,hours:'Mon–Sat: 9AM–5PM',open:false,accepts:['All E-Waste','Industrial Electronics'],lat:17.5418,lng:78.4859,distance:'12.1 km'}
 ];
-const CO2_MAP={Smartphone:70,Laptop:156,Tablet:90,Charger:2,Battery:5,Headphones:8,Printer:200,Monitor:450,TV:350,Other:50};
-const POINTS_MAP={Smartphone:50,Laptop:100,Tablet:70,Charger:20,Battery:30,Headphones:25,Printer:120,Monitor:150,TV:130,Other:40};
-let activeFilter='all',selectedCenter=null;
 
-function renderCenters(list){document.getElementById('centerCount').textContent=`${list.length} center${list.length!==1?'s':''} found`;document.getElementById('centersList').innerHTML=list.map(c=>`<div class="center-card ${selectedCenter?.id===c.id?'selected':''}" onclick="selectCenter(${c.id})"><div class="center-card-header"><div class="center-name">${c.name}</div><span class="center-badge ${c.certified?'':'orange'}">${c.certified?'✅ Certified':'⚡ Drop-off'}</span></div><div class="center-address">📍 ${c.address}</div><div class="center-meta"><span class="center-tag ${c.open?'open':'closed'}">${c.open?'🟢 Open Now':'🔴 Closed'}</span><span class="center-tag">📏 ${c.distance||'—'}</span><span class="center-tag">⭐ ${c.rating}</span>${c.free?'<span class="center-tag" style="color:var(--green)">🆓 Free</span>':''}</div><div class="accepts-row">${c.accepts.map(a=>`<span class="accept-tag">${a}</span>`).join('')}</div></div>`).join('');renderPins(list);}
-function renderPins(list){const wrap=document.getElementById('mapPins'),el=document.getElementById('mapPlaceholder'),w=el.offsetWidth,h=el.offsetHeight,minLat=17.39,maxLat=17.56,minLng=78.34,maxLng=78.50;wrap.innerHTML=list.map(c=>{const x=((c.lng-minLng)/(maxLng-minLng))*(w-80)+40,y=(1-(c.lat-minLat)/(maxLat-minLat))*(h-80)+20;return`<div class="map-pin" style="left:${x}px;top:${y}px;" onclick="selectCenter(${c.id})"><div class="pin-bubble">${c.name.split(' ')[0]}</div><div class="pin-stem"></div></div>`;}).join('');}
-function selectCenter(id){selectedCenter=CENTERS_DATA.find(c=>c.id===id);if(!selectedCenter)return;document.querySelectorAll('.center-card').forEach(el=>el.classList.remove('selected'));document.querySelectorAll('.center-card')[CENTERS_DATA.indexOf(selectedCenter)]?.classList.add('selected');document.getElementById('detailName').textContent=selectedCenter.name;document.getElementById('detailType').textContent=selectedCenter.type;document.getElementById('detailAddr').textContent=selectedCenter.address;document.getElementById('detailHours').textContent=selectedCenter.hours;document.getElementById('detailPhone').textContent=selectedCenter.phone;document.getElementById('detailRating').textContent=`${selectedCenter.rating}/5`;document.getElementById('detailAccepts').textContent=selectedCenter.accepts.join(', ');document.getElementById('directionsBtn').href=`https://www.google.com/maps/dir/?api=1&destination=${selectedCenter.lat},${selectedCenter.lng}`;document.getElementById('detailPanel').style.display='block';}
-function closeDetail(){document.getElementById('detailPanel').style.display='none';}
-function setFilter(f,el){activeFilter=f;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');filterCenters();}
-function filterCenters(){const q=document.getElementById('searchInput').value.toLowerCase();const list=CENTERS_DATA.filter(c=>{const mQ=!q||c.name.toLowerCase().includes(q)||c.address.toLowerCase().includes(q);const mF=activeFilter==='all'?true:activeFilter==='open'?c.open:activeFilter==='free'?c.free:activeFilter==='certified'?c.certified:true;return mQ&&mF;});renderCenters(list);}
-async function useMyLocation(){if(!navigator.geolocation){alert('Geolocation not supported.');return;}navigator.geolocation.getCurrentPosition(async pos=>{const{latitude:lat,longitude:lng}=pos.coords;document.getElementById('searchInput').value=`Near me (${lat.toFixed(3)}, ${lng.toFixed(3)})`;try{const res=await fetch(`${API_BASE}/centers?lat=${lat}&lng=${lng}&radius=10`);if(res.ok){const d=await res.json();if(d.centers){CENTERS_DATA.length=0;CENTERS_DATA.push(...d.centers);renderCenters(CENTERS_DATA);return;}}}catch(e){}filterCenters();alert('📍 Location detected! Showing nearest centers.');},()=>alert('Unable to get location.'));}
+let activeFilter = 'all';
+let selectedCenter = null;
+let userLocation = null;
 
-function openSchedule(){if(!selectedCenter)return;document.getElementById('formSection').style.display='block';document.getElementById('successScreen').style.display='none';document.querySelectorAll('.t-slot').forEach(s=>s.classList.remove('sel'));document.querySelectorAll('.dev-chk').forEach(c=>c.checked=false);['fName','fPhone','fEmail','fStreet','fNotes'].forEach(id=>{const el=document.getElementById(id);if(el){el.value='';el.classList.remove('err');}});document.getElementById('fCity').value='Hyderabad';document.getElementById('fPin').value='';document.getElementById('fType').value='self';document.getElementById('fDate').value='';document.getElementById('fDate').min=new Date().toISOString().split('T')[0];document.getElementById('bannerName').textContent=selectedCenter.name;document.getElementById('bannerMeta').textContent=`${selectedCenter.address} · ${selectedCenter.hours}`;document.getElementById('modalSub').textContent=`Booking at ${selectedCenter.name}`;document.getElementById('overlay').style.display='block';const m=document.getElementById('scheduleModal');m.style.display='block';m.classList.add('open');document.body.style.overflow='hidden';}
-function closeModal(){document.getElementById('overlay').style.display='none';document.getElementById('scheduleModal').style.display='none';document.getElementById('scheduleModal').classList.remove('open');document.body.style.overflow='';}
-function pickSlot(el){document.querySelectorAll('.t-slot').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');}
-function submitForm(){const name=document.getElementById('fName').value.trim(),phone=document.getElementById('fPhone').value.trim(),date=document.getElementById('fDate').value,slot=document.querySelector('.t-slot.sel');['fName','fPhone','fDate'].forEach(id=>document.getElementById(id).classList.remove('err'));let ok=true;if(!name){document.getElementById('fName').classList.add('err');ok=false;}if(!phone){document.getElementById('fPhone').classList.add('err');ok=false;}if(!date){document.getElementById('fDate').classList.add('err');ok=false;}if(!ok){document.querySelector('.err')?.focus();return;}if(!slot){alert('⚠️ Please select a time slot.');return;}const devices=[...document.querySelectorAll('.dev-chk:checked')].map(c=>c.value);const booking={booking_id:'ECO-'+Date.now().toString().slice(-6),center_id:selectedCenter.id,center_name:selectedCenter.name,name,phone,email:document.getElementById('fEmail').value.trim(),address:[document.getElementById('fStreet').value.trim(),document.getElementById('fCity').value.trim(),document.getElementById('fPin').value.trim()].filter(Boolean).join(', '),date,time:slot.textContent,type:document.getElementById('fType').value,devices,notes:document.getElementById('fNotes').value.trim()};try{const arr=JSON.parse(localStorage.getItem('ecotrace_bookings')||'[]');arr.unshift({...booking,created:new Date().toISOString()});localStorage.setItem('ecotrace_bookings',JSON.stringify(arr.slice(0,20)));}catch(e){}fetch(`${API_BASE}/centers/schedule`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(booking)}).catch(()=>{});showSuccess(booking);}
-function showSuccess(b){document.getElementById('formSection').style.display='none';document.getElementById('successScreen').style.display='block';document.getElementById('scheduleModal').scrollTop=0;document.getElementById('heroName').textContent=b.name.split(' ')[0];let co2=0,pts=0;(b.devices||[]).forEach(d=>{co2+=CO2_MAP[d]||50;pts+=POINTS_MAP[d]||40;});if(co2===0){co2=50;pts=40;}document.getElementById('impCO2').textContent=co2+' kg';document.getElementById('impDevices').textContent=(b.devices||[]).length||'1';document.getElementById('impPoints').textContent='+'+pts;document.getElementById('bkCode').textContent=b.booking_id;const ds=new Date(b.date).toLocaleDateString('en-IN',{day:'numeric',month:'short'});document.getElementById('sumPills').innerHTML=[`📅 ${ds}`,`🕐 ${b.time}`,b.type==='pickup'?'🚚 Pickup':'🚶 Drop-off',`📍 ${b.center_name.split(' ').slice(0,2).join(' ')}`].map(t=>`<span class="s-pill">${t}</span>`).join('');const steps=b.type==='pickup'?[`📲 Our team will call you to confirm the pickup window.`,`🚚 Agent arrives on ${ds} at ${b.time}.`,`📦 Hand over your devices — we handle everything safely.`,`⭐ ${pts} Eco Points will be credited to your account.`]:[`📅 Visit ${b.center_name} on ${ds} at ${b.time}.`,`📦 Bring your devices — no packaging needed.`,`✅ Staff will process your e-waste safely.`,`⭐ ${pts} Eco Points credited after drop-off.`];document.getElementById('wnSteps').innerHTML=steps.map((s,i)=>`<div class="wn-step"><div class="wn-num">${i+1}</div><span>${s}</span></div>`).join('');spawnConfetti();}
-function spawnConfetti(){const wrap=document.getElementById('confettiWrap');wrap.innerHTML='';const colors=['#45b872','#e07b4a','#95d5b2','#1a6b42','#b7e4c7','#ffffff'];for(let i=0;i<50;i++){const d=document.createElement('div');const sz=(Math.random()*9+4).toFixed(1),clr=colors[Math.floor(Math.random()*colors.length)],dur=(Math.random()*1.8+1.4).toFixed(2),del=(Math.random()*.9).toFixed(2),tx=(Math.random()*80-40).toFixed(0),rot=(Math.random()*720-360).toFixed(0),id='cf'+i;d.style.cssText=`position:absolute;width:${sz}px;height:${sz}px;background:${clr};border-radius:${Math.random()>.5?'50%':'3px'};left:${(Math.random()*100).toFixed(1)}%;top:-12px;animation:${id} ${dur}s ${del}s linear forwards;opacity:.8;`;const st=document.createElement('style');st.textContent=`@keyframes ${id}{0%{top:-12px;transform:rotate(0deg) translateX(0);opacity:.8}100%{top:105%;transform:rotate(${rot}deg) translateX(${tx}px);opacity:0}}`;document.head.appendChild(st);wrap.appendChild(d);}}
+// ── TOAST ──
+function showToast(msg, duration = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
 
+// ── DISTANCE CALC ──
+function getDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// ── RENDER ──
+function renderCenters(list) {
+  document.getElementById('centerCount').textContent = `${list.length} center${list.length !== 1 ? 's' : ''} found`;
+  document.getElementById('centersList').innerHTML = list.map(c => `
+    <div class="center-card ${selectedCenter?.id === c.id ? 'selected' : ''}" onclick="selectCenter(${c.id})">
+      <div class="center-card-header">
+        <div class="center-name">${c.name}</div>
+        <span class="center-badge ${c.certified ? '' : 'orange'}">${c.certified ? '✅ Certified' : '⚡ Drop-off'}</span>
+      </div>
+      <div class="center-address">📍 ${c.address}</div>
+      <div class="center-meta">
+        <span class="center-tag ${c.open ? 'open' : 'closed'}">${c.open ? '🟢 Open Now' : '🔴 Closed'}</span>
+        <span class="center-tag">📏 ${c.distance || '—'}</span>
+        <span class="center-tag">⭐ ${c.rating}</span>
+        ${c.free ? '<span class="center-tag" style="color:var(--green)">🆓 Free</span>' : ''}
+      </div>
+      <div class="accepts-row">${c.accepts.map(a => `<span class="accept-tag">${a}</span>`).join('')}</div>
+    </div>`).join('');
+  renderPins(list);
+  updateStats(list);
+}
+
+function renderPins(list) {
+  const wrap = document.getElementById('mapPins');
+  const el = document.getElementById('mapPlaceholder');
+  const w = el.offsetWidth, h = el.offsetHeight;
+  const minLat=17.39, maxLat=17.56, minLng=78.34, maxLng=78.50;
+  wrap.innerHTML = list.map(c => {
+    const x = ((c.lng - minLng) / (maxLng - minLng)) * (w - 80) + 40;
+    const y = (1 - (c.lat - minLat) / (maxLat - minLat)) * (h - 80) + 20;
+    return `<div class="map-pin ${selectedCenter?.id === c.id ? 'active-pin' : ''}" style="left:${x}px;top:${y}px;" onclick="selectCenter(${c.id})">
+      <div class="pin-bubble">${c.name.split(' ')[0]}</div>
+      <div class="pin-stem"></div>
+    </div>`;
+  }).join('');
+}
+
+function updateStats(list) {
+  document.getElementById('totalCenters').textContent = list.length;
+  document.getElementById('openCenters').textContent = list.filter(c => c.open).length;
+  document.getElementById('avgRating').textContent = list.length
+    ? (list.reduce((s,c) => s + c.rating, 0) / list.length).toFixed(1) : '—';
+}
+
+// ── SELECT CENTER ──
+function selectCenter(id) {
+  selectedCenter = CENTERS_DATA.find(c => c.id === id);
+  if (!selectedCenter) return;
+
+  // Update card highlight
+  document.querySelectorAll('.center-card').forEach((el, i) => {
+    el.classList.toggle('selected', CENTERS_DATA[i]?.id === id);
+  });
+
+  // Update detail panel
+  document.getElementById('detailName').textContent    = selectedCenter.name;
+  document.getElementById('detailType').textContent    = selectedCenter.type;
+  document.getElementById('detailAddr').textContent    = selectedCenter.address;
+  document.getElementById('detailHours').textContent   = selectedCenter.hours;
+  document.getElementById('detailPhone').textContent   = selectedCenter.phone;
+  document.getElementById('detailRating').textContent  = `${selectedCenter.rating}/5`;
+  document.getElementById('detailDistance').textContent = selectedCenter.distance ? `${selectedCenter.distance} away` : '';
+  document.getElementById('detailAccepts').textContent = selectedCenter.accepts.join(', ');
+  document.getElementById('directionsBtn').href = `https://www.google.com/maps/dir/?api=1&destination=${selectedCenter.lat},${selectedCenter.lng}`;
+  document.getElementById('detailPanel').style.display = 'block';
+
+  // Re-render pins to highlight selected
+  renderPins(CENTERS_DATA.filter(c => {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const mQ = !q || c.name.toLowerCase().includes(q) || c.address.toLowerCase().includes(q);
+    const mF = activeFilter === 'all' ? true : activeFilter === 'open' ? c.open : activeFilter === 'free' ? c.free : c.certified;
+    return mQ && mF;
+  }));
+}
+
+function closeDetail() {
+  document.getElementById('detailPanel').style.display = 'none';
+}
+
+// ── FILTER ──
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  filterCenters();
+}
+
+function filterCenters() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const list = CENTERS_DATA.filter(c => {
+    const mQ = !q || c.name.toLowerCase().includes(q) || c.address.toLowerCase().includes(q);
+    const mF = activeFilter === 'all' ? true
+             : activeFilter === 'open' ? c.open
+             : activeFilter === 'free' ? c.free
+             : c.certified;
+    return mQ && mF;
+  });
+  renderCenters(list);
+}
+
+// ── USE MY LOCATION ── ✅ FIXED: now properly fetches from API with coords
+async function useMyLocation() {
+  if (!navigator.geolocation) {
+    showToast('❌ Geolocation not supported by your browser.');
+    return;
+  }
+
+  const btn = document.getElementById('locBtn');
+  btn.textContent = '⏳ Locating...';
+  btn.disabled = true;
+
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const { latitude: lat, longitude: lng } = pos.coords;
+      userLocation = { lat, lng };
+
+      // Hide the CTA box once location is found
+      document.getElementById('mapCtaBox').style.display = 'none';
+      document.getElementById('searchInput').value = `📍 Near me`;
+
+      try {
+        // ✅ Call API with user coordinates
+        const res = await fetch(`${API_BASE}/centers?lat=${lat}&lng=${lng}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.centers && data.centers.length) {
+            CENTERS_DATA = data.centers;
+            renderCenters(CENTERS_DATA);
+            showToast(`📍 Found ${CENTERS_DATA.length} centers near you, sorted by distance!`);
+            btn.textContent = '✅ Located';
+            btn.disabled = false;
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('API unreachable, using local distance calc:', e.message);
+      }
+
+      // Fallback: calculate distances locally if API fails
+      CENTERS_DATA = CENTERS_DATA.map(c => ({
+        ...c,
+        distance: getDistance(lat, lng, c.lat, c.lng).toFixed(1) + ' km'
+      })).sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+
+      renderCenters(CENTERS_DATA);
+      showToast(`📍 Showing ${CENTERS_DATA.length} centers sorted by distance!`);
+      btn.textContent = '✅ Located';
+      btn.disabled = false;
+    },
+    (err) => {
+      btn.textContent = '📍 Near Me';
+      btn.disabled = false;
+      if (err.code === 1) showToast('❌ Location permission denied. Please allow access.');
+      else showToast('❌ Unable to get your location. Try again.');
+    },
+    { timeout: 10000, maximumAge: 60000 }
+  );
+}
+
+// ── SCHEDULE MODAL ──
+function openSchedule() {
+  if (!selectedCenter) return;
+  document.getElementById('formSection').style.display = 'block';
+  document.getElementById('successScreen').style.display = 'none';
+  document.querySelectorAll('.t-slot').forEach(s => s.classList.remove('sel'));
+  document.querySelectorAll('.dev-chk').forEach(c => c.checked = false);
+  ['fName','fPhone','fEmail','fStreet','fNotes'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = ''; el.classList.remove('err'); }
+  });
+  document.getElementById('fCity').value = 'Hyderabad';
+  document.getElementById('fPin').value = '';
+  document.getElementById('fType').value = 'self';
+  document.getElementById('fDate').value = '';
+  document.getElementById('fDate').min = new Date().toISOString().split('T')[0];
+  document.getElementById('bannerName').textContent = selectedCenter.name;
+  document.getElementById('bannerMeta').textContent = `${selectedCenter.address} · ${selectedCenter.hours}`;
+  document.getElementById('modalSub').textContent = `Booking at ${selectedCenter.name}`;
+  document.getElementById('overlay').style.display = 'block';
+  const m = document.getElementById('scheduleModal');
+  m.style.display = 'block';
+  m.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('scheduleModal').style.display = 'none';
+  document.getElementById('scheduleModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function pickSlot(el) {
+  document.querySelectorAll('.t-slot').forEach(s => s.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function submitForm() {
+  const name  = document.getElementById('fName').value.trim();
+  const phone = document.getElementById('fPhone').value.trim();
+  const date  = document.getElementById('fDate').value;
+  const slot  = document.querySelector('.t-slot.sel');
+
+  ['fName','fPhone','fDate'].forEach(id => document.getElementById(id).classList.remove('err'));
+  let ok = true;
+  if (!name)  { document.getElementById('fName').classList.add('err');  ok = false; }
+  if (!phone) { document.getElementById('fPhone').classList.add('err'); ok = false; }
+  if (!date)  { document.getElementById('fDate').classList.add('err');  ok = false; }
+  if (!ok) { document.querySelector('.err')?.focus(); return; }
+  if (!slot) { showToast('⚠️ Please select a time slot.'); return; }
+
+  const devices = [...document.querySelectorAll('.dev-chk:checked')].map(c => c.value);
+  const booking = {
+    booking_id: 'ECO-' + Date.now().toString().slice(-6),
+    center_id: selectedCenter.id,
+    center_name: selectedCenter.name,
+    name, phone,
+    email:   document.getElementById('fEmail').value.trim(),
+    address: [document.getElementById('fStreet').value.trim(), document.getElementById('fCity').value.trim(), document.getElementById('fPin').value.trim()].filter(Boolean).join(', '),
+    date, time: slot.textContent,
+    type: document.getElementById('fType').value,
+    devices,
+    notes: document.getElementById('fNotes').value.trim()
+  };
+
+  try {
+    const arr = JSON.parse(localStorage.getItem('ecotrace_bookings') || '[]');
+    arr.unshift({ ...booking, created: new Date().toISOString() });
+    localStorage.setItem('ecotrace_bookings', JSON.stringify(arr.slice(0, 20)));
+  } catch(e) {}
+
+  fetch(`${API_BASE}/centers/schedule`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(booking)
+  }).catch(() => {});
+
+  showSuccess(booking);
+}
+
+function showSuccess(b) {
+  document.getElementById('formSection').style.display = 'none';
+  document.getElementById('successScreen').style.display = 'block';
+  document.getElementById('scheduleModal').scrollTop = 0;
+  document.getElementById('heroName').textContent = b.name.split(' ')[0];
+
+  let co2 = 0, pts = 0;
+  (b.devices || []).forEach(d => { co2 += CO2_MAP[d] || 50; pts += POINTS_MAP[d] || 40; });
+  if (co2 === 0) { co2 = 50; pts = 40; }
+
+  document.getElementById('impCO2').textContent     = co2 + ' kg';
+  document.getElementById('impDevices').textContent = (b.devices || []).length || '1';
+  document.getElementById('impPoints').textContent  = '+' + pts;
+  document.getElementById('bkCode').textContent     = b.booking_id;
+
+  const ds = new Date(b.date).toLocaleDateString('en-IN', {day:'numeric', month:'short'});
+  document.getElementById('sumPills').innerHTML = [
+    `📅 ${ds}`, `🕐 ${b.time}`,
+    b.type === 'pickup' ? '🚚 Pickup' : '🚶 Drop-off',
+    `📍 ${b.center_name.split(' ').slice(0,2).join(' ')}`
+  ].map(t => `<span class="s-pill">${t}</span>`).join('');
+
+  const steps = b.type === 'pickup'
+    ? [`📲 Our team will call you to confirm the pickup window.`, `🚚 Agent arrives on ${ds} at ${b.time}.`, `📦 Hand over your devices — we handle everything safely.`, `⭐ ${pts} Eco Points will be credited to your account.`]
+    : [`📅 Visit ${b.center_name} on ${ds} at ${b.time}.`, `📦 Bring your devices — no packaging needed.`, `✅ Staff will process your e-waste safely.`, `⭐ ${pts} Eco Points credited after drop-off.`];
+
+  document.getElementById('wnSteps').innerHTML = steps.map((s, i) =>
+    `<div class="wn-step"><div class="wn-num">${i+1}</div><span>${s}</span></div>`).join('');
+
+  spawnConfetti();
+}
+
+function spawnConfetti() {
+  const wrap = document.getElementById('confettiWrap');
+  wrap.innerHTML = '';
+  const colors = ['#45b872','#e07b4a','#95d5b2','#1a6b42','#b7e4c7','#ffffff'];
+  for (let i = 0; i < 50; i++) {
+    const d = document.createElement('div');
+    const sz = (Math.random()*9+4).toFixed(1), clr = colors[Math.floor(Math.random()*colors.length)];
+    const dur = (Math.random()*1.8+1.4).toFixed(2), del = (Math.random()*.9).toFixed(2);
+    const tx = (Math.random()*80-40).toFixed(0), rot = (Math.random()*720-360).toFixed(0), id = 'cf'+i;
+    d.style.cssText = `position:absolute;width:${sz}px;height:${sz}px;background:${clr};border-radius:${Math.random()>.5?'50%':'3px'};left:${(Math.random()*100).toFixed(1)}%;top:-12px;animation:${id} ${dur}s ${del}s linear forwards;opacity:.8;`;
+    const st = document.createElement('style');
+    st.textContent = `@keyframes ${id}{0%{top:-12px;transform:rotate(0deg) translateX(0);opacity:.8}100%{top:105%;transform:rotate(${rot}deg) translateX(${tx}px);opacity:0}}`;
+    document.head.appendChild(st);
+    wrap.appendChild(d);
+  }
+}
+
+// ── INIT ──
 renderCenters(CENTERS_DATA);
-document.getElementById('openCenters').textContent=CENTERS_DATA.filter(c=>c.open).length;
-document.getElementById('avgRating').textContent=(CENTERS_DATA.reduce((s,c)=>s+c.rating,0)/CENTERS_DATA.length).toFixed(1);
-(async()=>{try{const res=await fetch(`${API_BASE}/centers`);if(res.ok){const d=await res.json();if(d.centers){CENTERS_DATA.length=0;CENTERS_DATA.push(...d.centers);renderCenters(CENTERS_DATA);document.getElementById('openCenters').textContent=CENTERS_DATA.filter(c=>c.open).length;}}}catch(e){}})();
+
+// Load from API on page load
+(async () => {
+  try {
+    const res = await fetch(`${API_BASE}/centers`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.centers && data.centers.length) {
+        CENTERS_DATA = data.centers;
+        renderCenters(CENTERS_DATA);
+      }
+    }
+  } catch(e) {
+    console.warn('Server not reachable, using local data.');
+  }
+})();
 </script>
 </body>
 </html>

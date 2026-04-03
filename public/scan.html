@@ -372,7 +372,7 @@
               <span class="btn-label">Keep</span>
               <span class="btn-hint">Save locally only</span>
             </button>
-            <!-- SELL: save to dashboard -->
+            <!-- SELL: save to dashboard, stay on page -->
             <button class="decision-btn btn-sell" id="btnSell" onclick="handleSell()">
               <span class="sell-badge">FREE</span>
               <span class="btn-icon">💰</span>
@@ -384,6 +384,7 @@
           <div class="decision-confirm confirm-sell" id="confirmSell"></div>
         </div>
 
+        <!-- ✅ Find Recycling Centers links to centers.html (no redirect on sell) -->
         <div class="result-actions" id="resultActions" style="display:flex;margin-top:.4rem;">
           <a href="centers.html" class="act-btn primary">📍 Find Recycling Centers Near Me</a>
           <button class="act-btn secondary" onclick="requestPickup()">🚚 Request Doorstep Pickup</button>
@@ -473,14 +474,13 @@ function handleSell(){
   document.getElementById('confirmKeep').style.display='none';
 
   const cs = document.getElementById('confirmSell');
-
   const token = localStorage.getItem('ecotrace_token');
 
   if(token){
     // Logged in — save with forSale=true so dashboard picks it up
     saveToHistory(lastResult, true);
 
-    // Write pending_sale for dashboard to read immediately
+    // Write pending_sale for dashboard to read
     const pending = {
       deviceType:        lastResult.device_type,
       deviceName:        lastResult.rawDeviceName || lastResult.device_type,
@@ -493,10 +493,10 @@ function handleSell(){
     };
     localStorage.setItem('ecotrace_pending_sale', JSON.stringify(pending));
 
-    cs.textContent = '🛒 Listed! Redirecting to your dashboard…';
+    // ✅ Stay on page — just show confirmation, no redirect
+    cs.textContent = '✅ Listed on your dashboard! Visit Dashboard anytime to manage it.';
     cs.style.display = 'flex';
     toast('🛒 Device listed for sale on dashboard!');
-    setTimeout(()=>{ window.location.href='dashboard.html'; }, 1400);
     return;
   }
 

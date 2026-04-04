@@ -26,7 +26,7 @@
     *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s;}
 
-    /* NAV — identical to centers.html */
+    /* NAV */
     nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:rgba(255,255,255,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:200;position:sticky;top:0;transition:background .3s,border-color .3s;}
     [data-theme="dark"] nav{background:rgba(12,24,16,.9);}
     .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:var(--green);letter-spacing:-.03em;text-decoration:none;display:flex;align-items:center;gap:.55rem;}
@@ -39,6 +39,14 @@
     [data-theme="dark"] .theme-toggle{background:var(--green);}
     .theme-knob{position:absolute;top:4px;left:4px;width:18px;height:18px;border-radius:50%;background:white;transition:transform .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;justify-content:center;font-size:.6rem;}
     [data-theme="dark"] .theme-knob{transform:translateX(20px);}
+
+    /* USER NAV CHIP */
+    .nav-user{display:flex;align-items:center;gap:.55rem;padding:.32rem .75rem .32rem .45rem;border-radius:100px;border:1px solid var(--border);background:var(--bg2);transition:all .2s;cursor:default;}
+    .nav-user-avatar{width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;color:white;font-family:'Syne',sans-serif;font-size:.7rem;font-weight:800;flex-shrink:0;}
+    .nav-user-name{font-size:.8rem;font-weight:600;color:var(--ink2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .signout-btn{display:flex;align-items:center;gap:.35rem;padding:.32rem .8rem;border-radius:100px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.78rem;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .22s;}
+    .signout-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-pale);}
+    .signout-btn svg{width:13px;height:13px;flex-shrink:0;}
 
     /* PAGE */
     .page{max-width:1200px;margin:0 auto;padding:2.5rem 2rem;}
@@ -179,7 +187,7 @@
     .flex-gap{display:flex;gap:.6rem;align-items:center;}
 
     @media(max-width:1024px){.stats-grid{grid-template-columns:repeat(2,1fr);}.main-grid{grid-template-columns:1fr;}.bottom-grid{grid-template-columns:1fr;}}
-    @media(max-width:768px){nav{padding:0 1.5rem;}.nav-links{display:none;}.user-hero{flex-direction:column;gap:1.5rem;align-items:flex-start;}.points-badge{text-align:left;}.stats-grid{grid-template-columns:1fr 1fr;}.page{padding:1.5rem 1rem;}}
+    @media(max-width:768px){nav{padding:0 1.5rem;}.nav-links{display:none;}.user-hero{flex-direction:column;gap:1.5rem;align-items:flex-start;}.points-badge{text-align:left;}.stats-grid{grid-template-columns:1fr 1fr;}.page{padding:1.5rem 1rem;}.nav-user-name{display:none;}}
   </style>
 </head>
 <body>
@@ -196,6 +204,20 @@
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
       <div class="theme-knob" id="themeKnob">☀</div>
     </button>
+    <!-- USER CHIP — shows logged-in user name -->
+    <div class="nav-user" id="navUserChip">
+      <div class="nav-user-avatar" id="navAvatar">E</div>
+      <span class="nav-user-name" id="navUserName">Eco Warrior</span>
+    </div>
+    <!-- SIGN OUT -->
+    <button class="signout-btn" id="signOutBtn" onclick="handleSignOut()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Sign Out
+    </button>
   </div>
 </nav>
 
@@ -208,7 +230,7 @@
       <div>
         <div class="user-name" id="userName">Eco Warrior</div>
         <div class="user-level" id="userLevel">🌿 Level 1 – Recycling Starter</div>
-        <div class="user-joined">Member since 2025</div>
+        <div class="user-joined" id="userJoined">Member since 2025</div>
       </div>
     </div>
     <div class="points-badge">
@@ -396,29 +418,125 @@
 </div><!-- /page -->
 
 <script>
-// ── Theme (identical pattern to centers.html) ──
-(function(){const t=localStorage.getItem('ecotrace_theme')||'light';document.documentElement.setAttribute('data-theme',t);const k=document.getElementById('themeKnob');if(k)k.textContent=t==='dark'?'☾':'☀';})();
-document.getElementById('themeToggle').addEventListener('click',function(){const cur=document.documentElement.getAttribute('data-theme');const next=cur==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);localStorage.setItem('ecotrace_theme',next);const k=document.getElementById('themeKnob');if(k)k.textContent=next==='dark'?'☾':'☀';});
+// ══════════════════════════════════════════════════════════════
+//  STEP 1 — Resolve the logged-in user
+//  Returns { key: string, displayName: string, initial: string }
+//  key is used to namespace all localStorage data for this user.
+// ══════════════════════════════════════════════════════════════
+function resolveCurrentUser() {
+  // login.html saves these three keys on successful login:
+  //   localStorage.setItem('ecotrace_name',   data.name || email)
+  //   localStorage.setItem('ecotrace_userId', data.userId)
+  //   localStorage.setItem('ecotrace_token',  data.token)
+  const displayName = localStorage.getItem('ecotrace_name')   || 'Eco Warrior';
+  const userId      = localStorage.getItem('ecotrace_userId') || '';
 
-// ── Constants (same as centers.html) ──
-const API_BASE='http://localhost:5000/api';
-const POINTS_MAP={Smartphone:50,Laptop:100,Tablet:70,Charger:20,Battery:30,Headphones:25,Printer:120,Monitor:150,Keyboard:30,TV:130,Router:40,Other:40};
-const DEVICE_ICONS={Smartphone:'📱',Laptop:'💻',Tablet:'📟',Charger:'🔌',Battery:'🔋',Headphones:'🎧',Printer:'🖨️',Monitor:'🖥️',Keyboard:'⌨️',TV:'📺',Router:'📡',Other:'🔧'};
-const DEVICE_IMPACT={Smartphone:{co2:70,energy:180,water:12,gold:0.03},Laptop:{co2:156,energy:320,water:85,gold:0.5},Tablet:{co2:90,energy:220,water:35,gold:0.08},Charger:{co2:2,energy:5,water:2,gold:0.001},Battery:{co2:5,energy:12,water:5,gold:0.002},Headphones:{co2:8,energy:18,water:4,gold:0.005},Printer:{co2:200,energy:400,water:100,gold:0.1},Monitor:{co2:450,energy:600,water:250,gold:0.2},Keyboard:{co2:15,energy:30,water:8,gold:0.01},TV:{co2:350,energy:500,water:180,gold:0.15},Router:{co2:10,energy:22,water:6,gold:0.008},Other:{co2:50,energy:100,water:30,gold:0.05}};
-const PICKUP_STAGES=[{key:'booked',label:'Booked',icon:'📋'},{key:'confirmed',label:'Confirmed',icon:'✅'},{key:'en_route',label:'En Route',icon:'🚚'},{key:'done',label:'Done',icon:'🎉'}];
-const LEVELS=[{name:'Recycling Starter',pts:0,next:200},{name:'Green Beginner',pts:200,next:500},{name:'Eco Learner',pts:500,next:1000},{name:'Green Guardian',pts:1000,next:1500},{name:'Eco Champion',pts:1500,next:3000},{name:'Planet Hero',pts:3000,next:Infinity}];
+  // Scope all data to the userId (stable even if name changes).
+  // Fall back to a slug of the name if userId is absent.
+  const userKey = userId
+    ? `u_${userId}`
+    : displayName.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '') || 'guest';
 
-// ── Data helpers ──
-function loadScans(){return JSON.parse(localStorage.getItem('ecotrace_scans')||'[]');}
-function loadBookings(){return JSON.parse(localStorage.getItem('ecotrace_bookings')||'[]');}
+  const initial = displayName.trim().charAt(0).toUpperCase();
+  return { key: userKey, displayName, initial };
+}
 
-function calcStats(scans){
+// ══════════════════════════════════════════════════════════════
+//  STEP 2 — Per-user localStorage helpers
+//  All scan/booking data is stored under keys prefixed with
+//  the user's unique key so different logins never mix data.
+// ══════════════════════════════════════════════════════════════
+const CURRENT_USER = resolveCurrentUser();
+
+function userScanKey()    { return `ecotrace_scans_${CURRENT_USER.key}`; }
+function userBookingKey() { return `ecotrace_bookings_${CURRENT_USER.key}`; }
+
+function loadScans() {
+  // Load from user-scoped key first; fall back to legacy global key
+  // (so existing data isn't lost on first upgrade)
+  const scoped = localStorage.getItem(userScanKey());
+  if (scoped !== null) return JSON.parse(scoped);
+  const legacy = localStorage.getItem('ecotrace_scans');
+  if (legacy) {
+    // Migrate legacy data to scoped key and remove legacy key
+    localStorage.setItem(userScanKey(), legacy);
+    localStorage.removeItem('ecotrace_scans');
+    return JSON.parse(legacy);
+  }
+  return [];
+}
+
+function loadBookings() {
+  const scoped = localStorage.getItem(userBookingKey());
+  if (scoped !== null) return JSON.parse(scoped);
+  const legacy = localStorage.getItem('ecotrace_bookings');
+  if (legacy) {
+    localStorage.setItem(userBookingKey(), legacy);
+    localStorage.removeItem('ecotrace_bookings');
+    return JSON.parse(legacy);
+  }
+  return [];
+}
+
+function saveScans(arr)    { localStorage.setItem(userScanKey(),    JSON.stringify(arr)); }
+function saveBookings(arr) { localStorage.setItem(userBookingKey(), JSON.stringify(arr)); }
+
+// ══════════════════════════════════════════════════════════════
+//  STEP 3 — Populate nav chip + hero with the current user
+// ══════════════════════════════════════════════════════════════
+(function applyUserToUI() {
+  const { displayName, initial } = CURRENT_USER;
+
+  // Nav chip
+  document.getElementById('navAvatar').textContent   = initial;
+  document.getElementById('navUserName').textContent = displayName;
+
+  // Hero section
+  document.getElementById('avatarInitial').textContent = initial;
+  document.getElementById('userName').textContent      = displayName;
+})();
+
+// ── Theme ──
+(function(){
+  const t = localStorage.getItem('ecotrace_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', t);
+  const k = document.getElementById('themeKnob');
+  if (k) k.textContent = t === 'dark' ? '☾' : '☀';
+})();
+document.getElementById('themeToggle').addEventListener('click', function() {
+  const cur  = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('ecotrace_theme', next);
+  const k = document.getElementById('themeKnob');
+  if (k) k.textContent = next === 'dark' ? '☾' : '☀';
+});
+
+// ── Sign Out ──
+function handleSignOut() {
+  // Clear the exact three keys that login.html sets — scoped data is preserved
+  localStorage.removeItem('ecotrace_name');
+  localStorage.removeItem('ecotrace_userId');
+  localStorage.removeItem('ecotrace_token');
+  window.location.href = 'index.html';
+}
+
+// ── Constants (unchanged) ──
+const API_BASE = 'http://localhost:5000/api';
+const POINTS_MAP = {Smartphone:50,Laptop:100,Tablet:70,Charger:20,Battery:30,Headphones:25,Printer:120,Monitor:150,Keyboard:30,TV:130,Router:40,Other:40};
+const DEVICE_ICONS = {Smartphone:'📱',Laptop:'💻',Tablet:'📟',Charger:'🔌',Battery:'🔋',Headphones:'🎧',Printer:'🖨️',Monitor:'🖥️',Keyboard:'⌨️',TV:'📺',Router:'📡',Other:'🔧'};
+const DEVICE_IMPACT = {Smartphone:{co2:70,energy:180,water:12,gold:0.03},Laptop:{co2:156,energy:320,water:85,gold:0.5},Tablet:{co2:90,energy:220,water:35,gold:0.08},Charger:{co2:2,energy:5,water:2,gold:0.001},Battery:{co2:5,energy:12,water:5,gold:0.002},Headphones:{co2:8,energy:18,water:4,gold:0.005},Printer:{co2:200,energy:400,water:100,gold:0.1},Monitor:{co2:450,energy:600,water:250,gold:0.2},Keyboard:{co2:15,energy:30,water:8,gold:0.01},TV:{co2:350,energy:500,water:180,gold:0.15},Router:{co2:10,energy:22,water:6,gold:0.008},Other:{co2:50,energy:100,water:30,gold:0.05}};
+const PICKUP_STAGES = [{key:'booked',label:'Booked',icon:'📋'},{key:'confirmed',label:'Confirmed',icon:'✅'},{key:'en_route',label:'En Route',icon:'🚚'},{key:'done',label:'Done',icon:'🎉'}];
+const LEVELS = [{name:'Recycling Starter',pts:0,next:200},{name:'Green Beginner',pts:200,next:500},{name:'Eco Learner',pts:500,next:1000},{name:'Green Guardian',pts:1000,next:1500},{name:'Eco Champion',pts:1500,next:3000},{name:'Planet Hero',pts:3000,next:Infinity}];
+
+// ── Stats calculation (unchanged) ──
+function calcStats(scans) {
   let co2=0,energy=0,water=0,gold=0,points=0;
   scans.forEach(s=>{const imp=DEVICE_IMPACT[s.device_type]||DEVICE_IMPACT.Other;co2+=imp.co2;energy+=imp.energy;water+=imp.water;gold+=imp.gold;points+=POINTS_MAP[s.device_type]||40;});
   return{co2,energy,water,gold,points,count:scans.length};
 }
 
-function getStageIndex(b){
+function getStageIndex(b) {
   if(b.status==='completed')return 3;
   if(b.status==='in_transit')return 2;
   if(b.status==='confirmed')return 1;
@@ -427,175 +545,207 @@ function getStageIndex(b){
   return 0;
 }
 
-// ── Animate number ──
-function animateNum(el,target,suffix='',dec=0){
+function animateNum(el,target,suffix='',dec=0) {
   if(!el)return;let s=0;const step=target/40||0;
   if(target===0){el.textContent='0'+suffix;return;}
   const iv=setInterval(()=>{s=Math.min(s+step,target);el.textContent=s.toFixed(dec)+suffix;if(s>=target)clearInterval(iv);},30);
 }
 
-// ── Level system ──
-function getLevel(pts){
+function getLevel(pts) {
   let lv=LEVELS[0];
   for(const l of LEVELS){if(pts>=l.pts)lv=l;}
   return lv;
 }
 
-// ── Render pickups ──
-function renderPickups(){
-  const bookings=loadBookings();
-  const el=document.getElementById('pickupList');
-  if(!bookings.length){el.innerHTML=`<div class="empty-state">No bookings yet. <a href="centers.html">Schedule a drop-off →</a></div>`;return;}
-  el.innerHTML=bookings.slice(0,5).map((b,idx)=>{
-    const si=getStageIndex(b);
-    const isPickup=b.type==='pickup';
-    const ds=new Date(b.date).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-    const devices=(b.devices||[]).length?b.devices:['Device'];
-    const pts=(b.devices||[]).reduce((s,d)=>s+(POINTS_MAP[d]||40),0)||40;
-    const done=si>=3;
-    const steps=PICKUP_STAGES.map((s,i)=>{
-      const cls=i<si?'done':i===si?'active':'';
-      return`<div class="prog-step ${cls}"><div class="prog-dot">${i<si?'✓':s.icon}</div><div class="prog-step-lbl">${s.label}</div></div>`;
+// ── Render Pickups — uses per-user loadBookings() ──
+function renderPickups() {
+  const bookings = loadBookings();
+  const el = document.getElementById('pickupList');
+  if (!bookings.length) {
+    el.innerHTML = `<div class="empty-state">No bookings yet. <a href="centers.html">Schedule a drop-off →</a></div>`;
+    return;
+  }
+  el.innerHTML = bookings.slice(0, 5).map((b, idx) => {
+    const si = getStageIndex(b);
+    const isPickup = b.type === 'pickup';
+    const ds = new Date(b.date).toLocaleDateString('en-IN', {day:'numeric',month:'short'});
+    const devices = (b.devices||[]).length ? b.devices : ['Device'];
+    const pts = (b.devices||[]).reduce((s,d)=>s+(POINTS_MAP[d]||40),0)||40;
+    const done = si >= 3;
+    const steps = PICKUP_STAGES.map((s,i) => {
+      const cls = i < si ? 'done' : i === si ? 'active' : '';
+      return `<div class="prog-step ${cls}"><div class="prog-dot">${i<si?'✓':s.icon}</div><div class="prog-step-lbl">${s.label}</div></div>`;
     }).join('');
-    const statusText=done?'🎉 Completed — Eco Points credited!':`<span class="status-live"></span> ${PICKUP_STAGES[Math.min(si,3)].label}: ${isPickup?'Awaiting agent':'Awaiting your visit'}`;
-    return`<div class="pickup-card"><div class="pickup-top"><div class="pickup-left"><div class="pickup-icon">${isPickup?'🚚':'🏪'}</div><div><div class="pickup-name">${b.center_name||'Recycling Center'}</div><div class="pickup-ref">${b.booking_id||'ECO-000000'}</div><div class="pickup-meta">📅 ${ds} · 🕐 ${b.time||'—'} · 👤 ${b.name||'—'}</div></div></div><span class="pickup-badge ${isPickup?'doorstep':''}">${isPickup?'🚚 Pickup':'🚶 Drop-off'}</span></div><div><div class="prog-steps">${steps}</div><div class="pickup-status">${statusText}</div></div><div class="pickup-tags">${devices.map(d=>`<span class="pickup-tag">${DEVICE_ICONS[d]||'🔧'} ${d}</span>`).join('')}</div><div class="pickup-footer"><div class="pickup-pts">⭐ ${pts} pts${done?' ✓ Credited':' pending'}</div>${!done?`<button class="cancel-btn" onclick="cancelBooking(${idx})">Cancel</button>`:`<span style="font-size:.72rem;color:var(--green);">♻️ Recycled!</span>`}</div></div>`;
+    const statusText = done
+      ? '🎉 Completed — Eco Points credited!'
+      : `<span class="status-live"></span> ${PICKUP_STAGES[Math.min(si,3)].label}: ${isPickup?'Awaiting agent':'Awaiting your visit'}`;
+    return `<div class="pickup-card"><div class="pickup-top"><div class="pickup-left"><div class="pickup-icon">${isPickup?'🚚':'🏪'}</div><div><div class="pickup-name">${b.center_name||'Recycling Center'}</div><div class="pickup-ref">${b.booking_id||'ECO-000000'}</div><div class="pickup-meta">📅 ${ds} · 🕐 ${b.time||'—'} · 👤 ${b.name||'—'}</div></div></div><span class="pickup-badge ${isPickup?'doorstep':''}">${isPickup?'🚚 Pickup':'🚶 Drop-off'}</span></div><div><div class="prog-steps">${steps}</div><div class="pickup-status">${statusText}</div></div><div class="pickup-tags">${devices.map(d=>`<span class="pickup-tag">${DEVICE_ICONS[d]||'🔧'} ${d}</span>`).join('')}</div><div class="pickup-footer"><div class="pickup-pts">⭐ ${pts} pts${done?' ✓ Credited':' pending'}</div>${!done?`<button class="cancel-btn" onclick="cancelBooking(${idx})">Cancel</button>`:`<span style="font-size:.72rem;color:var(--green);">♻️ Recycled!</span>`}</div></div>`;
   }).join('');
 }
 
-function cancelBooking(idx){
-  if(!confirm('Cancel this booking?'))return;
-  const arr=loadBookings();arr.splice(idx,1);
-  localStorage.setItem('ecotrace_bookings',JSON.stringify(arr));
-  renderPickups();showToast('Booking cancelled.');
+// ── Cancel booking — saves back to per-user key ──
+function cancelBooking(idx) {
+  if (!confirm('Cancel this booking?')) return;
+  const arr = loadBookings();
+  arr.splice(idx, 1);
+  saveBookings(arr);
+  renderPickups();
+  showToast('Booking cancelled.');
 }
 
-// ── Render history ──
-function renderHistory(scans){
-  const el=document.getElementById('historyList');
-  if(!scans.length){el.innerHTML=`<div class="empty-state">No scans yet. <a href="scan.html">Scan your first device →</a></div>`;return;}
-  el.innerHTML=scans.slice(0,10).map(s=>{
-    const date=new Date(s.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
-    const icon=s.icon||DEVICE_ICONS[s.device_type]||'🔧';
-    const pts=POINTS_MAP[s.device_type]||40;
-    return`<div class="history-item"><div class="history-icon">${icon}</div><div><div class="history-device">${s.device_type}</div><div class="history-date">${date}</div></div><div class="history-pts">+${pts} pts</div></div>`;
+// ── Render History — uses per-user loadScans() ──
+function renderHistory(scans) {
+  const el = document.getElementById('historyList');
+  if (!scans.length) {
+    el.innerHTML = `<div class="empty-state">No scans yet. <a href="scan.html">Scan your first device →</a></div>`;
+    return;
+  }
+  el.innerHTML = scans.slice(0, 10).map(s => {
+    const date = new Date(s.date).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'});
+    const icon = s.icon || DEVICE_ICONS[s.device_type] || '🔧';
+    const pts  = POINTS_MAP[s.device_type] || 40;
+    return `<div class="history-item"><div class="history-icon">${icon}</div><div><div class="history-device">${s.device_type}</div><div class="history-date">${date}</div></div><div class="history-pts">+${pts} pts</div></div>`;
   }).join('');
 }
 
-// ── Bar chart ──
-let currentTab='week';
-function renderBarChart(scans,tab){
-  tab=tab||currentTab;
-  let labels,counts;
-  if(tab==='week'){
-    labels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];counts=labels.map(()=>0);
+let currentTab = 'week';
+function renderBarChart(scans, tab) {
+  tab = tab || currentTab;
+  let labels, counts;
+  if (tab === 'week') {
+    labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; counts = labels.map(()=>0);
     scans.forEach(s=>{const d=new Date(s.date).getDay();counts[d===0?6:d-1]++;});
-  } else if(tab==='month'){
-    labels=Array.from({length:4},(_,i)=>`W${i+1}`);counts=labels.map(()=>0);
+  } else if (tab === 'month') {
+    labels = Array.from({length:4},(_,i)=>`W${i+1}`); counts = labels.map(()=>0);
     scans.forEach(s=>{const d=new Date(s.date).getDate();counts[Math.min(Math.floor((d-1)/7),3)]++;});
   } else {
-    labels=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];counts=labels.map(()=>0);
+    labels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; counts = labels.map(()=>0);
     scans.forEach(s=>{counts[new Date(s.date).getMonth()]++;});
   }
-  if(!scans.length)labels.forEach((_,i)=>{counts[i]=0;});
-  const maxVal=Math.max(...counts,1);
-  document.getElementById('barChart').innerHTML=labels.map((d,i)=>`<div class="bar-group"><div class="bar-val">${counts[i]||''}</div><div class="bar" style="height:${Math.max((counts[i]/maxVal)*155,counts[i]?4:0)}px;" title="${counts[i]} devices"></div><div class="bar-label">${d}</div></div>`).join('');
+  if (!scans.length) labels.forEach((_,i)=>{counts[i]=0;});
+  const maxVal = Math.max(...counts, 1);
+  document.getElementById('barChart').innerHTML = labels.map((d,i) =>
+    `<div class="bar-group"><div class="bar-val">${counts[i]||''}</div><div class="bar" style="height:${Math.max((counts[i]/maxVal)*155,counts[i]?4:0)}px;" title="${counts[i]} devices"></div><div class="bar-label">${d}</div></div>`
+  ).join('');
 }
 
-function switchTab(el,tab){
+function switchTab(el, tab) {
   document.querySelectorAll('.chart-tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');currentTab=tab;renderBarChart(loadScans(),tab);
+  el.classList.add('active');
+  currentTab = tab;
+  renderBarChart(loadScans(), tab);
 }
 
-// ── Leaderboard ──
-function renderLeaderboard(myPts){
-  const leaders=[
-    {name:'Priya S.',pts:3240,devices:28,rank:1},{name:'Rahul M.',pts:2810,devices:24,rank:2},
-    {name:'Ananya K.',pts:2450,devices:20,rank:3},{name:'You',pts:myPts,devices:Math.max(1,Math.floor(myPts/50)),rank:8,me:true},
+// ── Leaderboard — shows current user's name in their row ──
+function renderLeaderboard(myPts) {
+  const { displayName } = CURRENT_USER;
+  const leaders = [
+    {name:'Priya S.',pts:3240,devices:28,rank:1},
+    {name:'Rahul M.',pts:2810,devices:24,rank:2},
+    {name:'Ananya K.',pts:2450,devices:20,rank:3},
+    {name: displayName, pts: myPts, devices: Math.max(1, Math.floor(myPts/50)), rank:8, me:true},
     {name:'Vikram P.',pts:1100,devices:10,rank:9},
   ];
-  const rc=r=>r===1?'gold':r===2?'silver':r===3?'bronze':'';
-  document.getElementById('leaderboard').innerHTML=leaders.map(l=>`<div class="lb-item ${l.me?'me':''}"><div class="lb-rank ${rc(l.rank)}">${l.rank}</div><div><div class="lb-name">${l.name}${l.me?' 👤':''}</div><div class="lb-devices">${l.devices} devices</div></div><div class="lb-pts">${l.pts.toLocaleString()} pts</div></div>`).join('');
+  const rc = r => r===1?'gold':r===2?'silver':r===3?'bronze':'';
+  document.getElementById('leaderboard').innerHTML = leaders.map(l =>
+    `<div class="lb-item ${l.me?'me':''}"><div class="lb-rank ${rc(l.rank)}">${l.rank}</div><div><div class="lb-name">${l.name}${l.me?' 👤':''}</div><div class="lb-devices">${l.devices} devices</div></div><div class="lb-pts">${l.pts.toLocaleString()} pts</div></div>`
+  ).join('');
 }
 
-// ── Reset ──
-function resetAllData(){
-  if(!confirm('⚠️ Reset ALL data?\n\nThis will clear all scans, bookings and your score.\nThis cannot be undone.'))return;
-  localStorage.removeItem('ecotrace_scans');localStorage.removeItem('ecotrace_bookings');
-  initDashboard();showToast('🔄 Score and history reset!');
-}
-function resetScansOnly(){
-  if(!confirm('Clear all scan history?'))return;
-  localStorage.removeItem('ecotrace_scans');initDashboard();showToast('🗑 Scan history cleared!');
+// ── Reset All — clears only this user's data ──
+function resetAllData() {
+  if (!confirm(`⚠️ Reset ALL data for ${CURRENT_USER.displayName}?\n\nThis will clear all scans, bookings and your score.\nThis cannot be undone.`)) return;
+  localStorage.removeItem(userScanKey());
+  localStorage.removeItem(userBookingKey());
+  initDashboard();
+  showToast('🔄 Score and history reset!');
 }
 
-// ── Toast ──
-function showToast(msg){
-  let t=document.getElementById('ecoToast');
-  if(!t){t=document.createElement('div');t.id='ecoToast';t.style.cssText='position:fixed;bottom:2rem;right:2rem;z-index:999;background:var(--ink);color:white;border-radius:12px;padding:.85rem 1.3rem;font-size:.875rem;box-shadow:0 8px 24px rgba(0,0,0,.15);transition:all .3s;opacity:0;transform:translateY(10px);font-family:Inter,sans-serif;';document.body.appendChild(t);}
-  t.textContent=msg;t.style.opacity='1';t.style.transform='translateY(0)';
-  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(10px)';},3000);
+// ── Reset Scans Only — clears only this user's scans ──
+function resetScansOnly() {
+  if (!confirm('Clear all scan history?')) return;
+  localStorage.removeItem(userScanKey());
+  initDashboard();
+  showToast('🗑 Scan history cleared!');
 }
 
-// ── Redeem ──
-function redeemReward(name,cost){
-  const pts=parseInt(document.getElementById('totalPoints').textContent.replace(/,/g,''))||0;
-  if(pts<cost){showToast(`⚠️ Need ${cost} pts — you have ${pts}.`);return;}
-  if(confirm(`Redeem "${name}" for ${cost} Eco Points?`))showToast(`✅ Redeemed: ${name}!`);
+function showToast(msg) {
+  let t = document.getElementById('ecoToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'ecoToast';
+    t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:999;background:var(--ink);color:white;border-radius:12px;padding:.85rem 1.3rem;font-size:.875rem;box-shadow:0 8px 24px rgba(0,0,0,.15);transition:all .3s;opacity:0;transform:translateY(10px);font-family:Inter,sans-serif;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateY(0)';
+  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(10px)'; }, 3000);
 }
 
-// ── INIT ──
-async function initDashboard(){
-  const scans=loadScans();
-  const bookings=loadBookings();
-  const stats=calcStats(scans);
+function redeemReward(name, cost) {
+  const pts = parseInt(document.getElementById('totalPoints').textContent.replace(/,/g,'')) || 0;
+  if (pts < cost) { showToast(`⚠️ Need ${cost} pts — you have ${pts}.`); return; }
+  if (confirm(`Redeem "${name}" for ${cost} Eco Points?`)) showToast(`✅ Redeemed: ${name}!`);
+}
 
-  // Try backend
-  try{const res=await fetch(`${API_BASE}/user/stats`);if(res.ok){const d=await res.json();console.log('Backend stats:',d);}}catch(e){}
+// ── INIT — unchanged logic, now reads per-user data ──
+async function initDashboard() {
+  const scans    = loadScans();
+  const bookings = loadBookings();
+  const stats    = calcStats(scans);
 
-  // Points — base 0 + scans + completed bookings
-  const bkPts=bookings.filter(b=>getStageIndex(b)>=3).reduce((s,b)=>s+(b.devices||[]).reduce((t,d)=>t+(POINTS_MAP[d]||40),0),0);
-  const totalPts=stats.points+bkPts;
+  try {
+    const res = await fetch(`${API_BASE}/user/stats`);
+    if (res.ok) { const d = await res.json(); console.log('Backend stats:', d); }
+  } catch(e) {}
 
-  // Level
-  const lv=getLevel(totalPts);
-  const lvIdx=LEVELS.indexOf(lv);
-  const nextLv=LEVELS[Math.min(lvIdx+1,LEVELS.length-1)];
-  const pct=lv.next===Infinity?100:Math.round(((totalPts-lv.pts)/(lv.next-lv.pts))*100);
-  document.getElementById('userLevel').textContent=`🌿 Level ${lvIdx+1} – ${lv.name}`;
-  document.getElementById('levelLabel').textContent=`Level ${lvIdx+1}`;
-  document.getElementById('nextLevelLabel').textContent=lv.next===Infinity?'Max Level':`Level ${lvIdx+2} (${lv.next.toLocaleString()} pts)`;
-  document.getElementById('progressFill').style.width=pct+'%';
-  document.getElementById('impRank').textContent=totalPts>2000?'Top 5%':totalPts>1000?'Top 15%':totalPts>500?'Top 35%':'Top 50%';
+  const bkPts = bookings
+    .filter(b => getStageIndex(b) >= 3)
+    .reduce((s,b) => s + (b.devices||[]).reduce((t,d)=>t+(POINTS_MAP[d]||40),0), 0);
+  const totalPts = stats.points + bkPts;
 
-  // Animate stats
-  document.getElementById('totalPoints').textContent=totalPts.toLocaleString();
-  document.getElementById('rewardPtsLabel').textContent=`${totalPts.toLocaleString()} pts available`;
-  animateNum(document.getElementById('statDevices'),stats.count);
-  animateNum(document.getElementById('statCO2'),stats.co2,' kg');
-  animateNum(document.getElementById('statEnergy'),stats.energy,' kWh');
-  animateNum(document.getElementById('statGold'),stats.gold,'g',2);
-  animateNum(document.getElementById('impCO2'),stats.co2,' kg');
-  animateNum(document.getElementById('impWater'),stats.water,' L');
-  document.getElementById('impToxins').textContent=`${stats.count*3} items`;
+  const lv    = getLevel(totalPts);
+  const lvIdx = LEVELS.indexOf(lv);
+  const nextLv = LEVELS[Math.min(lvIdx+1, LEVELS.length-1)];
+  const pct = lv.next === Infinity
+    ? 100
+    : Math.round(((totalPts - lv.pts) / (lv.next - lv.pts)) * 100);
 
-  // Stat change hints
-  if(stats.count>0){
-    document.getElementById('statDevicesChange').textContent=`↑ ${stats.count} device${stats.count!==1?'s':''} total`;
-    document.getElementById('statCO2Change').textContent=`≈ ${Math.round(stats.co2/21)} tree-days saved`;
-    document.getElementById('statEnergyChange').textContent=`≈ ${Math.round(stats.energy/30)} days of home power`;
-    document.getElementById('statGoldChange').textContent=`Worth ~₹${Math.round(stats.gold*4500)} in raw material`;
+  document.getElementById('userLevel').textContent     = `🌿 Level ${lvIdx+1} – ${lv.name}`;
+  document.getElementById('levelLabel').textContent    = `Level ${lvIdx+1}`;
+  document.getElementById('nextLevelLabel').textContent = lv.next === Infinity
+    ? 'Max Level'
+    : `Level ${lvIdx+2} (${lv.next.toLocaleString()} pts)`;
+  document.getElementById('progressFill').style.width  = pct + '%';
+  document.getElementById('impRank').textContent = totalPts>2000?'Top 5%':totalPts>1000?'Top 15%':totalPts>500?'Top 35%':'Top 50%';
+
+  document.getElementById('totalPoints').textContent   = totalPts.toLocaleString();
+  document.getElementById('rewardPtsLabel').textContent = `${totalPts.toLocaleString()} pts available`;
+
+  animateNum(document.getElementById('statDevices'), stats.count);
+  animateNum(document.getElementById('statCO2'),     stats.co2,    ' kg');
+  animateNum(document.getElementById('statEnergy'),  stats.energy, ' kWh');
+  animateNum(document.getElementById('statGold'),    stats.gold,   'g', 2);
+  animateNum(document.getElementById('impCO2'),      stats.co2,    ' kg');
+  animateNum(document.getElementById('impWater'),    stats.water,  ' L');
+  document.getElementById('impToxins').textContent = `${stats.count * 3} items`;
+
+  if (stats.count > 0) {
+    document.getElementById('statDevicesChange').textContent = `↑ ${stats.count} device${stats.count!==1?'s':''} total`;
+    document.getElementById('statCO2Change').textContent     = `≈ ${Math.round(stats.co2/21)} tree-days saved`;
+    document.getElementById('statEnergyChange').textContent  = `≈ ${Math.round(stats.energy/30)} days of home power`;
+    document.getElementById('statGoldChange').textContent    = `Worth ~₹${Math.round(stats.gold*4500)} in raw material`;
   }
 
-  // Ring
-  const ringPct=Math.min(Math.round((totalPts/1500)*100),100);
-  document.getElementById('ringPct').textContent=ringPct+'%';
-  document.getElementById('ringCircle').style.strokeDashoffset=339-(339*(ringPct/100));
+  const ringPct = Math.min(Math.round((totalPts/1500)*100), 100);
+  document.getElementById('ringPct').textContent                  = ringPct + '%';
+  document.getElementById('ringCircle').style.strokeDashoffset    = 339 - (339*(ringPct/100));
 
-  // Champion badge unlock
-  if(totalPts>=1500)document.getElementById('champBadge').classList.remove('locked');
+  if (totalPts >= 1500) document.getElementById('champBadge').classList.remove('locked');
 
   renderHistory(scans);
-  renderBarChart(scans,'week');
+  renderBarChart(scans, 'week');
   renderLeaderboard(totalPts);
   renderPickups();
 }

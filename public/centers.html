@@ -26,6 +26,7 @@
     *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
     body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s;}
 
+    /* NAV */
     nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:rgba(255,255,255,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:200;flex-shrink:0;transition:background .3s,border-color .3s;}
     [data-theme="dark"] nav{background:rgba(12,24,16,.9);}
     .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:var(--green);letter-spacing:-.03em;text-decoration:none;display:flex;align-items:center;gap:.55rem;}
@@ -42,7 +43,7 @@
     .layout{display:flex;flex:1;overflow:hidden;}
 
     /* SIDEBAR */
-    .sidebar{width:380px;flex-shrink:0;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:background .3s;}
+    .sidebar{width:390px;flex-shrink:0;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:background .3s;}
     .sidebar-header{padding:1.5rem 1.5rem 1.2rem;border-bottom:1px solid var(--border);}
     .sidebar-header h2{font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;letter-spacing:-.02em;margin-bottom:.25rem;color:var(--ink);}
     .sidebar-header p{color:var(--muted);font-size:.82rem;}
@@ -57,7 +58,7 @@
     .loc-btn:disabled{opacity:.6;cursor:not-allowed;}
 
     .filter-bar{padding:.8rem 1.25rem;display:flex;gap:.4rem;flex-wrap:wrap;border-bottom:1px solid var(--border);}
-    .filter-chip{padding:.3rem .8rem;border-radius:100px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;}
+    .filter-chip{padding:.3rem .8rem;border-radius:100px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;user-select:none;}
     .filter-chip:hover{border-color:var(--green);color:var(--green);background:var(--green-bg);}
     .filter-chip.active{background:var(--green-pale);border-color:rgba(26,107,66,.3);color:var(--green);}
 
@@ -70,7 +71,7 @@
     .center-card.selected{border-color:var(--green);background:var(--green-bg);box-shadow:0 0 0 2px rgba(26,107,66,.1);}
     .center-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.45rem;}
     .center-name{font-weight:600;font-size:.92rem;color:var(--ink);}
-    .center-badge{font-size:.68rem;font-weight:600;padding:.18rem .55rem;border-radius:100px;background:var(--green-pale);color:var(--green);}
+    .center-badge{font-size:.68rem;font-weight:600;padding:.18rem .55rem;border-radius:100px;background:var(--green-pale);color:var(--green);white-space:nowrap;flex-shrink:0;margin-left:.4rem;}
     .center-badge.orange{background:var(--accent-pale);color:var(--accent);}
     .center-address{color:var(--muted);font-size:.8rem;margin-bottom:.6rem;}
     .center-meta{display:flex;gap:.75rem;flex-wrap:wrap;}
@@ -80,46 +81,49 @@
     .accepts-row{margin-top:.65rem;display:flex;gap:.35rem;flex-wrap:wrap;}
     .accept-tag{font-size:.68rem;padding:.15rem .5rem;border-radius:100px;border:1px solid var(--border);color:var(--muted);background:var(--bg2);}
 
-    /* Loading skeleton */
-    .skeleton{background:linear-gradient(90deg,var(--bg2) 25%,var(--bg3) 50%,var(--bg2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px;height:14px;margin-bottom:.5rem;}
-    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    .empty-state{text-align:center;padding:3rem 1.5rem;color:var(--muted);}
+    .empty-state .empty-ico{font-size:2.5rem;margin-bottom:.75rem;}
+    .empty-state h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:.3rem;color:var(--ink2);}
 
     /* MAP */
-    .map-area{flex:1;position:relative;background:var(--bg2);}
+    .map-area{flex:1;position:relative;background:var(--bg2);overflow:hidden;}
     .map-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg2);}
     .map-grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:.6;}
-    .map-pins{position:absolute;inset:0;}
-    .map-pin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;transition:transform .2s;}
-    .map-pin:hover{transform:translate(-50%,-100%) scale(1.15);}
-    .map-pin.active-pin .pin-bubble{background:var(--accent);}
-    .pin-bubble{background:var(--green);color:white;border-radius:10px 10px 10px 0;padding:.4rem .7rem;font-size:.72rem;font-weight:600;white-space:nowrap;box-shadow:0 4px 12px rgba(26,107,66,.35);}
-    .pin-stem{width:2px;height:10px;background:var(--green);margin:0 auto;}
+    .map-pins{position:absolute;inset:0;pointer-events:none;}
+    .map-pin{position:absolute;transform:translate(-50%,-100%);cursor:pointer;transition:transform .2s;pointer-events:all;}
+    .map-pin:hover{transform:translate(-50%,-100%) scale(1.12);}
+    .map-pin.active-pin .pin-bubble{background:var(--accent);box-shadow:0 4px 12px rgba(224,123,74,.4);}
+    .map-pin.active-pin .pin-stem{background:var(--accent);}
+    .pin-bubble{background:var(--green);color:white;border-radius:10px 10px 10px 0;padding:.38rem .65rem;font-size:.7rem;font-weight:600;white-space:nowrap;box-shadow:0 4px 12px rgba(26,107,66,.35);transition:background .2s;}
+    .pin-stem{width:2px;height:8px;background:var(--green);margin:0 auto;transition:background .2s;}
 
-    .detail-panel{position:absolute;bottom:1.5rem;right:1.5rem;width:300px;background:var(--white);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:none;box-shadow:var(--shadow-hover);animation:slideUp .3s ease;}
+    .detail-panel{position:absolute;bottom:1.5rem;right:1.5rem;width:310px;background:var(--white);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:none;box-shadow:var(--shadow-hover);animation:slideUp .3s ease;z-index:50;}
     @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-    .detail-header{background:var(--green-bg);padding:1.2rem;border-bottom:1px solid var(--border);}
+    .detail-header{background:var(--green-bg);padding:1.2rem 1.4rem;border-bottom:1px solid var(--border);}
     .detail-name{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;letter-spacing:-.02em;color:var(--ink);}
     .detail-type{font-size:.78rem;color:var(--green);margin-top:.2rem;font-weight:500;}
-    .detail-body{padding:1.1rem;}
-    .detail-row{display:flex;gap:.6rem;font-size:.8rem;color:var(--muted);margin-bottom:.55rem;align-items:flex-start;}
-    .detail-actions{padding:0 1.1rem 1.1rem;display:flex;gap:.6rem;}
-    .d-btn{flex:1;padding:.6rem;border-radius:10px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;}
+    .detail-body{padding:1rem 1.2rem;}
+    .detail-row{display:flex;gap:.6rem;font-size:.8rem;color:var(--muted);margin-bottom:.5rem;align-items:flex-start;line-height:1.4;}
+    .detail-row span{flex:1;}
+    .detail-actions{padding:0 1.2rem 1.2rem;display:flex;gap:.6rem;}
+    .d-btn{flex:1;padding:.6rem;border-radius:10px;font-size:.8rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:.3rem;}
     .d-btn.primary{background:var(--green);color:white;}
     .d-btn.primary:hover{background:var(--green-mid);}
     .d-btn.sec{background:var(--bg2);color:var(--ink2);border:1px solid var(--border);}
     .d-btn.sec:hover{border-color:var(--green);color:var(--green);}
-    .close-btn{position:absolute;top:.8rem;right:.8rem;background:var(--bg3);border:none;border-radius:50%;width:28px;height:28px;color:var(--muted);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+    .close-btn{position:absolute;top:.8rem;right:.8rem;background:var(--bg3);border:none;border-radius:50%;width:28px;height:28px;color:var(--muted);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:5;}
     .close-btn:hover{background:var(--border2);color:var(--ink);}
 
-    .stats-bar{position:absolute;top:1rem;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;z-index:10;}
-    .stat-pill{background:rgba(255,255,255,.95);border:1px solid var(--border);backdrop-filter:blur(8px);border-radius:100px;padding:.4rem 1rem;font-size:.78rem;display:flex;gap:.4rem;align-items:center;box-shadow:var(--shadow);}
+    .stats-bar{position:absolute;top:1rem;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;z-index:10;white-space:nowrap;}
+    .stat-pill{background:rgba(255,255,255,.95);border:1px solid var(--border);backdrop-filter:blur(8px);border-radius:100px;padding:.38rem .9rem;font-size:.78rem;display:flex;gap:.4rem;align-items:center;box-shadow:var(--shadow);}
     [data-theme="dark"] .stat-pill{background:rgba(25,42,31,.95);}
     .stat-pill span{color:var(--green);font-weight:700;}
 
-    .map-cta-box{position:relative;z-index:1;text-align:center;background:var(--white);border:1px solid var(--border);border-radius:18px;padding:2rem 2.5rem;box-shadow:var(--shadow);}
+    .map-cta-box{position:relative;z-index:1;text-align:center;background:var(--white);border:1px solid var(--border);border-radius:18px;padding:2rem 2.5rem;box-shadow:var(--shadow);max-width:320px;}
     .map-cta-box .ico{font-size:2.5rem;margin-bottom:.75rem;}
     .map-cta-box h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;letter-spacing:-.02em;margin-bottom:.3rem;color:var(--ink);}
     .map-cta-box p{color:var(--muted);font-size:.85rem;margin-bottom:1.2rem;}
+    .map-cta-box.hidden{display:none;}
 
     /* Toast */
     .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:white;padding:.7rem 1.4rem;border-radius:100px;font-size:.85rem;font-weight:500;z-index:9999;transition:transform .3s ease;pointer-events:none;white-space:nowrap;}
@@ -127,7 +131,7 @@
 
     /* MODAL */
     .overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);}
-    .modal{display:none;position:fixed;z-index:1001;top:50%;left:50%;transform:translate(-50%,-50%);width:min(560px,95vw);max-height:90vh;overflow-y:auto;background:var(--white);border:1px solid var(--border);border-radius:22px;box-shadow:0 24px 60px rgba(0,0,0,.15);}
+    .modal{display:none;position:fixed;z-index:1001;top:50%;left:50%;transform:translate(-50%,-50%);width:min(580px,95vw);max-height:90vh;overflow-y:auto;background:var(--white);border:1px solid var(--border);border-radius:22px;box-shadow:0 24px 60px rgba(0,0,0,.15);}
     .modal::-webkit-scrollbar{width:4px;}
     .modal::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
     @keyframes modalIn{from{opacity:0;transform:translate(-50%,-54%)}to{opacity:1;transform:translate(-50%,-50%)}}
@@ -153,7 +157,7 @@
     .cb-name{font-weight:600;font-size:.92rem;color:var(--ink);}
     .cb-meta{font-size:.76rem;color:var(--muted);margin-top:.2rem;}
     .t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;}
-    .t-slot{padding:.55rem;border-radius:10px;text-align:center;border:1px solid var(--border);background:var(--bg2);color:var(--muted);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .18s;}
+    .t-slot{padding:.55rem;border-radius:10px;text-align:center;border:1px solid var(--border);background:var(--bg2);color:var(--muted);font-size:.78rem;font-weight:500;cursor:pointer;transition:all .18s;user-select:none;}
     .t-slot:hover{border-color:var(--green);color:var(--green);background:var(--green-bg);}
     .t-slot.sel{background:var(--green-pale);border-color:rgba(26,107,66,.4);color:var(--green);font-weight:600;}
     .dev-chips{display:flex;flex-wrap:wrap;gap:.4rem;}
@@ -167,6 +171,8 @@
     .m-btn.pri:hover{background:var(--green-mid);box-shadow:0 6px 20px rgba(26,107,66,.25);}
     .m-btn.sec{background:var(--bg2);color:var(--ink2);border:1px solid var(--border);}
     .m-btn.sec:hover{border-color:var(--green);color:var(--green);}
+
+    /* Success Screen */
     #successScreen{display:none;padding:2rem 1.8rem;text-align:center;position:relative;overflow:hidden;border-radius:0 0 22px 22px;background:var(--white);}
     #confettiWrap{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
     @keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
@@ -191,12 +197,19 @@
     .done-btn{width:100%;padding:1rem;border-radius:14px;background:var(--green);color:white;font-family:'Inter',sans-serif;font-weight:700;font-size:.95rem;border:none;cursor:pointer;transition:all .2s;}
     .done-btn:hover{background:var(--green-mid);}
 
-    @media(max-width:768px){.layout{flex-direction:column;}.sidebar{width:100%;height:50vh;}nav{padding:0 1.5rem;}.nav-links{display:none;}.f-row{grid-template-columns:1fr;}}
+    @media(max-width:768px){
+      .layout{flex-direction:column;}
+      .sidebar{width:100%;height:50vh;}
+      nav{padding:0 1.5rem;}
+      .nav-links{display:none;}
+      .f-row{grid-template-columns:1fr;}
+      .stats-bar{gap:.3rem;}
+      .stat-pill{font-size:.7rem;padding:.3rem .65rem;}
+    }
   </style>
 </head>
 <body>
 
-<!-- Toast notification -->
 <div class="toast" id="toast"></div>
 
 <nav>
@@ -222,7 +235,7 @@
     </div>
     <div class="search-bar">
       <div class="search-wrap">
-        <span style="color:var(--muted2)">🔍</span>
+        <span style="color:var(--muted2);font-size:.9rem;">🔍</span>
         <input type="text" id="searchInput" placeholder="Search by name or area..." oninput="filterCenters()">
         <button class="loc-btn" id="locBtn" onclick="useMyLocation()">📍 Near Me</button>
       </div>
@@ -244,11 +257,17 @@
         <div class="ico">🗺</div>
         <h3>Interactive Map</h3>
         <p>Enable location to see nearby centers sorted by distance</p>
-        <button onclick="useMyLocation()" style="background:var(--green);color:white;border:none;border-radius:100px;padding:.6rem 1.4rem;font-weight:600;font-size:.875rem;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='var(--green-mid)'" onmouseout="this.style.background='var(--green)'">📍 Use My Location</button>
+        <button
+          onclick="useMyLocation()"
+          style="background:var(--green);color:white;border:none;border-radius:100px;padding:.6rem 1.4rem;font-weight:600;font-size:.875rem;cursor:pointer;transition:background .2s;"
+          onmouseover="this.style.background='var(--green-mid)'"
+          onmouseout="this.style.background='var(--green)'">
+          📍 Use My Location
+        </button>
       </div>
     </div>
     <div class="stats-bar">
-      <div class="stat-pill">🏢 <span id="totalCenters">6</span> Centers</div>
+      <div class="stat-pill">🏢 <span id="totalCenters">12</span> Centers</div>
       <div class="stat-pill">✅ <span id="openCenters">0</span> Open Now</div>
       <div class="stat-pill">⭐ <span id="avgRating">4.5</span> Avg Rating</div>
     </div>
@@ -263,8 +282,8 @@
         <div class="detail-row">🕐 <span id="detailHours"></span></div>
         <div class="detail-row">📞 <span id="detailPhone"></span></div>
         <div class="detail-row">⭐ <span id="detailRating"></span></div>
-        <div class="detail-row">📏 <span id="detailDistance" style="color:var(--green);font-weight:600;"></span></div>
-        <div class="detail-row">♻️ Accepts: <span id="detailAccepts" style="color:var(--ink)"></span></div>
+        <div class="detail-row" id="detailDistRow" style="display:none;">📏 <span id="detailDistance" style="color:var(--green);font-weight:600;"></span></div>
+        <div class="detail-row">♻️ <span id="detailAccepts"></span></div>
       </div>
       <div class="detail-actions">
         <a id="directionsBtn" href="#" target="_blank" class="d-btn primary">🗺 Directions</a>
@@ -274,18 +293,25 @@
   </div>
 </div>
 
+<!-- Overlay + Modal -->
 <div class="overlay" id="overlay" onclick="closeModal()"></div>
 
 <div class="modal" id="scheduleModal">
   <div class="m-hdr">
-    <div><div class="m-hdr-title">📅 Schedule Drop-off</div><div class="m-hdr-sub" id="modalSub">Fill in your details to confirm</div></div>
+    <div>
+      <div class="m-hdr-title">📅 Schedule Drop-off</div>
+      <div class="m-hdr-sub" id="modalSub">Fill in your details to confirm</div>
+    </div>
     <button class="m-x" onclick="closeModal()">✕</button>
   </div>
   <div id="formSection">
     <div class="m-body">
       <div class="c-banner">
         <div class="cb-icon">♻️</div>
-        <div><div class="cb-name" id="bannerName">—</div><div class="cb-meta" id="bannerMeta">—</div></div>
+        <div>
+          <div class="cb-name" id="bannerName">—</div>
+          <div class="cb-meta" id="bannerMeta">—</div>
+        </div>
       </div>
       <div class="f-sec">
         <div class="f-sec-title">👤 Your Details</div>
@@ -307,7 +333,12 @@
         <div class="f-sec-title">🕐 Date & Time</div>
         <div class="f-row">
           <div class="f-grp"><label>Preferred Date *</label><input type="date" id="fDate"></div>
-          <div class="f-grp"><label>Drop-off Type</label><select id="fType"><option value="self">🚶 Self Drop-off</option><option value="pickup">🚚 Doorstep Pickup</option></select></div>
+          <div class="f-grp"><label>Drop-off Type</label>
+            <select id="fType">
+              <option value="self">🚶 Self Drop-off</option>
+              <option value="pickup">🚚 Doorstep Pickup</option>
+            </select>
+          </div>
         </div>
         <div class="f-grp">
           <label>Preferred Time Slot *</label>
@@ -361,7 +392,10 @@
         <div class="imp-card"><div class="imp-emoji">📦</div><div class="imp-val" id="impDevices">—</div><div class="imp-lbl">Devices Saved</div></div>
         <div class="imp-card"><div class="imp-emoji">⭐</div><div class="imp-val" id="impPoints">—</div><div class="imp-lbl">Eco Points</div></div>
       </div>
-      <div class="bk-ref"><span class="bk-ref-lbl">Booking Reference</span><span class="bk-ref-code" id="bkCode">ECO-000000</span></div>
+      <div class="bk-ref">
+        <span class="bk-ref-lbl">Booking Reference</span>
+        <span class="bk-ref-code" id="bkCode">ECO-000000</span>
+      </div>
       <div class="sum-pills" id="sumPills"></div>
       <div class="wn-box"><div class="wn-title">📋 What Happens Next</div><div id="wnSteps"></div></div>
       <button class="done-btn" onclick="closeModal()">🌱 Done — Let's Save More!</button>
@@ -386,24 +420,31 @@ document.getElementById('themeToggle').addEventListener('click', function(){
   if(k) k.textContent = next === 'dark' ? '☾' : '☀';
 });
 
-// ── CONFIG ── ✅ FIXED: was 5000, now 3000
+// ── CONFIG ──
 const API_BASE = 'http://localhost:3000/api';
 
 const CO2_MAP    = {Smartphone:70,Laptop:156,Tablet:90,Charger:2,Battery:5,Headphones:8,Printer:200,Monitor:450,TV:350,Other:50};
 const POINTS_MAP = {Smartphone:50,Laptop:100,Tablet:70,Charger:20,Battery:30,Headphones:25,Printer:120,Monitor:150,TV:130,Other:40};
 
+// ── MASTER DATA — single source of truth, matches backend exactly ──
 let CENTERS_DATA = [
-  {id:1,name:'GreenCycle Hub',address:'MG Road, Hyderabad',phone:'+91 98765 43210',rating:4.8,type:'Certified Facility',certified:true,free:true,hours:'Mon–Sat: 9AM–6PM',open:true,accepts:['Phones','Laptops','Batteries','Monitors'],lat:17.4374,lng:78.4487,distance:'1.2 km'},
-  {id:2,name:'EcoRecycle Center',address:'Jubilee Hills, Hyderabad',phone:'+91 87654 32109',rating:4.5,type:'Government Facility',certified:true,free:true,hours:'Mon–Fri: 10AM–5PM',open:true,accepts:['All Electronics','Batteries','Cables'],lat:17.4311,lng:78.4054,distance:'3.4 km'},
-  {id:3,name:'Tech Disposal Unit',address:'HITEC City, Hyderabad',phone:'+91 76543 21098',rating:4.2,type:'Corporate Facility',certified:true,free:false,hours:'Mon–Sat: 8AM–8PM',open:true,accepts:['Laptops','Servers','Printers','Phones'],lat:17.4474,lng:78.3762,distance:'5.1 km'},
-  {id:4,name:'E-Waste Pickup Point',address:'Banjara Hills, Hyderabad',phone:'+91 65432 10987',rating:4.0,type:'Collection Point',certified:false,free:true,hours:'Tue–Sun: 11AM–7PM',open:false,accepts:['Small Electronics','Chargers','Batteries'],lat:17.4129,lng:78.4498,distance:'2.8 km'},
-  {id:5,name:'Recykal Smart Bin',address:'Gachibowli, Hyderabad',phone:'+91 54321 09876',rating:4.6,type:'Smart Bin',certified:true,free:true,hours:'24/7 Drop-off',open:true,accepts:['Phones','Tablets','Chargers','Earphones'],lat:17.4416,lng:78.3486,distance:'6.3 km'},
-  {id:6,name:'Attero Recycling',address:'Kompally, Hyderabad',phone:'+91 43210 98765',rating:4.7,type:'Certified Facility',certified:true,free:true,hours:'Mon–Sat: 9AM–5PM',open:false,accepts:['All E-Waste','Industrial Electronics'],lat:17.5418,lng:78.4859,distance:'12.1 km'}
+  { id:1,  name:'GreenCycle Hub',       address:'MG Road, Secunderabad, Hyderabad',         phone:'+91 98765 43210', rating:4.8, type:'Certified Facility',  certified:true,  free:true,  hours:'Mon–Sat: 9AM–6PM',  open:true,  accepts:['Phones','Laptops','Batteries','Monitors'],               lat:17.4374, lng:78.4987, distance:null },
+  { id:2,  name:'EcoRecycle Center',    address:'Jubilee Hills, Road No. 36, Hyderabad',    phone:'+91 87654 32109', rating:4.5, type:'Government Facility',  certified:true,  free:true,  hours:'Mon–Fri: 10AM–5PM', open:true,  accepts:['All Electronics','Batteries','Cables'],                  lat:17.4311, lng:78.4054, distance:null },
+  { id:3,  name:'Tech Disposal Unit',   address:'HITEC City, Madhapur, Hyderabad',          phone:'+91 76543 21098', rating:4.2, type:'Corporate Facility',   certified:true,  free:false, hours:'Mon–Sat: 8AM–8PM',  open:true,  accepts:['Laptops','Servers','Printers','Phones'],                 lat:17.4474, lng:78.3762, distance:null },
+  { id:4,  name:'E-Waste Pickup Point', address:'Banjara Hills, Road No. 12, Hyderabad',   phone:'+91 65432 10987', rating:4.0, type:'Collection Point',     certified:false, free:true,  hours:'Tue–Sun: 11AM–7PM', open:false, accepts:['Small Electronics','Chargers','Batteries'],              lat:17.4129, lng:78.4498, distance:null },
+  { id:5,  name:'Recykal Smart Bin',    address:'Gachibowli, Financial District, Hyderabad',phone:'+91 54321 09876', rating:4.6, type:'Smart Bin',            certified:true,  free:true,  hours:'24/7 Drop-off',     open:true,  accepts:['Phones','Tablets','Chargers','Earphones'],               lat:17.4416, lng:78.3486, distance:null },
+  { id:6,  name:'Attero Recycling',     address:'Kompally, Medchal Road, Hyderabad',        phone:'+91 43210 98765', rating:4.7, type:'Certified Facility',   certified:true,  free:true,  hours:'Mon–Sat: 9AM–5PM',  open:false, accepts:['All E-Waste','Industrial Electronics'],                  lat:17.5418, lng:78.4859, distance:null },
+  { id:7,  name:'CleanEarth Solutions', address:'Kukatpally, KPHB Colony, Hyderabad',       phone:'+91 91234 56781', rating:4.4, type:'Drop-off Center',      certified:true,  free:true,  hours:'Mon–Sat: 8AM–7PM',  open:true,  accepts:['Phones','Laptops','TVs','Monitors','Printers'],          lat:17.4849, lng:78.3996, distance:null },
+  { id:8,  name:'Zero Waste Hub',       address:'Ameerpet, SR Nagar, Hyderabad',            phone:'+91 80123 45678', rating:4.3, type:'Community Center',     certified:false, free:true,  hours:'Mon–Sun: 9AM–8PM',  open:true,  accepts:['Small Electronics','Chargers','Batteries','Cables'],     lat:17.4374, lng:78.4487, distance:null },
+  { id:9,  name:'PlanetSave Recyclers', address:'Dilsukhnagar, Moosarambagh, Hyderabad',    phone:'+91 99887 11223', rating:4.1, type:'Municipal Center',     certified:true,  free:true,  hours:'Tue–Sun: 10AM–6PM', open:false, accepts:['All Electronics','Appliances','Batteries'],              lat:17.3688, lng:78.5247, distance:null },
+  { id:10, name:'EcoVerde E-Waste',     address:'LB Nagar, Saroornagar, Hyderabad',         phone:'+91 77889 90011', rating:4.5, type:'Certified Facility',   certified:true,  free:false, hours:'Mon–Sat: 9AM–6PM',  open:true,  accepts:['Phones','Laptops','Tablets','Headphones'],               lat:17.3469, lng:78.5487, distance:null },
+  { id:11, name:'TechGreen Disposal',   address:'Uppal, Industrial Area, Hyderabad',        phone:'+91 66778 89900', rating:4.6, type:'Corporate Facility',   certified:true,  free:false, hours:'Mon–Fri: 8AM–5PM',  open:true,  accepts:['Bulk Electronics','IT Assets','Servers','Printers'],     lat:17.4042, lng:78.5597, distance:null },
+  { id:12, name:'Hasiru Dala Point',    address:'Mehdipatnam, Rethibowli, Hyderabad',       phone:'+91 55667 78899', rating:4.9, type:'Certified Facility',   certified:true,  free:true,  hours:'Mon–Sun: 7AM–9PM',  open:true,  accepts:['All E-Waste','Phones','Laptops','Appliances','Batteries'],lat:17.3952, lng:78.4383, distance:null }
 ];
 
-let activeFilter = 'all';
+let activeFilter   = 'all';
 let selectedCenter = null;
-let userLocation = null;
+let userLocation   = null;
 
 // ── TOAST ──
 function showToast(msg, duration = 3000) {
@@ -413,7 +454,7 @@ function showToast(msg, duration = 3000) {
   setTimeout(() => t.classList.remove('show'), duration);
 }
 
-// ── DISTANCE CALC ──
+// ── DISTANCE ──
 function getDistance(lat1, lng1, lat2, lng2) {
   const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -422,48 +463,88 @@ function getDistance(lat1, lng1, lat2, lng2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
-// ── RENDER ──
+// ── RENDER CENTERS ──
+// FIX: match selected state against `list` array (not full CENTERS_DATA by index)
 function renderCenters(list) {
-  document.getElementById('centerCount').textContent = `${list.length} center${list.length !== 1 ? 's' : ''} found`;
+  document.getElementById('centerCount').textContent =
+    `${list.length} center${list.length !== 1 ? 's' : ''} found`;
+
+  if (list.length === 0) {
+    document.getElementById('centersList').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-ico">🔍</div>
+        <h3>No centers found</h3>
+        <p>Try a different search or filter</p>
+      </div>`;
+    renderPins([]);
+    updateStats([]);
+    return;
+  }
+
   document.getElementById('centersList').innerHTML = list.map(c => `
-    <div class="center-card ${selectedCenter?.id === c.id ? 'selected' : ''}" onclick="selectCenter(${c.id})">
+    <div class="center-card ${selectedCenter?.id === c.id ? 'selected' : ''}"
+         onclick="selectCenter(${c.id})">
       <div class="center-card-header">
         <div class="center-name">${c.name}</div>
-        <span class="center-badge ${c.certified ? '' : 'orange'}">${c.certified ? '✅ Certified' : '⚡ Drop-off'}</span>
+        <span class="center-badge ${c.certified ? '' : 'orange'}">
+          ${c.certified ? '✅ Certified' : '⚡ Drop-off'}
+        </span>
       </div>
       <div class="center-address">📍 ${c.address}</div>
       <div class="center-meta">
         <span class="center-tag ${c.open ? 'open' : 'closed'}">${c.open ? '🟢 Open Now' : '🔴 Closed'}</span>
-        <span class="center-tag">📏 ${c.distance || '—'}</span>
+        ${c.distance ? `<span class="center-tag">📏 ${c.distance}</span>` : ''}
         <span class="center-tag">⭐ ${c.rating}</span>
         ${c.free ? '<span class="center-tag" style="color:var(--green)">🆓 Free</span>' : ''}
       </div>
-      <div class="accepts-row">${c.accepts.map(a => `<span class="accept-tag">${a}</span>`).join('')}</div>
+      <div class="accepts-row">
+        ${c.accepts.map(a => `<span class="accept-tag">${a}</span>`).join('')}
+      </div>
     </div>`).join('');
+
   renderPins(list);
   updateStats(list);
 }
 
+// ── RENDER MAP PINS ──
 function renderPins(list) {
   const wrap = document.getElementById('mapPins');
-  const el = document.getElementById('mapPlaceholder');
-  const w = el.offsetWidth, h = el.offsetHeight;
-  const minLat=17.39, maxLat=17.56, minLng=78.34, maxLng=78.50;
+  const el   = document.getElementById('mapPlaceholder');
+  const w    = el.offsetWidth  || 800;
+  const h    = el.offsetHeight || 500;
+
+  // Bounding box covering all 12 centers in Hyderabad
+  const minLat = 17.32, maxLat = 17.57;
+  const minLng = 78.33, maxLng = 78.58;
+  const padX = 60, padY = 50;
+
   wrap.innerHTML = list.map(c => {
-    const x = ((c.lng - minLng) / (maxLng - minLng)) * (w - 80) + 40;
-    const y = (1 - (c.lat - minLat) / (maxLat - minLat)) * (h - 80) + 20;
-    return `<div class="map-pin ${selectedCenter?.id === c.id ? 'active-pin' : ''}" style="left:${x}px;top:${y}px;" onclick="selectCenter(${c.id})">
-      <div class="pin-bubble">${c.name.split(' ')[0]}</div>
-      <div class="pin-stem"></div>
-    </div>`;
+    const x = ((c.lng - minLng) / (maxLng - minLng)) * (w - padX*2) + padX;
+    const y = (1 - (c.lat - minLat) / (maxLat - minLat)) * (h - padY*2) + padY;
+    const isActive = selectedCenter?.id === c.id;
+    // Show first word of name, or first two short words
+    const words = c.name.split(' ');
+    const label = words.length > 1 && words[0].length <= 5
+      ? words[0] + ' ' + words[1]
+      : words[0];
+    return `
+      <div class="map-pin ${isActive ? 'active-pin' : ''}"
+           style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;"
+           title="${c.name}"
+           onclick="selectCenter(${c.id})">
+        <div class="pin-bubble">${label}</div>
+        <div class="pin-stem"></div>
+      </div>`;
   }).join('');
 }
 
+// ── STATS BAR ──
 function updateStats(list) {
   document.getElementById('totalCenters').textContent = list.length;
-  document.getElementById('openCenters').textContent = list.filter(c => c.open).length;
-  document.getElementById('avgRating').textContent = list.length
-    ? (list.reduce((s,c) => s + c.rating, 0) / list.length).toFixed(1) : '—';
+  document.getElementById('openCenters').textContent  = list.filter(c => c.open).length;
+  document.getElementById('avgRating').textContent    = list.length
+    ? (list.reduce((s,c) => s + c.rating, 0) / list.length).toFixed(1)
+    : '—';
 }
 
 // ── SELECT CENTER ──
@@ -471,30 +552,30 @@ function selectCenter(id) {
   selectedCenter = CENTERS_DATA.find(c => c.id === id);
   if (!selectedCenter) return;
 
-  // Update card highlight
-  document.querySelectorAll('.center-card').forEach((el, i) => {
-    el.classList.toggle('selected', CENTERS_DATA[i]?.id === id);
-  });
+  // Re-render list so selected card highlights correctly (uses current filtered list)
+  filterCenters();
 
-  // Update detail panel
+  // Populate detail panel
   document.getElementById('detailName').textContent    = selectedCenter.name;
   document.getElementById('detailType').textContent    = selectedCenter.type;
   document.getElementById('detailAddr').textContent    = selectedCenter.address;
   document.getElementById('detailHours').textContent   = selectedCenter.hours;
   document.getElementById('detailPhone').textContent   = selectedCenter.phone;
-  document.getElementById('detailRating').textContent  = `${selectedCenter.rating}/5`;
-  document.getElementById('detailDistance').textContent = selectedCenter.distance ? `${selectedCenter.distance} away` : '';
+  document.getElementById('detailRating').textContent  = `${selectedCenter.rating} / 5.0`;
   document.getElementById('detailAccepts').textContent = selectedCenter.accepts.join(', ');
-  document.getElementById('directionsBtn').href = `https://www.google.com/maps/dir/?api=1&destination=${selectedCenter.lat},${selectedCenter.lng}`;
-  document.getElementById('detailPanel').style.display = 'block';
+  document.getElementById('directionsBtn').href =
+    `https://www.google.com/maps/dir/?api=1&destination=${selectedCenter.lat},${selectedCenter.lng}`;
 
-  // Re-render pins to highlight selected
-  renderPins(CENTERS_DATA.filter(c => {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const mQ = !q || c.name.toLowerCase().includes(q) || c.address.toLowerCase().includes(q);
-    const mF = activeFilter === 'all' ? true : activeFilter === 'open' ? c.open : activeFilter === 'free' ? c.free : c.certified;
-    return mQ && mF;
-  }));
+  const distRow  = document.getElementById('detailDistRow');
+  const distSpan = document.getElementById('detailDistance');
+  if (selectedCenter.distance) {
+    distSpan.textContent = selectedCenter.distance + ' away';
+    distRow.style.display = 'flex';
+  } else {
+    distRow.style.display = 'none';
+  }
+
+  document.getElementById('detailPanel').style.display = 'block';
 }
 
 function closeDetail() {
@@ -502,6 +583,23 @@ function closeDetail() {
 }
 
 // ── FILTER ──
+function getFilteredList() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  return CENTERS_DATA.filter(c => {
+    const matchQ = !q
+      || c.name.toLowerCase().includes(q)
+      || c.address.toLowerCase().includes(q)
+      || c.type.toLowerCase().includes(q)
+      || c.accepts.some(a => a.toLowerCase().includes(q));
+    const matchF = activeFilter === 'all'        ? true
+                 : activeFilter === 'open'       ? c.open
+                 : activeFilter === 'free'       ? c.free
+                 : activeFilter === 'certified'  ? c.certified
+                 : true;
+    return matchQ && matchF;
+  });
+}
+
 function setFilter(f, el) {
   activeFilter = f;
   document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -510,19 +608,10 @@ function setFilter(f, el) {
 }
 
 function filterCenters() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  const list = CENTERS_DATA.filter(c => {
-    const mQ = !q || c.name.toLowerCase().includes(q) || c.address.toLowerCase().includes(q);
-    const mF = activeFilter === 'all' ? true
-             : activeFilter === 'open' ? c.open
-             : activeFilter === 'free' ? c.free
-             : c.certified;
-    return mQ && mF;
-  });
-  renderCenters(list);
+  renderCenters(getFilteredList());
 }
 
-// ── USE MY LOCATION ── ✅ FIXED: now properly fetches from API with coords
+// ── NEAR ME ──
 async function useMyLocation() {
   if (!navigator.geolocation) {
     showToast('❌ Geolocation not supported by your browser.');
@@ -538,36 +627,47 @@ async function useMyLocation() {
       const { latitude: lat, longitude: lng } = pos.coords;
       userLocation = { lat, lng };
 
-      // Hide the CTA box once location is found
-      document.getElementById('mapCtaBox').style.display = 'none';
-      document.getElementById('searchInput').value = `📍 Near me`;
+      // Hide the CTA box
+      document.getElementById('mapCtaBox').classList.add('hidden');
+      document.getElementById('searchInput').value = '';
 
       try {
-        // ✅ Call API with user coordinates
+        // Try fetching from backend API with user coordinates
         const res = await fetch(`${API_BASE}/centers?lat=${lat}&lng=${lng}`);
         if (res.ok) {
           const data = await res.json();
           if (data.centers && data.centers.length) {
-            CENTERS_DATA = data.centers;
-            renderCenters(CENTERS_DATA);
-            showToast(`📍 Found ${CENTERS_DATA.length} centers near you, sorted by distance!`);
+            // FIX: merge API distances into CENTERS_DATA by id — preserves name/data integrity
+            const distMap = {};
+            data.centers.forEach(c => { distMap[c.id] = c.distance; });
+            CENTERS_DATA = CENTERS_DATA.map(c => ({
+              ...c,
+              distance: distMap[c.id] || c.distance
+            })).sort((a, b) =>
+              parseFloat(a.distance || 999) - parseFloat(b.distance || 999)
+            );
+
+            filterCenters();
+            showToast(`📍 Sorted ${CENTERS_DATA.length} centers by distance from you!`);
             btn.textContent = '✅ Located';
             btn.disabled = false;
             return;
           }
         }
-      } catch (e) {
-        console.warn('API unreachable, using local distance calc:', e.message);
+      } catch(e) {
+        console.warn('API unreachable, using local distance calculation.', e.message);
       }
 
-      // Fallback: calculate distances locally if API fails
+      // Fallback: calculate distances client-side
       CENTERS_DATA = CENTERS_DATA.map(c => ({
         ...c,
         distance: getDistance(lat, lng, c.lat, c.lng).toFixed(1) + ' km'
-      })).sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+      })).sort((a, b) =>
+        parseFloat(a.distance) - parseFloat(b.distance)
+      );
 
-      renderCenters(CENTERS_DATA);
-      showToast(`📍 Showing ${CENTERS_DATA.length} centers sorted by distance!`);
+      filterCenters();
+      showToast(`📍 Sorted ${CENTERS_DATA.length} centers by distance from you!`);
       btn.textContent = '✅ Located';
       btn.disabled = false;
     },
@@ -584,22 +684,28 @@ async function useMyLocation() {
 // ── SCHEDULE MODAL ──
 function openSchedule() {
   if (!selectedCenter) return;
+
+  // Reset form
   document.getElementById('formSection').style.display = 'block';
   document.getElementById('successScreen').style.display = 'none';
   document.querySelectorAll('.t-slot').forEach(s => s.classList.remove('sel'));
   document.querySelectorAll('.dev-chk').forEach(c => c.checked = false);
   ['fName','fPhone','fEmail','fStreet','fNotes'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) { el.value = ''; el.classList.remove('err'); }
+    if(el){ el.value = ''; el.classList.remove('err'); }
   });
   document.getElementById('fCity').value = 'Hyderabad';
-  document.getElementById('fPin').value = '';
+  document.getElementById('fPin').value  = '';
   document.getElementById('fType').value = 'self';
   document.getElementById('fDate').value = '';
-  document.getElementById('fDate').min = new Date().toISOString().split('T')[0];
+  document.getElementById('fDate').min   = new Date().toISOString().split('T')[0];
+
   document.getElementById('bannerName').textContent = selectedCenter.name;
-  document.getElementById('bannerMeta').textContent = `${selectedCenter.address} · ${selectedCenter.hours}`;
-  document.getElementById('modalSub').textContent = `Booking at ${selectedCenter.name}`;
+  document.getElementById('bannerMeta').textContent =
+    `${selectedCenter.address} · ${selectedCenter.hours}`;
+  document.getElementById('modalSub').textContent =
+    `Booking at ${selectedCenter.name}`;
+
   document.getElementById('overlay').style.display = 'block';
   const m = document.getElementById('scheduleModal');
   m.style.display = 'block';
@@ -608,7 +714,7 @@ function openSchedule() {
 }
 
 function closeModal() {
-  document.getElementById('overlay').style.display = 'none';
+  document.getElementById('overlay').style.display       = 'none';
   document.getElementById('scheduleModal').style.display = 'none';
   document.getElementById('scheduleModal').classList.remove('open');
   document.body.style.overflow = '';
@@ -619,6 +725,7 @@ function pickSlot(el) {
   el.classList.add('sel');
 }
 
+// ── SUBMIT FORM ──
 function submitForm() {
   const name  = document.getElementById('fName').value.trim();
   const phone = document.getElementById('fPhone').value.trim();
@@ -627,32 +734,39 @@ function submitForm() {
 
   ['fName','fPhone','fDate'].forEach(id => document.getElementById(id).classList.remove('err'));
   let ok = true;
-  if (!name)  { document.getElementById('fName').classList.add('err');  ok = false; }
-  if (!phone) { document.getElementById('fPhone').classList.add('err'); ok = false; }
-  if (!date)  { document.getElementById('fDate').classList.add('err');  ok = false; }
-  if (!ok) { document.querySelector('.err')?.focus(); return; }
-  if (!slot) { showToast('⚠️ Please select a time slot.'); return; }
+  if(!name)  { document.getElementById('fName').classList.add('err');  ok = false; }
+  if(!phone) { document.getElementById('fPhone').classList.add('err'); ok = false; }
+  if(!date)  { document.getElementById('fDate').classList.add('err');  ok = false; }
+  if(!ok)    { document.querySelector('.err')?.focus(); return; }
+  if(!slot)  { showToast('⚠️ Please select a time slot.'); return; }
 
   const devices = [...document.querySelectorAll('.dev-chk:checked')].map(c => c.value);
   const booking = {
-    booking_id: 'ECO-' + Date.now().toString().slice(-6),
-    center_id: selectedCenter.id,
+    booking_id:  'ECO-' + Date.now().toString().slice(-6),
+    center_id:   selectedCenter.id,
     center_name: selectedCenter.name,
     name, phone,
     email:   document.getElementById('fEmail').value.trim(),
-    address: [document.getElementById('fStreet').value.trim(), document.getElementById('fCity').value.trim(), document.getElementById('fPin').value.trim()].filter(Boolean).join(', '),
-    date, time: slot.textContent,
+    address: [
+      document.getElementById('fStreet').value.trim(),
+      document.getElementById('fCity').value.trim(),
+      document.getElementById('fPin').value.trim()
+    ].filter(Boolean).join(', '),
+    date,
+    time: slot.textContent,
     type: document.getElementById('fType').value,
     devices,
     notes: document.getElementById('fNotes').value.trim()
   };
 
+  // Save to localStorage
   try {
     const arr = JSON.parse(localStorage.getItem('ecotrace_bookings') || '[]');
     arr.unshift({ ...booking, created: new Date().toISOString() });
     localStorage.setItem('ecotrace_bookings', JSON.stringify(arr.slice(0, 20)));
   } catch(e) {}
 
+  // Fire-and-forget to API
   fetch(`${API_BASE}/centers/schedule`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -662,73 +776,108 @@ function submitForm() {
   showSuccess(booking);
 }
 
+// ── SUCCESS SCREEN ──
 function showSuccess(b) {
-  document.getElementById('formSection').style.display = 'none';
+  document.getElementById('formSection').style.display    = 'none';
   document.getElementById('successScreen').style.display = 'block';
-  document.getElementById('scheduleModal').scrollTop = 0;
+  document.getElementById('scheduleModal').scrollTop      = 0;
   document.getElementById('heroName').textContent = b.name.split(' ')[0];
 
   let co2 = 0, pts = 0;
-  (b.devices || []).forEach(d => { co2 += CO2_MAP[d] || 50; pts += POINTS_MAP[d] || 40; });
-  if (co2 === 0) { co2 = 50; pts = 40; }
+  (b.devices || []).forEach(d => {
+    co2 += CO2_MAP[d]    || 50;
+    pts += POINTS_MAP[d] || 40;
+  });
+  if(co2 === 0){ co2 = 50; pts = 40; }
 
   document.getElementById('impCO2').textContent     = co2 + ' kg';
   document.getElementById('impDevices').textContent = (b.devices || []).length || '1';
   document.getElementById('impPoints').textContent  = '+' + pts;
   document.getElementById('bkCode').textContent     = b.booking_id;
 
-  const ds = new Date(b.date).toLocaleDateString('en-IN', {day:'numeric', month:'short'});
+  const ds = new Date(b.date).toLocaleDateString('en-IN', { day:'numeric', month:'short' });
   document.getElementById('sumPills').innerHTML = [
-    `📅 ${ds}`, `🕐 ${b.time}`,
+    `📅 ${ds}`,
+    `🕐 ${b.time}`,
     b.type === 'pickup' ? '🚚 Pickup' : '🚶 Drop-off',
     `📍 ${b.center_name.split(' ').slice(0,2).join(' ')}`
   ].map(t => `<span class="s-pill">${t}</span>`).join('');
 
   const steps = b.type === 'pickup'
-    ? [`📲 Our team will call you to confirm the pickup window.`, `🚚 Agent arrives on ${ds} at ${b.time}.`, `📦 Hand over your devices — we handle everything safely.`, `⭐ ${pts} Eco Points will be credited to your account.`]
-    : [`📅 Visit ${b.center_name} on ${ds} at ${b.time}.`, `📦 Bring your devices — no packaging needed.`, `✅ Staff will process your e-waste safely.`, `⭐ ${pts} Eco Points credited after drop-off.`];
+    ? [
+        `📲 Our team will call you to confirm the pickup window.`,
+        `🚚 Agent arrives on ${ds} at ${b.time}.`,
+        `📦 Hand over your devices — we handle everything safely.`,
+        `⭐ ${pts} Eco Points will be credited to your account.`
+      ]
+    : [
+        `📅 Visit ${b.center_name} on ${ds} at ${b.time}.`,
+        `📦 Bring your devices — no packaging needed.`,
+        `✅ Staff will process your e-waste safely.`,
+        `⭐ ${pts} Eco Points credited after drop-off.`
+      ];
 
-  document.getElementById('wnSteps').innerHTML = steps.map((s, i) =>
-    `<div class="wn-step"><div class="wn-num">${i+1}</div><span>${s}</span></div>`).join('');
+  document.getElementById('wnSteps').innerHTML = steps.map((s,i) =>
+    `<div class="wn-step"><div class="wn-num">${i+1}</div><span>${s}</span></div>`
+  ).join('');
 
   spawnConfetti();
 }
 
+// ── CONFETTI ──
 function spawnConfetti() {
-  const wrap = document.getElementById('confettiWrap');
+  const wrap   = document.getElementById('confettiWrap');
   wrap.innerHTML = '';
   const colors = ['#45b872','#e07b4a','#95d5b2','#1a6b42','#b7e4c7','#ffffff'];
-  for (let i = 0; i < 50; i++) {
-    const d = document.createElement('div');
-    const sz = (Math.random()*9+4).toFixed(1), clr = colors[Math.floor(Math.random()*colors.length)];
-    const dur = (Math.random()*1.8+1.4).toFixed(2), del = (Math.random()*.9).toFixed(2);
-    const tx = (Math.random()*80-40).toFixed(0), rot = (Math.random()*720-360).toFixed(0), id = 'cf'+i;
-    d.style.cssText = `position:absolute;width:${sz}px;height:${sz}px;background:${clr};border-radius:${Math.random()>.5?'50%':'3px'};left:${(Math.random()*100).toFixed(1)}%;top:-12px;animation:${id} ${dur}s ${del}s linear forwards;opacity:.8;`;
+  for(let i = 0; i < 55; i++){
+    const d   = document.createElement('div');
+    const sz  = (Math.random()*9+4).toFixed(1);
+    const clr = colors[Math.floor(Math.random()*colors.length)];
+    const dur = (Math.random()*1.8+1.4).toFixed(2);
+    const del = (Math.random()*.9).toFixed(2);
+    const tx  = (Math.random()*80-40).toFixed(0);
+    const rot = (Math.random()*720-360).toFixed(0);
+    const id  = 'cf'+i;
+    d.style.cssText = `position:absolute;width:${sz}px;height:${sz}px;background:${clr};border-radius:${Math.random()>.5?'50%':'3px'};left:${(Math.random()*100).toFixed(1)}%;top:-12px;animation:${id} ${dur}s ${del}s linear forwards;opacity:.85;`;
     const st = document.createElement('style');
-    st.textContent = `@keyframes ${id}{0%{top:-12px;transform:rotate(0deg) translateX(0);opacity:.8}100%{top:105%;transform:rotate(${rot}deg) translateX(${tx}px);opacity:0}}`;
+    st.textContent = `@keyframes ${id}{0%{top:-12px;transform:rotate(0deg) translateX(0);opacity:.85}100%{top:105%;transform:rotate(${rot}deg) translateX(${tx}px);opacity:0}}`;
     document.head.appendChild(st);
     wrap.appendChild(d);
   }
 }
 
 // ── INIT ──
+// Render immediately with local data so page is never blank
 renderCenters(CENTERS_DATA);
 
-// Load from API on page load
+// Then try fetching fresh data from API (without location — just for data sync)
 (async () => {
   try {
     const res = await fetch(`${API_BASE}/centers`);
-    if (res.ok) {
+    if(res.ok){
       const data = await res.json();
-      if (data.centers && data.centers.length) {
-        CENTERS_DATA = data.centers;
-        renderCenters(CENTERS_DATA);
+      if(data.centers && data.centers.length){
+        // FIX: merge by id — never replace names wholesale
+        const apiMap = {};
+        data.centers.forEach(c => { apiMap[c.id] = c; });
+        CENTERS_DATA = CENTERS_DATA.map(c => ({
+          ...c,
+          // Only update fields that the API authoritatively provides (open status, rating)
+          open:   apiMap[c.id]?.open   ?? c.open,
+          rating: apiMap[c.id]?.rating ?? c.rating
+        }));
+        filterCenters();
       }
     }
   } catch(e) {
-    console.warn('Server not reachable, using local data.');
+    console.info('API not reachable — using local data.');
   }
 })();
+
+// Re-render pins if window resizes
+window.addEventListener('resize', () => {
+  renderPins(getFilteredList());
+});
 </script>
 </body>
 </html>
